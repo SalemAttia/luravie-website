@@ -29,6 +29,44 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const t = useTranslations('common');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    const savedCart = localStorage.getItem('luravie-cart');
+    const savedFavorites = localStorage.getItem('luravie-favorites');
+
+    if (savedCart) {
+      try {
+        setCartItems(JSON.parse(savedCart));
+      } catch (e) {
+        console.error('Failed to parse cart from localStorage', e);
+      }
+    }
+
+    if (savedFavorites) {
+      try {
+        setFavorites(JSON.parse(savedFavorites));
+      } catch (e) {
+        console.error('Failed to parse favorites from localStorage', e);
+      }
+    }
+
+    setIsMounted(true);
+  }, []);
+
+  // Save to localStorage when state changes
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem('luravie-cart', JSON.stringify(cartItems));
+    }
+  }, [cartItems, isMounted]);
+
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem('luravie-favorites', JSON.stringify(favorites));
+    }
+  }, [favorites, isMounted]);
 
   const cartCount = useMemo(() => cartItems.reduce((sum, item) => sum + item.quantity, 0), [cartItems]);
 
@@ -93,6 +131,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const clearCart = () => setCartItems([]);
+
+  // Evitar problemas de hidratación al no renderizar nada hasta que estemos montados en el cliente
+  // o asegurarnos de que el render inicial del cliente sea igual al del servidor
+  // En este caso, devolvemos el children pero el estado inicial es []
 
   return (
     <AppContext.Provider value={{
