@@ -229,7 +229,10 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                 >
                   {activeTab === 'Description' && (
                     <div className="space-y-4">
-                      <p className="text-lg italic font-serif text-teal/80">"{product.description}"</p>
+                      <div
+                        className="text-lg text-teal/80"
+                        dangerouslySetInnerHTML={{ __html: product.description }}
+                      />
                       <ul className={`grid grid-cols-2 gap-4 ${locale === 'ar' ? 'text-right' : ''}`}>
                         {product.features.map((f, idx) => (
                           <li key={idx} className={`flex items-center gap-3 text-sm bg-white/40 p-3 rounded-xl border border-teal/5 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
