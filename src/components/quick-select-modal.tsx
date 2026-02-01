@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ShoppingBag, Info } from 'lucide-react';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface QuickSelectModalProps {
   isOpen: boolean;
@@ -25,6 +26,9 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
   onAddToCart,
   onBuyNow
 }) => {
+  const t = useTranslations('product');
+  const tCommon = useTranslations('common');
+  const locale = useLocale();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<any>(null);
 
@@ -66,11 +70,12 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className="bg-blush w-full max-w-md rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-teal/10"
+            className={`bg-blush w-full max-w-md rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-teal/10 ${locale === 'ar' ? 'text-right' : 'text-left'}`}
+            dir={locale === 'ar' ? 'rtl' : 'ltr'}
           >
             <button
               onClick={onClose}
-              className="absolute top-6 right-6 p-2 bg-white rounded-full hover:bg-coral hover:text-white transition-all z-20 shadow-sm cursor-pointer"
+              className={`absolute top-6 ${locale === 'ar' ? 'left-6' : 'right-6'} p-2 bg-white rounded-full hover:bg-coral hover:text-white transition-all z-20 shadow-sm cursor-pointer`}
             >
               <X size={20} />
             </button>
@@ -82,7 +87,7 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
                 </div>
                 <div className="flex flex-col justify-center">
                   <h3 className="text-xl font-bold text-teal mb-1">{product.name}</h3>
-                  <p className="text-coral font-bold text-lg">{product.price} EGP</p>
+                  <p className="text-coral font-bold text-lg">{product.price} {locale === 'ar' ? 'ج.م' : 'EGP'}</p>
                 </div>
               </div>
 
@@ -90,7 +95,7 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
                 {/* Color Selection */}
                 <div>
                   <label className="text-xs font-bold uppercase tracking-widest text-teal/40 mb-4 block">
-                    Choose Color: <span className="text-teal">{selectedColor?.name}</span>
+                    {t('selectColor')}: <span className="text-teal">{selectedColor?.name}</span>
                   </label>
                   <div className="flex flex-wrap gap-4">
                     {product.colors.map((color) => (
@@ -116,10 +121,10 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
                 <div>
                   <div className="flex justify-between items-center mb-4">
                     <label className="text-xs font-bold uppercase tracking-widest text-teal/40 block">
-                      Select Size
+                      {t('selectSize')}
                     </label>
                     <button className="text-[10px] font-bold text-coral flex items-center gap-1 hover:underline cursor-pointer">
-                      <Info size={12} /> SIZE GUIDE
+                      <Info size={12} /> {locale === 'ar' ? 'دليل المقاسات' : 'SIZE GUIDE'}
                     </button>
                   </div>
                   <div className="grid grid-cols-4 gap-2">
@@ -149,25 +154,27 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
                     }`}
                 >
                   <ShoppingBag size={20} />
-                  {selectedSize ? `Add Size ${selectedSize} to Bag` : 'Select a Size'}
+                  {selectedSize
+                    ? (locale === 'ar' ? `أضف مقاس ${selectedSize} للحقيبة` : `Add Size ${selectedSize} to Bag`)
+                    : (locale === 'ar' ? 'اختر المقاس' : 'Select a Size')}
                 </button>
                 {onBuyNow && (
                   <button
                     onClick={handleBuyNow}
                     disabled={!selectedSize}
                     className={`w-full mt-4 py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 shadow-xl transition-all cursor-pointer ${selectedSize
-                        ? 'bg-teal text-white shadow-teal/20 hover:scale-[1.02] active:scale-[0.98]'
-                        : 'bg-teal/5 text-teal/20 cursor-not-allowed shadow-none'
+                      ? 'bg-teal text-white shadow-teal/20 hover:scale-[1.02] active:scale-[0.98]'
+                      : 'bg-teal/5 text-teal/20 cursor-not-allowed shadow-none'
                       }`}
                   >
-                    Order Now — Free Shipping
+                    {locale === 'ar' ? 'اطلب الآن — شحن مجاني' : 'Order Now — Free Shipping'}
                   </button>
                 )}
                 <button
                   onClick={onClose}
                   className="w-full mt-4 py-2 text-sm font-bold text-teal/40 hover:text-teal transition-colors cursor-pointer"
                 >
-                  Cancel
+                  {locale === 'ar' ? 'إلغاء' : 'Cancel'}
                 </button>
               </div>
             </div>

@@ -1,8 +1,12 @@
+"use client";
+
 import React, { useState } from 'react';
 import { ShoppingBag, Search, Menu, Heart, X, ChevronRight, Instagram, Facebook, Globe } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import logoImg from "@/assets/9fa13cb21775809b44829beac6f211643ef2d854.png";
+import { useTranslations, useLocale } from 'next-intl';
+import { Link, usePathname, useRouter } from '@/i18n/routing';
 
 import { SearchOverlay } from '@/components/search-overlay';
 
@@ -29,6 +33,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   searchQuery,
   currentPage
 }) => {
+  const t = useTranslations('common');
+  const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -40,6 +49,11 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const navItems = ['Home', ...categories];
+
+  const toggleLanguage = () => {
+    const nextLocale = locale === 'en' ? 'ar' : 'en';
+    router.replace(pathname, { locale: nextLocale });
+  };
 
   return (
     <>
@@ -53,11 +67,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                   key={item}
                   onClick={() => item === 'Home' ? onNavigate('home') : onCategoryClick(item)}
                   className={`transition-all duration-300 cursor-pointer relative group ${(item === 'Home' && currentPage === 'home') || (currentPage === 'category' && item !== 'Home')
-                      ? 'text-rose'
-                      : 'text-white/60 hover:text-rose'
+                    ? 'text-rose'
+                    : 'text-white/60 hover:text-rose'
                     }`}
                 >
-                  {item}
+                  {item === 'Home' ? t('home') : t(`categories.${item.toLowerCase()}`)}
                   <span className={`absolute -bottom-1 left-0 h-0.5 bg-coral transition-all duration-300 ${(item === 'Home' && currentPage === 'home') ? 'w-full' : 'w-0 group-hover:w-full'
                     }`} />
                 </button>
@@ -88,9 +102,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* Right side: Actions */}
             <div className="flex items-center gap-1 sm:gap-2">
-              <button className="flex items-center gap-2 bg-rose px-3 py-1.5 rounded-full border border-teal/10 hover:scale-105 transition-all mr-2 cursor-pointer group">
+              <button
+                onClick={toggleLanguage}
+                className="flex items-center gap-2 bg-rose px-3 py-1.5 rounded-full border border-teal/10 hover:scale-105 transition-all mr-2 cursor-pointer group"
+              >
                 <Globe size={14} className="text-teal group-hover:rotate-12 transition-transform" />
-                <span className="text-teal font-bold text-xs" style={{ direction: 'rtl' }}>عربي</span>
+                <span className="text-teal font-bold text-xs">
+                  {locale === 'en' ? 'عربي' : 'English'}
+                </span>
               </button>
               <button
                 onClick={() => setIsSearchOpen(true)}
@@ -117,7 +136,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <div className="bg-teal/10 p-1.5 rounded-full">
                   <ShoppingBag size={16} />
                 </div>
-                <span className="text-xs font-bold uppercase tracking-wider hidden sm:inline">Bag</span>
+                <span className="text-xs font-bold uppercase tracking-wider hidden sm:inline">
+                  {t('cart')}
+                </span>
                 {cartCount > 0 && (
                   <span className="bg-coral text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
                     {cartCount}
@@ -141,11 +162,11 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="fixed inset-0 bg-teal/60 backdrop-blur-sm z-[60] md:hidden"
             />
             <motion.div
-              initial={{ x: '100%' }}
+              initial={{ x: locale === 'ar' ? '-100%' : '100%' }}
               animate={{ x: 0 }}
-              exit={{ x: '100%' }}
+              exit={{ x: locale === 'ar' ? '-100%' : '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 right-0 w-[85%] max-w-sm bg-teal z-[70] md:hidden flex flex-col shadow-2xl"
+              className={`fixed inset-y-0 ${locale === 'ar' ? 'left-0' : 'right-0'} w-[85%] max-w-sm bg-teal z-[70] md:hidden flex flex-col shadow-2xl`}
             >
               <div className="flex justify-between items-center p-6 border-b border-white/10">
                 <ImageWithFallback
@@ -167,14 +188,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="flex-1 overflow-y-auto py-8 px-6">
                 <div className="space-y-8">
                   <div>
-                    <h3 className="text-xs font-bold text-white/40 uppercase tracking-widest mb-4">Navigation</h3>
+                    <h3 className="text-xs font-bold text-white/40 uppercase tracking-widest mb-4">
+                      {t('home')}
+                    </h3>
                     <div className="grid gap-2">
                       <button
                         onClick={() => handleMobileNav(() => onNavigate('home'))}
                         className="flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl text-left font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all"
                       >
-                        Home
-                        <ChevronRight size={18} className="text-coral" />
+                        {t('home')}
+                        <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
                       </button>
                       {categories.map((cat) => (
                         <button
@@ -182,8 +205,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                           onClick={() => handleMobileNav(() => onCategoryClick(cat))}
                           className="flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl text-left font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all"
                         >
-                          {cat}
-                          <ChevronRight size={18} className="text-coral" />
+                          {t(`categories.${cat.toLowerCase()}`)}
+                          <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
                         </button>
                       ))}
                     </div>
@@ -196,22 +219,22 @@ export const Navbar: React.FC<NavbarProps> = ({
                         onClick={() => handleMobileNav(() => onNavigate('about'))}
                         className="flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl text-left font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all"
                       >
-                        Our Story
-                        <ChevronRight size={18} className="text-coral" />
+                        {t('about')}
+                        <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
                       </button>
                       <button
                         onClick={() => handleMobileNav(() => onNavigate('contact'))}
                         className="flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl text-left font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all"
                       >
-                        Contact Us
-                        <ChevronRight size={18} className="text-coral" />
+                        {t('contact')}
+                        <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
                       </button>
                       <button
                         onClick={() => handleMobileNav(() => onNavigate('policy'))}
                         className="flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl text-left font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all"
                       >
-                        Privacy & Shipping
-                        <ChevronRight size={18} className="text-coral" />
+                        {t('policy')}
+                        <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
                       </button>
                     </div>
                   </div>

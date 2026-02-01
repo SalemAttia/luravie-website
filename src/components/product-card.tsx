@@ -3,6 +3,7 @@ import { Heart, ShoppingBag, Check } from 'lucide-react';
 import { motion } from 'motion/react';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import { Product } from '@/data';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface ProductCardProps {
   product: Product;
@@ -14,15 +15,17 @@ interface ProductCardProps {
   onOpenQuickSelect: (product: Product) => void;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ 
-  product, 
-  isFavorite, 
-  onToggleFavorite, 
-  onAddToCart, 
+export const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  isFavorite,
+  onToggleFavorite,
+  onAddToCart,
   onBuyNow,
   onClick,
   onOpenQuickSelect
 }) => {
+  const t = useTranslations('common');
+  const locale = useLocale();
   const [isAdded, setIsAdded] = React.useState(false);
 
   const handleQuickAdd = (e: React.MouseEvent) => {
@@ -36,9 +39,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       className="group"
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="relative aspect-[3/4] rounded-[2rem] overflow-hidden bg-blush mb-6 shadow-sm group-hover:shadow-2xl transition-all duration-500">
-        <div 
+        <div
           className="cursor-pointer h-full w-full"
           onClick={() => onClick(product)}
         >
@@ -48,16 +52,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
           />
         </div>
-        
-        <button 
+
+        <button
           onClick={(e) => {
             onToggleFavorite(e);
           }}
-          className={`absolute top-6 right-6 p-3 backdrop-blur-md rounded-full transition-all hover:scale-110 active:scale-90 cursor-pointer shadow-lg ${
-            isFavorite 
-              ? 'bg-coral text-white border-coral' 
+          className={`absolute top-6 ${locale === 'ar' ? 'left-6' : 'right-6'} p-3 backdrop-blur-md rounded-full transition-all hover:scale-110 active:scale-90 cursor-pointer shadow-lg ${isFavorite
+              ? 'bg-coral text-white border-coral'
               : 'bg-white/80 text-teal border border-white opacity-0 group-hover:opacity-100'
-          }`}
+            }`}
         >
           <Heart size={20} className={isFavorite ? 'fill-white' : ''} />
         </button>
@@ -70,25 +73,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             }}
             className="w-full py-4 bg-coral text-white rounded-[1.5rem] font-bold text-sm flex items-center justify-center gap-3 shadow-2xl shadow-coral/30 cursor-pointer hover:scale-[1.05] active:scale-[0.95] transition-all"
           >
-            Order Now
+            {locale === 'ar' ? 'اطلبي الآن' : 'Order Now'}
           </button>
           <button
             onClick={handleQuickAdd}
-            className={`w-full py-4 rounded-[1.5rem] font-bold text-sm flex items-center justify-center gap-3 border backdrop-blur-md transition-all cursor-pointer ${
-              isAdded 
-                ? 'bg-teal text-white border-teal shadow-xl shadow-teal/20' 
+            className={`w-full py-4 rounded-[1.5rem] font-bold text-sm flex items-center justify-center gap-3 border backdrop-blur-md transition-all cursor-pointer ${isAdded
+                ? 'bg-teal text-white border-teal shadow-xl shadow-teal/20'
                 : 'bg-white/90 text-teal border-white shadow-xl hover:bg-teal hover:text-white hover:border-teal'
-            }`}
+              }`}
           >
             {isAdded ? (
               <>
                 <Check size={16} />
-                Added
+                {locale === 'ar' ? 'تمت الإضافة' : 'Added'}
               </>
             ) : (
               <>
                 <ShoppingBag size={16} />
-                Add to Bag
+                {locale === 'ar' ? 'أضف للحقيبة' : 'Add to Bag'}
               </>
             )}
           </button>
@@ -96,17 +98,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       <div className="space-y-2 px-2 cursor-pointer" onClick={() => onClick(product)}>
-        <div className="flex justify-between items-start gap-2">
-          <h3 className="font-bold text-teal text-lg tracking-tight leading-tight">{product.name}</h3>
-          <span className="font-black text-coral whitespace-nowrap">{product.price} <span className="text-[10px] font-bold">EGP</span></span>
+        <div className={`flex justify-between items-start gap-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+          <h3 className={`font-bold text-teal text-lg tracking-tight leading-tight ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{product.name}</h3>
+          <span className="font-black text-coral whitespace-nowrap">{product.price} <span className="text-[10px] font-bold">{locale === 'ar' ? 'ج.م' : 'EGP'}</span></span>
         </div>
-        <div className="flex items-center gap-3">
-          <p className="text-xs font-bold text-teal/40 uppercase tracking-widest">{product.category}</p>
+        <div className={`flex items-center gap-3 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+          <p className="text-xs font-bold text-teal/40 uppercase tracking-widest">{t(`categories.${product.category.toLowerCase()}`)}</p>
           <div className="flex gap-1">
             {product.colors.map((color, idx) => (
-              <div 
-                key={idx} 
-                className="w-2.5 h-2.5 rounded-full border border-teal/5" 
+              <div
+                key={idx}
+                className="w-2.5 h-2.5 rounded-full border border-teal/5"
                 style={{ backgroundColor: color.hex }}
                 title={color.name}
               />

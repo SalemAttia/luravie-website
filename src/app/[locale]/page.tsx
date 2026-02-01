@@ -2,22 +2,24 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { Hero, CategorySection } from '@/components/hero-and-cats';
 import { ProductCard } from '@/components/product-card';
 import { TrustSection } from '@/components/trust-section';
 import { QuickSelectModal } from '@/components/quick-select-modal';
 import { useApp } from '@/context/AppContext';
 import { PRODUCTS, Product } from '@/data';
+import { useTranslations } from 'next-intl';
 
 export default function Home() {
+  const t = useTranslations('home');
   const router = useRouter();
   const { favorites, toggleFavorite, addToCart, buyNow } = useApp();
   const [isQuickSelectOpen, setIsQuickSelectOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const navigate = (path: string) => {
-    router.push(path);
+    router.push(path as any);
   };
 
   const openQuickSelect = (product: Product) => {
@@ -36,9 +38,9 @@ export default function Home() {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-teal mb-4">Everyday Essentials</h2>
+            <h2 className="text-4xl font-bold text-teal mb-4">{t('sectionTitle')}</h2>
             <p className="text-teal/70 text-lg max-w-2xl mx-auto">
-              Quality fabric, perfect fit, and discreet style. Designed to make you feel your best every single day.
+              {t('sectionSubtitle')}
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">

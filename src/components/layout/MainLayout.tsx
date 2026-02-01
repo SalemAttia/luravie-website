@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { Toaster } from 'sonner';
+import React, { useState } from 'react';
+import { useRouter, usePathname } from '@/i18n/routing';
 import { AnimatePresence } from 'framer-motion';
 import { useApp } from '@/context/AppContext';
 import { Navbar } from '@/components/navbar';
@@ -11,8 +10,11 @@ import { WhatsAppButton } from '@/components/whatsapp-button';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import { Instagram, Facebook } from 'lucide-react';
 import logoImg from "@/assets/9fa13cb21775809b44829beac6f211643ef2d854.png";
+import { useTranslations, useLocale } from 'next-intl';
 
 export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const tCommon = useTranslations('common');
+    const locale = useLocale();
     const router = useRouter();
     const pathname = usePathname();
     const { cartCount, favorites, cartItems, updateQuantity, removeFromCart } = useApp();
@@ -20,11 +22,11 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
 
     // Helper for navigation that mimics react-router-dom's navigate
     const navigate = (path: string) => {
-        router.push(path);
+        router.push(path as any);
     };
 
     return (
-        <div className="min-h-screen font-sans bg-background text-foreground flex flex-col">
+        <div className="min-h-screen font-sans bg-background text-foreground flex flex-col" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
             <Navbar
                 cartCount={cartCount}
                 favoritesCount={favorites.length}
@@ -50,26 +52,26 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                             <button onClick={() => navigate('/')} className="cursor-pointer">
                                 <ImageWithFallback src={logoImg} alt="Luravie" className="h-14 w-auto brightness-0 invert" />
                             </button>
-                            <p className="text-sm text-rose/80">Your Confidence Starts Within.</p>
+                            <p className="text-sm text-rose/80">{tCommon('description')}</p>
                         </div>
                         <div>
-                            <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">Shop</h4>
+                            <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">{tCommon('shop')}</h4>
                             <ul className="space-y-4 text-sm">
-                                <li><button onClick={() => navigate('/shop')} className="hover:text-coral transition-colors cursor-pointer text-left">All Products</button></li>
-                                <li><button onClick={() => navigate('/shop?category=Bra')} className="hover:text-coral transition-colors cursor-pointer text-left">Bras</button></li>
-                                <li><button onClick={() => navigate('/shop?category=Lingerie')} className="hover:text-coral transition-colors cursor-pointer text-left">Lingerie</button></li>
+                                <li><button onClick={() => navigate('/shop')} className="hover:text-coral transition-colors cursor-pointer text-left">{locale === 'ar' ? 'كل المنتجات' : 'All Products'}</button></li>
+                                <li><button onClick={() => navigate('/shop?category=Bra')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('categories.bra')}</button></li>
+                                <li><button onClick={() => navigate('/shop?category=Lingerie')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('categories.lingerie')}</button></li>
                             </ul>
                         </div>
                         <div>
-                            <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">Support</h4>
+                            <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">{locale === 'ar' ? 'الدعم' : 'Support'}</h4>
                             <ul className="space-y-4 text-sm">
-                                <li><button onClick={() => navigate('/policy')} className="hover:text-coral transition-colors cursor-pointer text-left">Shipping & Returns</button></li>
-                                <li><button onClick={() => navigate('/contact')} className="hover:text-coral transition-colors cursor-pointer text-left">Contact Us</button></li>
-                                <li><button onClick={() => navigate('/about')} className="hover:text-coral transition-colors cursor-pointer text-left">Our Story</button></li>
+                                <li><button onClick={() => navigate('/policy')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('policy')}</button></li>
+                                <li><button onClick={() => navigate('/contact')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('contact')}</button></li>
+                                <li><button onClick={() => navigate('/about')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('about')}</button></li>
                             </ul>
                         </div>
                         <div>
-                            <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">Stay Connected</h4>
+                            <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">{locale === 'ar' ? 'ابق على تواصل' : 'Stay Connected'}</h4>
                             <div className="flex gap-4">
                                 <Instagram className="cursor-pointer hover:text-coral transition-colors" />
                                 <Facebook className="cursor-pointer hover:text-coral transition-colors" />
@@ -77,10 +79,10 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                         </div>
                     </div>
                     <div className="pt-10 border-t border-white/10 text-xs text-rose/60 flex flex-col md:flex-row justify-between items-center gap-6">
-                        <p>© 2026 Luravie. All rights reserved.</p>
+                        <p>© 2026 Luravie. {locale === 'ar' ? 'جميع الحقوق محفوظة.' : 'All rights reserved.'}</p>
                         <div className="flex gap-8">
-                            <span>Cash on Delivery Only</span>
-                            <span>Discreet Shipping</span>
+                            <span>{tCommon('cod')}</span>
+                            <span>{locale === 'ar' ? 'شحن سري' : 'Discreet Shipping'}</span>
                         </div>
                     </div>
                 </div>

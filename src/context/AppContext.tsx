@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
 import { toast } from 'sonner';
 import { PRODUCTS, Product } from '@/data';
+import { useTranslations } from 'next-intl';
 
 interface CartItem extends Product {
   quantity: number;
@@ -25,6 +26,7 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const t = useTranslations('common');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
 
@@ -38,10 +40,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setFavorites(prev => {
       const isFav = prev.includes(productId);
       if (isFav) {
-        toast.info('Removed from favorites');
+        toast.info(t('wishlistRemoved'));
         return prev.filter(id => id !== productId);
       } else {
-        toast.success('Added to favorites', { icon: '❤️' });
+        toast.success(t('wishlistAdded'), { icon: '❤️' });
         return [...prev, productId];
       }
     });
@@ -64,8 +66,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return [...prev, { ...product, quantity: 1, selectedSize: size, selectedColor: color }];
     });
 
-    toast.success('Added to your bag', {
-      description: `${product.name} in ${color.name}, size ${size} is waiting for you.`,
+    toast.success(t('addedToBag'), {
+      description: `${product.name} - ${color.name}, ${size}`,
       icon: '✨',
       position: 'bottom-right',
     });
@@ -87,6 +89,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setCartItems(prev => prev.filter(item =>
       !(item.id === id && item.selectedSize === size && item.selectedColor.name === colorName)
     ));
+    toast.info(t('removedFromBag'));
   };
 
   const clearCart = () => setCartItems([]);
