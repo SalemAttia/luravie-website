@@ -66,6 +66,8 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                             <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">{locale === 'ar' ? 'الدعم' : 'Support'}</h4>
                             <ul className="space-y-4 text-sm">
                                 <li><button onClick={() => navigate('/policy')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('policy')}</button></li>
+                                <li><button onClick={() => navigate('/refund')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('refundPolicy')}</button></li>
+                                <li><button onClick={() => navigate('/shipping')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('shippingPolicy')}</button></li>
                                 <li><button onClick={() => navigate('/contact')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('contact')}</button></li>
                                 <li><button onClick={() => navigate('/about')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('about')}</button></li>
                             </ul>
@@ -86,7 +88,7 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                         </div>
                     </div>
                 </div>
-            </footer>
+            </footer >
 
             <CartDrawer
                 isOpen={isCartOpen}
@@ -100,6 +102,6 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                 }}
             />
             <WhatsAppButton />
-        </div>
+        </div >
     );
 };

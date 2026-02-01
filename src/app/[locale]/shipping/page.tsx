@@ -1,13 +1,13 @@
 "use client";
 
 import React from 'react';
-import { Shield, Truck, Lock, Globe, CreditCard } from 'lucide-react';
+import { Truck, Package, BadgePercent, Globe } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslations, useLocale } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/routing';
 
-export default function PolicyPage() {
-    const t = useTranslations('policyPage');
+export default function ShippingPage() {
+    const t = useTranslations('shippingPage');
     const locale = useLocale();
     const router = useRouter();
     const pathname = usePathname();
@@ -15,21 +15,29 @@ export default function PolicyPage() {
     const sections = [
         {
             icon: <Truck size={20} />,
-            title: t('sections.shipping.title'),
-            items: ['item1', 'item2'].map(key => t(`sections.shipping.items.${key}`))
+            title: t('sections.timelines.title'),
+            content: (
+                <div className="space-y-2">
+                    <p className="mb-2">{t('sections.timelines.text')}</p>
+                    <ul className={`list-disc space-y-2 ${locale === 'ar' ? 'pr-5' : 'pl-5'}`}>
+                        <li>{t('sections.timelines.items.cairo')}</li>
+                        <li>{t('sections.timelines.items.others')}</li>
+                        <li>{t('sections.timelines.items.upper')}</li>
+                    </ul>
+                </div>
+            )
         },
         {
-            icon: <CreditCard size={20} />,
-            title: t('sections.payment.title'),
-            items: ['item1', 'item2'].map(key => t(`sections.payment.items.${key}`))
+            icon: <BadgePercent size={20} />,
+            title: t('sections.cost.title'),
+            text: t('sections.cost.text')
         },
         {
-            icon: <Lock size={20} />,
-            title: t('sections.privacy.title'),
-            items: ['item1', 'item2', 'item3', 'item4'].map(key => t(`sections.privacy.items.${key}`))
+            icon: <Package size={20} />,
+            title: t('sections.packaging.title'),
+            text: t('sections.packaging.text')
         }
     ];
-
 
     return (
         <div className={`py-12 px-4 max-w-4xl mx-auto ${locale === 'ar' ? 'text-right' : 'text-left'}`} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
@@ -64,11 +72,7 @@ export default function PolicyPage() {
                             <h2 className="text-xl font-bold text-teal">{section.title}</h2>
                         </div>
                         <div className="text-gray-600 leading-relaxed relative z-10">
-                            <ul className={`list-disc space-y-2 ${locale === 'ar' ? 'pr-5' : 'pl-5'}`}>
-                                {section.items.map((item, itemIdx) => (
-                                    <li key={itemIdx}>{item}</li>
-                                ))}
-                            </ul>
+                            {section.content || (section as any).text}
                         </div>
                     </motion.div>
                 ))}

@@ -43,7 +43,9 @@
             "inspectDesc": "Inspect your items before making the payment for total peace of mind.",
             "fastTitle": "Fast Shipping",
             "fastDesc": "Reliable delivery to your home within 2-4 business days."
-        }
+        },
+        "refundPolicy": "Refund Policy",
+        "shippingPolicy": "Shipping Policy"
     },
     "home": {
         "heroTitle": "Confidence Starts Within",
@@ -155,6 +157,88 @@
             "subtitle": "Your order has been received and is currently being processed. You will receive a confirmation call shortly.",
             "orderNumber": "Order Number",
             "backToShop": "Back to Shop"
+        }
+    },
+    "policyPage": {
+        "title": "Shipping & Privacy Policy",
+        "intro": "At Luravie, we understand that purchasing lingerie requires trust, comfort, and complete privacy. That’s why we’ve designed a shipping experience that protects your privacy from checkout to delivery.",
+        "sections": {
+            "shipping": {
+                "title": "Shipping",
+                "items": {
+                    "item1": "Cairo & Giza: within 48 hours (maximum)",
+                    "item2": "Other governorates: within 72 hours (maximum)"
+                }
+            },
+            "payment": {
+                "title": "Payment",
+                "items": {
+                    "item1": "Cash on Delivery available",
+                    "item2": "Inspection before payment available for your peace of mind"
+                }
+            },
+            "privacy": {
+                "title": "Privacy & Packaging",
+                "items": {
+                    "item1": "All orders are packed in secure, discreet packaging",
+                    "item2": "No product names or content indicators on the package",
+                    "item3": "No details that may cause discomfort or embarrassment",
+                    "item4": "Delivered in a neutral, safe package ensuring 100% privacy"
+                }
+            }
+        },
+        "outro": {
+            "text": "We know many customers hesitate to buy lingerie online due to privacy concerns. That’s why we guarantee a safe, discreet, and worry-free shopping experience.",
+            "tagline": "✨ Luravie – Shop with confidence. Your privacy is protected."
+        }
+    },
+    "refundPage": {
+        "title": "Refund & Return Policy",
+        "intro": "For the safety and hygiene of our customers, we follow a strict return policy for intimate apparel/lingerie. We prioritize your health and confidence above all else.",
+        "sections": {
+            "inspection": {
+                "title": "Inspection Upon Delivery",
+                "text": "We offer a 'Try Before You Buy' service. You are encouraged to open the package and inspect the materials, quality, and size while the courier waits (5-10 minutes). If you are not satisfied for any reason, you can return them instantly with the courier without paying anything."
+            },
+            "noReturn": {
+                "title": "No Returns After Delivery",
+                "text": "Once you have accepted the package and the courier has left, we cannot accept returns or exchanges. This strict policy ensures that every item you receive from Luravie is 100% new, unworn, and untouched by previous customers."
+            },
+            "defects": {
+                "title": "Manufacturing Defects",
+                "text": "In the rare case of a manufacturing defect discovered after delivery, please contact our support team within 24 hours of receiving your order, and we will arrange a replacement immediately."
+            }
+        },
+        "outro": {
+            "text": "This policy guarantees that every piece you buy from us is fresh and hygienic.",
+            "tagline": "✨ Luravie – Hygiene & Quality Guaranteed"
+        }
+    },
+    "shippingPage": {
+        "title": "Shipping Policy",
+        "intro": "We provide fast, reliable, and invisible shipping. Our delivery network covers all of Egypt with optimized routes for the fastest possible service.",
+        "sections": {
+            "timelines": {
+                "title": "Delivery Timelines",
+                "text": "We work hard to get your order to you as quickly as possible:",
+                "items": {
+                    "cairo": "Cairo & Giza: Delivered within 24-48 hours.",
+                    "others": "Alexandria & Delta: Delivered within 48-72 hours.",
+                    "upper": "Upper Egypt: Delivered within 3-4 days."
+                }
+            },
+            "cost": {
+                "title": "Shipping Costs",
+                "text": "Shipping fees are calculated at checkout based on your city. We frequently offer free shipping promotions on orders over specific amounts."
+            },
+            "packaging": {
+                "title": "Discreet Packaging",
+                "text": "Your privacy is paramount. All orders are shipped in opaque, unmarked bags or boxes. The shipping label only contains your name, address, and 'Clothing' as the category, with no mention of brand names or specific product details."
+            }
+        },
+        "outro": {
+            "text": "You will receive a tracking number and a confirmation call before delivery.",
+            "tagline": "✨ Luravie – Fast. Private. Reliable."
         }
     }
 }
