@@ -16,11 +16,12 @@ export async function getWooProducts(): Promise<Product[]> {
             headers: {
                 'Authorization': `Basic ${auth}`,
             },
-            next: { revalidate: 3600 } // Cache for 1 hour
+            next: { revalidate: 60 } // Reduced to 1 minute for easier debugging
         });
 
         if (!response.ok) {
-            throw new Error(`WooCommerce API error: ${response.statusText}`);
+            console.error(`WooCommerce API error: ${response.status} ${response.statusText}`);
+            return [];
         }
 
         const wooProducts = await response.json();
@@ -55,7 +56,7 @@ export async function getWooProductById(id: string): Promise<Product | null> {
             headers: {
                 'Authorization': `Basic ${auth}`,
             },
-            next: { revalidate: 3600 }
+            next: { revalidate: 60 }
         });
 
         if (!response.ok) return null;
