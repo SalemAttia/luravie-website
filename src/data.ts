@@ -9,6 +9,7 @@ export interface Product {
   materials: string;
   sizes: string[];
   colors: { name: string; hex: string }[];
+  images?: string[];
 }
 
 const COMMON_COLORS = [

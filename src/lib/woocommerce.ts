@@ -25,22 +25,37 @@ export async function getWooProducts(): Promise<Product[]> {
         }
 
         const wooProducts = await response.json();
+        console.log(wooProducts.filter(p => p.attributes.length > 0));
 
-        return wooProducts.map((p: any) => ({
-            id: p.id.toString(),
-            name: p.name,
-            price: parseFloat(p.price) || 0,
-            category: mapCategory(p.categories[0]?.name),
-            image: p.images[0]?.src || '',
-            description: p.short_description || p.description,
-            features: p.attributes?.find((a: any) => a.name === 'Features')?.options || [],
-            materials: p.attributes?.find((a: any) => a.name === 'Materials')?.options[0] || '',
-            sizes: p.attributes?.find((a: any) => a.name === 'Size')?.options || [],
-            colors: p.attributes?.find((a: any) => a.name === 'Color')?.options.map((c: string) => ({
-                name: c,
-                hex: mapColorToHex(c)
-            })) || [],
-        }));
+        return wooProducts.map((p: any) => {
+            const findAttr = (name: string) => p.attributes?.find((a: any) =>
+                a.name.toLowerCase() === name.toLowerCase() ||
+                a.name.toLowerCase() === `${name.toLowerCase()}s`
+            );
+
+            return {
+                id: p.id.toString(),
+                name: p.name,
+                price: parseFloat(p.price || p.regular_price || '0'),
+                category: mapCategory(p.categories[0]?.name),
+                image: p.images[0]?.src || 'https://via.placeholder.com/600x800?text=No+Image',
+                description: p.short_description || p.description,
+                features: findAttr('feature')?.options || [],
+                materials: findAttr('material')?.options[0] || '',
+                sizes: findAttr('size')?.options || [],
+                colors: findAttr('color')?.options.map((c: string) => {
+                    if (c.includes('|')) {
+                        const [name, hex] = c.split('|');
+                        return { name: name.trim(), hex: hex.trim() };
+                    }
+                    return {
+                        name: c,
+                        hex: mapColorToHex(c)
+                    };
+                }) || [],
+                images: p.images?.map((img: any) => img.src) || [],
+            };
+        });
     } catch (error) {
         console.error('Error fetching WooCommerce products:', error);
         return [];
@@ -63,20 +78,32 @@ export async function getWooProductById(id: string): Promise<Product | null> {
 
         const p = await response.json();
 
+        const findAttr = (name: string) => p.attributes?.find((a: any) =>
+            a.name.toLowerCase() === name.toLowerCase() ||
+            a.name.toLowerCase() === `${name.toLowerCase()}s`
+        );
+
         return {
             id: p.id.toString(),
             name: p.name,
-            price: parseFloat(p.price) || 0,
+            price: parseFloat(p.price || p.regular_price || '0'),
             category: mapCategory(p.categories[0]?.name),
-            image: p.images[0]?.src || '',
+            image: p.images[0]?.src || 'https://via.placeholder.com/600x800?text=No+Image',
             description: p.short_description || p.description,
-            features: p.attributes?.find((a: any) => a.name === 'Features')?.options || [],
-            materials: p.attributes?.find((a: any) => a.name === 'Materials')?.options[0] || '',
-            sizes: p.attributes?.find((a: any) => a.name === 'Size')?.options || [],
-            colors: p.attributes?.find((a: any) => a.name === 'Color')?.options.map((c: string) => ({
-                name: c,
-                hex: mapColorToHex(c)
-            })) || [],
+            features: findAttr('feature')?.options || [],
+            materials: findAttr('material')?.options[0] || '',
+            sizes: findAttr('size')?.options || [],
+            colors: findAttr('color')?.options.map((c: string) => {
+                if (c.includes('|')) {
+                    const [name, hex] = c.split('|');
+                    return { name: name.trim(), hex: hex.trim() };
+                }
+                return {
+                    name: c,
+                    hex: mapColorToHex(c)
+                };
+            }) || [],
+            images: p.images?.map((img: any) => img.src) || [],
         };
     } catch (error) {
         console.error(`Error fetching WooCommerce product ${id}:`, error);

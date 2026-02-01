@@ -31,6 +31,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   const [activeTab, setActiveTab] = useState('Description');
   const [selectedSize, setSelectedSize] = useState(product.sizes.length > 0 ? product.sizes[0] : undefined);
   const [selectedColor, setSelectedColor] = useState(product.colors.length > 0 ? product.colors[0] : undefined);
+  const [mainImage, setMainImage] = useState(product.image);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [addedStatus, setAddedStatus] = useState(false);
 
@@ -60,23 +61,30 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
         <div className="space-y-4">
           <motion.div
+            key={mainImage}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="aspect-[4/5] rounded-[3rem] overflow-hidden bg-blush shadow-xl border border-teal/5"
           >
             <ImageWithFallback
-              src={product.image}
+              src={mainImage}
               alt={product.name}
               className="w-full h-full object-cover"
             />
           </motion.div>
-          <div className="grid grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-white border border-teal/10 cursor-pointer hover:border-coral transition-all">
-                <ImageWithFallback src={product.image} alt="" className="w-full h-full object-cover opacity-30" />
-              </div>
-            ))}
-          </div>
+          {product.images && product.images.length > 1 && (
+            <div className="grid grid-cols-4 gap-4">
+              {product.images.map((img, i) => (
+                <div
+                  key={i}
+                  onClick={() => setMainImage(img)}
+                  className={`aspect-square rounded-2xl overflow-hidden bg-white border cursor-pointer hover:border-coral transition-all ${mainImage === img ? 'border-coral ring-2 ring-coral/20' : 'border-teal/10'}`}
+                >
+                  <ImageWithFallback src={img} alt="" className="w-full h-full object-cover" />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col">
