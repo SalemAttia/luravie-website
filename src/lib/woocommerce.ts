@@ -26,8 +26,6 @@ export async function getWooProducts(): Promise<Product[]> {
 
         const wooProducts = await response.json();
 
-        console.log(wooProducts.map((p: any) => p.tags));
-
         return wooProducts.map((p: any) => {
             const findAttr = (name: string) => p.attributes?.find((a: any) => {
                 const n = (a.name || '').toLowerCase();
