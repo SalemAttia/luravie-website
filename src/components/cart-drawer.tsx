@@ -7,16 +7,16 @@ import { useTranslations, useLocale } from 'next-intl';
 
 interface CartItem extends Product {
   quantity: number;
-  selectedSize: string;
-  selectedColor: { name: string; hex: string };
+  selectedSize?: string;
+  selectedColor?: { name: string; hex: string };
 }
 
 interface CartDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   cartItems: CartItem[];
-  onUpdateQuantity: (id: string, size: string, colorName: string, delta: number) => void;
-  onRemove: (id: string, size: string, colorName: string) => void;
+  onUpdateQuantity: (id: string, size?: string, colorName?: string, delta?: number) => void;
+  onRemove: (id: string, size?: string, colorName?: string) => void;
   onCheckout: () => void;
 }
 
@@ -81,7 +81,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 </div>
               ) : (
                 cartItems.map((item, idx) => (
-                  <div key={`${item.id}-${item.selectedSize}-${item.selectedColor.name}`} className={`flex gap-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                  <div key={`${item.id}-${item.selectedSize || 'nosize'}-${item.selectedColor?.name || 'nocolor'}`} className={`flex gap-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                     <div className="w-24 h-24 rounded-2xl overflow-hidden bg-blush flex-shrink-0 shadow-sm border border-teal/5">
                       <ImageWithFallback
                         src={item.image}
@@ -94,29 +94,33 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         <div className={`flex justify-between items-start ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                           <h3 className="font-bold text-teal line-clamp-1">{item.name}</h3>
                           <button
-                            onClick={() => onRemove(item.id, item.selectedSize, item.selectedColor.name)}
+                            onClick={() => onRemove(item.id, item.selectedSize, item.selectedColor?.name)}
                             className="text-teal/20 hover:text-coral transition-colors cursor-pointer"
                           >
                             <Trash2 size={16} />
                           </button>
                         </div>
                         <div className={`flex items-center gap-2 mt-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                          <span className="text-[10px] bg-teal/5 text-teal px-2 py-1 rounded-lg font-bold uppercase tracking-widest border border-teal/5">
-                            {item.selectedSize}
-                          </span>
-                          <div className={`flex items-center gap-1.5 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                            <div
-                              className="w-3 h-3 rounded-full border border-black/5"
-                              style={{ backgroundColor: item.selectedColor.hex }}
-                            />
-                            <span className="text-[10px] font-bold text-teal/40 uppercase tracking-tighter">{item.selectedColor.name}</span>
-                          </div>
+                          {item.selectedSize && (
+                            <span className="text-[10px] bg-teal/5 text-teal px-2 py-1 rounded-lg font-bold uppercase tracking-widest border border-teal/5">
+                              {item.selectedSize}
+                            </span>
+                          )}
+                          {item.selectedColor && (
+                            <div className={`flex items-center gap-1.5 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                              <div
+                                className="w-3 h-3 rounded-full border border-black/5"
+                                style={{ backgroundColor: item.selectedColor.hex }}
+                              />
+                              <span className="text-[10px] font-bold text-teal/40 uppercase tracking-tighter">{item.selectedColor.name}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className={`flex items-center justify-between mt-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                         <div className={`flex items-center bg-blush/50 rounded-xl px-2 py-1 gap-3 border border-teal/5 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                           <button
-                            onClick={() => onUpdateQuantity(item.id, item.selectedSize, item.selectedColor.name, -1)}
+                            onClick={() => onUpdateQuantity(item.id, item.selectedSize, item.selectedColor?.name, -1)}
                             disabled={item.quantity <= 1}
                             className="p-1 text-teal/40 hover:text-teal disabled:opacity-20 cursor-pointer"
                           >
@@ -124,7 +128,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           </button>
                           <span className="text-sm font-bold text-teal w-4 text-center">{item.quantity}</span>
                           <button
-                            onClick={() => onUpdateQuantity(item.id, item.selectedSize, item.selectedColor.name, 1)}
+                            onClick={() => onUpdateQuantity(item.id, item.selectedSize, item.selectedColor?.name, 1)}
                             className="p-1 text-teal/40 hover:text-teal cursor-pointer"
                           >
                             <Plus size={14} />

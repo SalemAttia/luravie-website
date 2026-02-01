@@ -33,6 +33,8 @@ export default function CheckoutPage() {
     const router = useRouter();
     const [step, setStep] = useState(1);
     const [shippingData, setShippingData] = useState<ShippingFormData | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [orderError, setOrderError] = useState<string | null>(null);
 
     const { register, handleSubmit, formState: { errors } } = useForm<ShippingFormData>();
 
@@ -42,9 +44,62 @@ export default function CheckoutPage() {
         router.push(path as any);
     };
 
-    const onComplete = () => {
-        clearCart();
-        navigate('/success');
+    const onComplete = async () => {
+        if (!shippingData) return;
+
+        setIsLoading(true);
+        setOrderError(null);
+
+        try {
+            const orderData = {
+                payment_method: 'cod',
+                payment_method_title: 'Cash on Delivery',
+                set_paid: false,
+                billing: {
+                    first_name: shippingData.fullName.split(' ')[0],
+                    last_name: shippingData.fullName.split(' ').slice(1).join(' ') || '.',
+                    address_1: shippingData.address,
+                    city: shippingData.city,
+                    country: 'EG',
+                    email: shippingData.email,
+                    phone: shippingData.phone,
+                },
+                shipping: {
+                    first_name: shippingData.fullName.split(' ')[0],
+                    last_name: shippingData.fullName.split(' ').slice(1).join(' ') || '.',
+                    address_1: shippingData.address,
+                    city: shippingData.city,
+                    country: 'EG',
+                },
+                line_items: cartItems.map(item => ({
+                    product_id: parseInt(item.id),
+                    quantity: item.quantity,
+                    meta_data: [
+                        ...(item.selectedSize ? [{ key: 'Size', value: item.selectedSize }] : []),
+                        ...(item.selectedColor ? [{ key: 'Color', value: item.selectedColor.name }] : []),
+                    ]
+                }))
+            };
+
+            const response = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData),
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || 'Failed to create order');
+            }
+
+            clearCart();
+            navigate('/success');
+        } catch (error: any) {
+            console.error('Checkout error:', error);
+            setOrderError(error.message);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const onSubmitShipping = (data: ShippingFormData) => {
@@ -259,11 +314,29 @@ export default function CheckoutPage() {
                                     <ShieldCheck className="text-teal flex-shrink-0" size={18} />
                                     <p>{t('codNotice')}</p>
                                 </div>
+                                {orderError && (
+                                    <div className="mb-6 p-4 bg-coral/10 border border-coral/20 rounded-2xl text-coral text-sm font-medium flex items-center gap-2">
+                                        <AlertCircle size={18} />
+                                        {orderError}
+                                    </div>
+                                )}
                                 <button
                                     onClick={onComplete}
-                                    className="w-full py-4 bg-teal text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-xl shadow-teal/20 cursor-pointer hover:bg-teal/90 transition-all"
+                                    disabled={isLoading}
+                                    className={`w-full py-4 bg-teal text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-xl shadow-teal/20 cursor-pointer hover:bg-teal/90 transition-all ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                                 >
-                                    {t('placeOrder')}
+                                    {isLoading ? (
+                                        <>
+                                            <motion.div
+                                                animate={{ rotate: 360 }}
+                                                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                                className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                                            />
+                                            {locale === 'ar' ? 'جاري تنفيذ طلبك...' : 'Processing Order...'}
+                                        </>
+                                    ) : (
+                                        t('placeOrder')
+                                    )}
                                 </button>
                             </motion.div>
                         )}
@@ -276,23 +349,27 @@ export default function CheckoutPage() {
                         <h3 className="text-xl font-bold mb-6">{t('summary')}</h3>
                         <div className="space-y-6 mb-8 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-teal/10">
                             {cartItems.map((item, idx) => (
-                                <div key={idx} className={`flex gap-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                                <div key={`${item.id}-${item.selectedSize || idx}-${item.selectedColor?.name || ''}`} className={`flex gap-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                     <div className="w-20 h-20 rounded-xl overflow-hidden bg-blush flex-shrink-0">
                                         <ImageWithFallback src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <h4 className="font-bold text-gray-900 line-clamp-1">{item.name}</h4>
                                         <div className={`flex items-center gap-2 mt-1 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                                            <span className="text-xs bg-teal/5 text-teal px-2 py-0.5 rounded-full font-bold">
-                                                {item.selectedSize}
-                                            </span>
-                                            <div className={`flex items-center gap-1.5 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                                                <div
-                                                    className="w-2.5 h-2.5 rounded-full border border-black/5"
-                                                    style={{ backgroundColor: item.selectedColor.hex }}
-                                                />
-                                                <span className="text-xs text-muted-foreground">{item.selectedColor.name}</span>
-                                            </div>
+                                            {item.selectedSize && (
+                                                <span className="text-xs bg-teal/5 text-teal px-2 py-0.5 rounded-full font-bold">
+                                                    {item.selectedSize}
+                                                </span>
+                                            )}
+                                            {item.selectedColor && (
+                                                <div className={`flex items-center gap-1.5 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                                                    <div
+                                                        className="w-2.5 h-2.5 rounded-full border border-black/5"
+                                                        style={{ backgroundColor: item.selectedColor.hex }}
+                                                    />
+                                                    <span className="text-xs text-muted-foreground">{item.selectedColor.name}</span>
+                                                </div>
+                                            )}
                                         </div>
                                         <div className={`flex justify-between items-center mt-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                             <p className="text-sm text-muted-foreground">{locale === 'ar' ? 'الكمية:' : 'Qty:'} {item.quantity}</p>

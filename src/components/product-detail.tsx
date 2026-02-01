@@ -13,8 +13,8 @@ interface ProductDetailProps {
   isFavorite: boolean;
   onToggleFavorite: (e?: React.MouseEvent) => void;
   onBack: () => void;
-  onAddToCart: (p: Product, size: string, color: { name: string; hex: string }) => void;
-  onBuyNow: (p: Product, size: string, color: { name: string; hex: string }) => void;
+  onAddToCart: (p: Product, size?: string, color?: { name: string; hex: string }) => void;
+  onBuyNow: (p: Product, size?: string, color?: { name: string; hex: string }) => void;
 }
 
 export const ProductDetail: React.FC<ProductDetailProps> = ({
@@ -29,8 +29,8 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   const t_product = useTranslations('product');
   const locale = useLocale();
   const [activeTab, setActiveTab] = useState('Description');
-  const [selectedSize, setSelectedSize] = useState(product.sizes[0]);
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
+  const [selectedSize, setSelectedSize] = useState(product.sizes.length > 0 ? product.sizes[0] : undefined);
+  const [selectedColor, setSelectedColor] = useState(product.colors.length > 0 ? product.colors[0] : undefined);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [addedStatus, setAddedStatus] = useState(false);
 
@@ -88,63 +88,67 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             <p className="text-4xl font-bold text-coral">{product.price} {locale === 'ar' ? 'ج.م' : 'EGP'}</p>
           </div>
 
-          <div className="mb-8">
-            <div className={`flex justify-between items-center mb-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-              <span className="font-bold text-teal uppercase tracking-widest text-xs">{t_product('selectColor')}</span>
-              <span className="text-sm font-bold text-teal/60">{selectedColor.name}</span>
-            </div>
-            <div className={`flex flex-wrap gap-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-              {product.colors.map((color) => (
-                <button
-                  key={color.name}
-                  onClick={() => setSelectedColor(color)}
-                  className={`w-12 h-12 rounded-full border-2 transition-all flex items-center justify-center cursor-pointer ${selectedColor.name === color.name ? 'border-coral p-1' : 'border-white bg-white shadow-sm'
-                    }`}
-                >
-                  <div
-                    className="w-full h-full rounded-full border border-black/5 flex items-center justify-center text-white"
-                    style={{ backgroundColor: color.hex }}
+          {product.colors.length > 0 && (
+            <div className="mb-8">
+              <div className={`flex justify-between items-center mb-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                <span className="font-bold text-teal uppercase tracking-widest text-xs">{t_product('selectColor')}</span>
+                <span className="text-sm font-bold text-teal/60">{selectedColor?.name}</span>
+              </div>
+              <div className={`flex flex-wrap gap-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                {product.colors.map((color) => (
+                  <button
+                    key={color.name}
+                    onClick={() => setSelectedColor(color)}
+                    className={`w-12 h-12 rounded-full border-2 transition-all flex items-center justify-center cursor-pointer ${selectedColor?.name === color.name ? 'border-coral p-1' : 'border-white bg-white shadow-sm'
+                      }`}
                   >
-                    {selectedColor.name === color.name && <Check size={16} />}
-                  </div>
-                </button>
-              ))}
+                    <div
+                      className="w-full h-full rounded-full border border-black/5 flex items-center justify-center text-white"
+                      style={{ backgroundColor: color.hex }}
+                    >
+                      {selectedColor?.name === color.name && <Check size={16} />}
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="mb-8">
-            <div className={`flex justify-between items-center mb-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-              <span className="font-bold text-teal uppercase tracking-widest text-xs">{t_product('selectSize')}</span>
-              <button
-                onClick={() => setIsSizeGuideOpen(true)}
-                className="text-coral text-xs font-bold uppercase tracking-widest underline cursor-pointer hover:text-teal transition-colors"
-              >
-                {locale === 'ar' ? 'دليل المقاسات' : 'Size Guide'}
-              </button>
-            </div>
-            <div className={`flex flex-wrap gap-3 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-              {product.sizes.map((size) => (
+          {product.sizes.length > 0 && (
+            <div className="mb-8">
+              <div className={`flex justify-between items-center mb-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                <span className="font-bold text-teal uppercase tracking-widest text-xs">{t_product('selectSize')}</span>
                 <button
-                  key={size}
-                  onClick={() => setSelectedSize(size)}
-                  className={`min-w-16 h-16 px-4 rounded-2xl border-2 font-bold transition-all cursor-pointer ${selectedSize === size
+                  onClick={() => setIsSizeGuideOpen(true)}
+                  className="text-coral text-xs font-bold uppercase tracking-widest underline cursor-pointer hover:text-teal transition-colors"
+                >
+                  {locale === 'ar' ? 'دليل المقاسات' : 'Size Guide'}
+                </button>
+              </div>
+              <div className={`flex flex-wrap gap-3 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                {product.sizes.map((size) => (
+                  <button
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
+                    className={`min-w-16 h-16 px-4 rounded-2xl border-2 font-bold transition-all cursor-pointer ${selectedSize === size
                       ? 'border-coral bg-coral text-white shadow-xl shadow-coral/20'
                       : 'border-white bg-white text-teal/60 hover:border-coral/20'
-                    }`}
-                >
-                  {size}
-                </button>
-              ))}
+                      }`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="space-y-4 mb-12">
             <div className="flex gap-4">
               <button
                 onClick={handleAddAction}
                 className={`flex-1 py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 shadow-xl transition-all cursor-pointer ${addedStatus
-                    ? 'bg-teal text-white shadow-teal/20'
-                    : 'bg-teal text-rose shadow-teal/20 hover:scale-[1.02] active:scale-[0.98]'
+                  ? 'bg-teal text-white shadow-teal/20'
+                  : 'bg-teal text-rose shadow-teal/20 hover:scale-[1.02] active:scale-[0.98]'
                   } ${locale === 'ar' ? 'flex-row-reverse' : ''}`}
               >
                 {addedStatus ? (
@@ -162,8 +166,8 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
               <button
                 onClick={(e) => onToggleFavorite(e)}
                 className={`p-5 rounded-2xl transition-all border-2 cursor-pointer ${isFavorite
-                    ? 'bg-coral border-coral text-white shadow-xl shadow-coral/20'
-                    : 'bg-white border-white text-coral hover:bg-coral/5'
+                  ? 'bg-coral border-coral text-white shadow-xl shadow-coral/20'
+                  : 'bg-white border-white text-coral hover:bg-coral/5'
                   }`}
               >
                 <Heart size={28} className={isFavorite ? 'fill-white' : ''} />
@@ -171,7 +175,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             </div>
 
             <button
-              onClick={() => onBuyNow(product, selectedSize, selectedColor)}
+              onClick={() => onBuyNow(product, selectedSize || undefined, selectedColor || undefined)}
               className="w-full py-6 bg-coral text-white rounded-2xl font-bold text-xl flex items-center justify-center gap-3 shadow-2xl shadow-coral/40 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
             >
               {t_common('orderNow')} — {t_common('freeShipping')}

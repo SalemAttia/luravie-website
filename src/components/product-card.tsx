@@ -9,8 +9,8 @@ interface ProductCardProps {
   product: Product;
   isFavorite: boolean;
   onToggleFavorite: (e?: React.MouseEvent) => void;
-  onAddToCart: (p: Product, size: string, color: { name: string; hex: string }) => void;
-  onBuyNow: (p: Product, size: string, color: { name: string; hex: string }) => void;
+  onAddToCart: (p: Product, size?: string, color?: { name: string; hex: string }) => void;
+  onBuyNow: (p: Product, size?: string, color?: { name: string; hex: string }) => void;
   onClick: (p: Product) => void;
   onOpenQuickSelect: (product: Product) => void;
 }
@@ -58,8 +58,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             onToggleFavorite(e);
           }}
           className={`absolute top-6 ${locale === 'ar' ? 'left-6' : 'right-6'} p-3 backdrop-blur-md rounded-full transition-all hover:scale-110 active:scale-90 cursor-pointer shadow-lg ${isFavorite
-              ? 'bg-coral text-white border-coral'
-              : 'bg-white/80 text-teal border border-white opacity-0 group-hover:opacity-100'
+            ? 'bg-coral text-white border-coral'
+            : 'bg-white/80 text-teal border border-white opacity-0 group-hover:opacity-100'
             }`}
         >
           <Heart size={20} className={isFavorite ? 'fill-white' : ''} />
@@ -78,8 +78,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <button
             onClick={handleQuickAdd}
             className={`w-full py-4 rounded-[1.5rem] font-bold text-sm flex items-center justify-center gap-3 border backdrop-blur-md transition-all cursor-pointer ${isAdded
-                ? 'bg-teal text-white border-teal shadow-xl shadow-teal/20'
-                : 'bg-white/90 text-teal border-white shadow-xl hover:bg-teal hover:text-white hover:border-teal'
+              ? 'bg-teal text-white border-teal shadow-xl shadow-teal/20'
+              : 'bg-white/90 text-teal border-white shadow-xl hover:bg-teal hover:text-white hover:border-teal'
               }`}
           >
             {isAdded ? (

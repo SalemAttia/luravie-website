@@ -15,8 +15,8 @@ interface QuickSelectModalProps {
     sizes: string[];
     colors: { name: string; hex: string }[];
   } | null;
-  onAddToCart: (product: any, size: string, color: any) => void;
-  onBuyNow?: (product: any, size: string, color: any) => void;
+  onAddToCart: (product: any, size?: string, color?: any) => void;
+  onBuyNow?: (product: any, size?: string, color?: any) => void;
 }
 
 export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
@@ -29,28 +29,34 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
   const t = useTranslations('product');
   const tCommon = useTranslations('common');
   const locale = useLocale();
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string | null | undefined>(null);
   const [selectedColor, setSelectedColor] = useState<any>(null);
 
   React.useEffect(() => {
     if (product) {
-      setSelectedSize(null);
-      setSelectedColor(product.colors[0]);
+      setSelectedSize(product.sizes.length > 0 ? null : undefined);
+      setSelectedColor(product.colors.length > 0 ? product.colors[0] : undefined);
     }
   }, [product]);
 
   if (!product) return null;
 
   const handleAdd = () => {
-    if (selectedSize && selectedColor) {
-      onAddToCart(product, selectedSize, selectedColor);
+    const sizeValid = product.sizes.length === 0 || selectedSize;
+    const colorValid = product.colors.length === 0 || selectedColor;
+
+    if (sizeValid && colorValid) {
+      onAddToCart(product, selectedSize || undefined, selectedColor || undefined);
       onClose();
     }
   };
 
   const handleBuyNow = () => {
-    if (selectedSize && selectedColor && onBuyNow) {
-      onBuyNow(product, selectedSize, selectedColor);
+    const sizeValid = product.sizes.length === 0 || selectedSize;
+    const colorValid = product.colors.length === 0 || selectedColor;
+
+    if (sizeValid && colorValid && onBuyNow) {
+      onBuyNow(product, selectedSize || undefined, selectedColor || undefined);
       onClose();
     }
   };
@@ -93,76 +99,80 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
 
               <div className="space-y-8">
                 {/* Color Selection */}
-                <div>
-                  <label className="text-xs font-bold uppercase tracking-widest text-teal/40 mb-4 block">
-                    {t('selectColor')}: <span className="text-teal">{selectedColor?.name}</span>
-                  </label>
-                  <div className="flex flex-wrap gap-4">
-                    {product.colors.map((color) => (
-                      <button
-                        key={color.name}
-                        onClick={() => setSelectedColor(color)}
-                        className={`group relative p-1 rounded-full border-2 transition-all cursor-pointer ${selectedColor?.name === color.name ? 'border-coral' : 'border-transparent'
-                          }`}
-                      >
-                        <div
-                          className="w-8 h-8 rounded-full border border-black/5"
-                          style={{ backgroundColor: color.hex }}
-                        />
-                        <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[10px] font-bold text-teal/60 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-tighter">
-                          {color.name}
-                        </span>
-                      </button>
-                    ))}
+                {product.colors.length > 0 && (
+                  <div>
+                    <label className="text-xs font-bold uppercase tracking-widest text-teal/40 mb-4 block">
+                      {t('selectColor')}: <span className="text-teal">{selectedColor?.name}</span>
+                    </label>
+                    <div className="flex flex-wrap gap-4">
+                      {product.colors.map((color) => (
+                        <button
+                          key={color.name}
+                          onClick={() => setSelectedColor(color)}
+                          className={`group relative p-1 rounded-full border-2 transition-all cursor-pointer ${selectedColor?.name === color.name ? 'border-coral' : 'border-transparent'
+                            }`}
+                        >
+                          <div
+                            className="w-8 h-8 rounded-full border border-black/5"
+                            style={{ backgroundColor: color.hex }}
+                          />
+                          <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[10px] font-bold text-teal/60 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-tighter">
+                            {color.name}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Size Selection */}
-                <div>
-                  <div className="flex justify-between items-center mb-4">
-                    <label className="text-xs font-bold uppercase tracking-widest text-teal/40 block">
-                      {t('selectSize')}
-                    </label>
-                    <button className="text-[10px] font-bold text-coral flex items-center gap-1 hover:underline cursor-pointer">
-                      <Info size={12} /> {locale === 'ar' ? 'دليل المقاسات' : 'SIZE GUIDE'}
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-4 gap-2">
-                    {product.sizes.map((size) => (
-                      <button
-                        key={size}
-                        onClick={() => setSelectedSize(size)}
-                        className={`py-3 rounded-xl text-sm font-bold transition-all border-2 cursor-pointer ${selectedSize === size
-                          ? 'border-coral bg-coral/5 text-coral shadow-sm shadow-coral/10'
-                          : 'border-white bg-white text-teal/60 hover:border-coral/20'
-                          }`}
-                      >
-                        {size}
+                {product.sizes.length > 0 && (
+                  <div>
+                    <div className="flex justify-between items-center mb-4">
+                      <label className="text-xs font-bold uppercase tracking-widest text-teal/40 block">
+                        {t('selectSize')}
+                      </label>
+                      <button className="text-[10px] font-bold text-coral flex items-center gap-1 hover:underline cursor-pointer">
+                        <Info size={12} /> {locale === 'ar' ? 'دليل المقاسات' : 'SIZE GUIDE'}
                       </button>
-                    ))}
+                    </div>
+                    <div className="grid grid-cols-4 gap-2">
+                      {product.sizes.map((size) => (
+                        <button
+                          key={size}
+                          onClick={() => setSelectedSize(size)}
+                          className={`py-3 rounded-xl text-sm font-bold transition-all border-2 cursor-pointer ${selectedSize === size
+                            ? 'border-coral bg-coral/5 text-coral shadow-sm shadow-coral/10'
+                            : 'border-white bg-white text-teal/60 hover:border-coral/20'
+                            }`}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <div className="mt-10">
                 <button
                   onClick={handleAdd}
-                  disabled={!selectedSize}
-                  className={`w-full py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 shadow-xl transition-all cursor-pointer ${selectedSize
+                  disabled={product.sizes.length > 0 && !selectedSize}
+                  className={`w-full py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 shadow-xl transition-all cursor-pointer ${(product.sizes.length === 0 || selectedSize)
                     ? 'bg-coral text-white shadow-coral/20 hover:scale-[1.02] active:scale-[0.98]'
                     : 'bg-teal/5 text-teal/20 cursor-not-allowed shadow-none'
                     }`}
                 >
                   <ShoppingBag size={20} />
-                  {selectedSize
-                    ? (locale === 'ar' ? `أضف مقاس ${selectedSize} للحقيبة` : `Add Size ${selectedSize} to Bag`)
+                  {product.sizes.length === 0 || selectedSize
+                    ? (locale === 'ar' ? `أضف للحقيبة` : `Add to Bag`)
                     : (locale === 'ar' ? 'اختر المقاس' : 'Select a Size')}
                 </button>
                 {onBuyNow && (
                   <button
                     onClick={handleBuyNow}
-                    disabled={!selectedSize}
-                    className={`w-full mt-4 py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 shadow-xl transition-all cursor-pointer ${selectedSize
+                    disabled={product.sizes.length > 0 && !selectedSize}
+                    className={`w-full mt-4 py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 shadow-xl transition-all cursor-pointer ${(product.sizes.length === 0 || selectedSize)
                       ? 'bg-teal text-white shadow-teal/20 hover:scale-[1.02] active:scale-[0.98]'
                       : 'bg-teal/5 text-teal/20 cursor-not-allowed shadow-none'
                       }`}

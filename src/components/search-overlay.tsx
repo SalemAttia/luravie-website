@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, TrendingUp, History, ArrowRight } from 'lucide-react';
-import { PRODUCTS } from '@/data';
+import { PRODUCTS, Product } from '@/data';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import { useTranslations, useLocale } from 'next-intl';
 
@@ -16,12 +16,19 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, o
   const t = useTranslations('shop');
   const locale = useLocale();
   const [query, setQuery] = useState(initialQuery);
+  const [products, setProducts] = useState<Product[]>(PRODUCTS);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 100);
       setQuery(initialQuery);
+
+      // Fetch dynamic products
+      fetch('/api/products')
+        .then(res => res.json())
+        .then(data => setProducts(data))
+        .catch(err => console.error('Failed to fetch products for search', err));
     }
   }, [isOpen, initialQuery]);
 
@@ -125,7 +132,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, o
             <div className="mt-20 w-full pt-10 border-t border-white/5">
               <p className={`text-white/40 text-xs font-bold uppercase tracking-widest mb-8 ${locale === 'ar' ? 'text-right' : ''}`}>{t('popular')}</p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                {PRODUCTS.slice(0, 4).map(p => (
+                {products.slice(0, 4).map(p => (
                   <button
                     key={p.id}
                     onClick={() => handleSearch(p.name)}

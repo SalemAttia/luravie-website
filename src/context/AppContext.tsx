@@ -7,17 +7,17 @@ import { useTranslations } from 'next-intl';
 
 interface CartItem extends Product {
   quantity: number;
-  selectedSize: string;
-  selectedColor: { name: string; hex: string };
+  selectedSize?: string;
+  selectedColor?: { name: string; hex: string };
 }
 
 interface AppContextType {
   cartItems: CartItem[];
   favorites: string[];
-  addToCart: (product: Product, size: string, color: { name: string; hex: string }) => void;
-  buyNow: (product: Product, size: string, color: { name: string; hex: string }) => void;
-  updateQuantity: (id: string, size: string, colorName: string, delta: number) => void;
-  removeFromCart: (id: string, size: string, colorName: string) => void;
+  addToCart: (product: Product, size?: string, color?: { name: string; hex: string }) => void;
+  buyNow: (product: Product, size?: string, color?: { name: string; hex: string }) => void;
+  updateQuantity: (id: string, size?: string, colorName?: string, delta?: number) => void;
+  removeFromCart: (id: string, size?: string, colorName?: string) => void;
   toggleFavorite: (productId: string, e?: React.MouseEvent) => void;
   clearCart: () => void;
   cartCount: number;
@@ -38,7 +38,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     if (savedCart) {
       try {
-        setCartItems(JSON.parse(savedCart));
+        const parsed = JSON.parse(savedCart);
+        if (Array.isArray(parsed)) {
+          setCartItems(parsed);
+        }
       } catch (e) {
         console.error('Failed to parse cart from localStorage', e);
       }
@@ -46,7 +49,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     if (savedFavorites) {
       try {
-        setFavorites(JSON.parse(savedFavorites));
+        const parsed = JSON.parse(savedFavorites);
+        if (Array.isArray(parsed)) {
+          setFavorites(parsed);
+        }
       } catch (e) {
         console.error('Failed to parse favorites from localStorage', e);
       }
@@ -87,16 +93,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
-  const addToCart = (product: Product, size: string, color: { name: string; hex: string }) => {
+  const addToCart = (product: Product, size?: string, color?: { name: string; hex: string }) => {
     setCartItems(prev => {
       const existing = prev.find(item =>
         item.id === product.id &&
         item.selectedSize === size &&
-        item.selectedColor.name === color.name
+        item.selectedColor?.name === color?.name
       );
       if (existing) {
         return prev.map(item =>
-          (item.id === product.id && item.selectedSize === size && item.selectedColor.name === color.name)
+          (item.id === product.id && item.selectedSize === size && item.selectedColor?.name === color?.name)
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
@@ -105,27 +111,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
 
     toast.success(t('addedToBag'), {
-      description: `${product.name} - ${color.name}, ${size}`,
+      description: `${product.name}${color ? ` - ${color.name}` : ''}${size ? `, ${size}` : ''}`,
       icon: '✨',
       position: 'bottom-right',
     });
   };
 
-  const buyNow = (product: Product, size: string, color: { name: string; hex: string }) => {
+  const buyNow = (product: Product, size?: string, color?: { name: string; hex: string }) => {
     addToCart(product, size, color);
   };
 
-  const updateQuantity = (id: string, size: string, colorName: string, delta: number) => {
+  const updateQuantity = (id: string, size?: string, colorName?: string, delta: number = 1) => {
     setCartItems(prev => prev.map(item =>
-      (item.id === id && item.selectedSize === size && item.selectedColor.name === colorName)
+      (item.id === id && item.selectedSize === size && item.selectedColor?.name === colorName)
         ? { ...item, quantity: Math.max(0, item.quantity + delta) }
         : item
     ).filter(item => item.quantity > 0));
   };
 
-  const removeFromCart = (id: string, size: string, colorName: string) => {
+  const removeFromCart = (id: string, size?: string, colorName?: string) => {
     setCartItems(prev => prev.filter(item =>
-      !(item.id === id && item.selectedSize === size && item.selectedColor.name === colorName)
+      !(item.id === id && item.selectedSize === size && item.selectedColor?.name === colorName)
     ));
     toast.info(t('removedFromBag'));
   };
