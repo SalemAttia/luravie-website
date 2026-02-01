@@ -104,7 +104,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="flex items-center gap-1 sm:gap-2">
               <button
                 onClick={toggleLanguage}
-                className="flex items-center gap-2 bg-rose px-3 py-1.5 rounded-full border border-teal/10 hover:scale-105 transition-all mr-2 cursor-pointer group"
+                className="hidden md:flex items-center gap-2 bg-rose px-3 py-1.5 rounded-full border border-teal/10 hover:scale-105 transition-all mr-2 cursor-pointer group"
               >
                 <Globe size={14} className="text-teal group-hover:rotate-12 transition-transform" />
                 <span className="text-teal font-bold text-xs">
@@ -248,6 +248,19 @@ export const Navbar: React.FC<NavbarProps> = ({
                       >
                         <Heart size={20} />
                         Your Favorites ({favoritesCount})
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-xs font-bold text-rose/50 uppercase tracking-widest mb-4">Settings</h3>
+                    <div className="grid gap-2">
+                      <button
+                        onClick={() => handleMobileNav(toggleLanguage)}
+                        className="flex items-center gap-3 w-full p-4 text-left font-medium text-white/80 hover:text-rose transition-colors"
+                      >
+                        <Globe size={20} />
+                        {locale === 'en' ? 'Switch to Arabic (عربي)' : 'Switch to English'}
                       </button>
                     </div>
                   </div>

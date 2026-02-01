@@ -41,7 +41,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       className="group"
       dir={locale === 'ar' ? 'rtl' : 'ltr'}
     >
-      <div className="relative aspect-[3/4] rounded-[2rem] overflow-hidden bg-blush mb-6 shadow-sm group-hover:shadow-2xl transition-all duration-500">
+      <div className="relative aspect-[4/5] md:aspect-[3/4] rounded-[2rem] overflow-hidden bg-blush mb-6 shadow-sm group-hover:shadow-2xl transition-all duration-500">
         <div
           className="cursor-pointer h-full w-full"
           onClick={() => onClick(product)}
@@ -59,13 +59,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           }}
           className={`absolute top-6 ${locale === 'ar' ? 'left-6' : 'right-6'} p-3 backdrop-blur-md rounded-full transition-all hover:scale-110 active:scale-90 cursor-pointer shadow-lg ${isFavorite
             ? 'bg-coral text-white border-coral'
-            : 'bg-white/80 text-teal border border-white opacity-0 group-hover:opacity-100'
+            : 'bg-white/80 text-teal border border-white opacity-100 md:opacity-0 md:group-hover:opacity-100'
             }`}
         >
           <Heart size={20} className={isFavorite ? 'fill-white' : ''} />
         </button>
 
-        <div className="absolute bottom-6 left-6 right-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 space-y-3">
+        <div className="absolute bottom-6 left-6 right-6 translate-y-0 opacity-100 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all duration-500 space-y-3">
           <button
             onClick={(e) => {
               e.stopPropagation();
