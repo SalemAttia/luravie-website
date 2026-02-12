@@ -58,13 +58,13 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
         {t_product('backToShop')}
       </button>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16">
         <div className="space-y-4">
           <motion.div
             key={mainImage}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="aspect-[4/5] rounded-[3rem] overflow-hidden bg-blush shadow-xl border border-teal/5"
+            className="aspect-[4/5] rounded-2xl md:rounded-[3rem] overflow-hidden bg-blush shadow-xl border border-teal/5"
           >
             <ImageWithFallback
               src={mainImage}
@@ -73,7 +73,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             />
           </motion.div>
           {product.images && product.images.length > 1 && (
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-4 gap-2 md:gap-4">
               {product.images.map((img, i) => (
                 <div
                   key={i}
@@ -92,8 +92,8 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             <p className="text-coral font-bold text-xs tracking-[0.3em] uppercase mb-3">
               {t_common(`categories.${product.category.toLowerCase()}`)}
             </p>
-            <h1 className="text-5xl font-bold text-teal mb-4 leading-tight">{product.name}</h1>
-            <p className="text-4xl font-bold text-coral">{product.price} {locale === 'ar' ? 'ج.م' : 'EGP'}</p>
+            <h1 className="text-3xl md:text-5xl font-bold text-teal mb-4 leading-tight">{product.name}</h1>
+            <p className="text-2xl md:text-4xl font-bold text-coral">{product.price} {locale === 'ar' ? 'ج.م' : 'EGP'}</p>
           </div>
 
           {product.colors.length > 0 && (
@@ -154,7 +154,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             <div className="flex gap-4">
               <button
                 onClick={handleAddAction}
-                className={`flex-1 py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 shadow-xl transition-all cursor-pointer ${addedStatus
+                className={`flex-1 py-4 md:py-5 rounded-2xl font-bold text-base md:text-lg flex items-center justify-center gap-3 shadow-xl transition-all cursor-pointer ${addedStatus
                   ? 'bg-teal text-white shadow-teal/20'
                   : 'bg-teal text-rose shadow-teal/20 hover:scale-[1.02] active:scale-[0.98]'
                   } ${locale === 'ar' ? 'flex-row-reverse' : ''}`}
@@ -184,7 +184,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
 
             <button
               onClick={() => onBuyNow(product, selectedSize || undefined, selectedColor || undefined)}
-              className="w-full py-6 bg-coral text-white rounded-2xl font-bold text-xl flex items-center justify-center gap-3 shadow-2xl shadow-coral/40 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+              className="w-full py-5 md:py-6 bg-coral text-white rounded-2xl font-bold text-base md:text-xl flex items-center justify-center gap-3 shadow-2xl shadow-coral/40 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
             >
               {t_common('orderNow')} — {t_common('freeShipping')}
             </button>
@@ -194,7 +194,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           </div>
 
           <div className="border-t border-teal/10 pt-8">
-            <div className={`flex gap-8 border-b border-teal/10 mb-6 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+            <div className={`flex gap-4 md:gap-8 border-b border-teal/10 mb-6 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
               {tabs.map((tab) => (
                 <button
                   key={tab}

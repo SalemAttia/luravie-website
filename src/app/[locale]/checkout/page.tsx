@@ -124,7 +124,7 @@ export default function CheckoutPage() {
 
     return (
         <div className="max-w-6xl mx-auto px-4 py-12 min-h-screen" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-12">
                 {/* Main Checkout Flow */}
                 <div className="lg:col-span-7">
                     <div className={`flex items-center justify-between mb-12 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
@@ -150,7 +150,7 @@ export default function CheckoutPage() {
                         )}
                     </div>
 
-                    <div className="bg-white rounded-3xl p-8 shadow-sm border border-teal/5">
+                    <div className="bg-white rounded-2xl md:rounded-3xl p-5 md:p-8 shadow-sm border border-teal/5">
                         {step === 1 && (
                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                                 <h2 className={`text-2xl font-bold text-gray-900 mb-8 flex items-center gap-3 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
@@ -345,7 +345,7 @@ export default function CheckoutPage() {
 
                 {/* Order Summary */}
                 <div className="lg:col-span-5">
-                    <div className={`bg-white rounded-3xl p-8 shadow-sm border border-teal/5 sticky top-24 ${locale === 'ar' ? 'text-right' : ''}`}>
+                    <div className={`bg-white rounded-2xl md:rounded-3xl p-5 md:p-8 shadow-sm border border-teal/5 lg:sticky lg:top-24 ${locale === 'ar' ? 'text-right' : ''}`}>
                         <h3 className="text-xl font-bold mb-6">{t('summary')}</h3>
                         <div className="space-y-6 mb-8 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-teal/10">
                             {cartItems.map((item, idx) => (

@@ -98,7 +98,7 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-10">
+            <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-8 md:space-y-10">
               {/* Sort By */}
               <section>
                 <h3 className={`text-xs font-bold text-teal/40 uppercase tracking-[0.2em] mb-4 ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{t('sortBy')}</h3>

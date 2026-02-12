@@ -50,10 +50,10 @@ export const SizeGuide: React.FC<SizeGuideProps> = ({ isOpen, onClose, category 
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden"
+            className="relative w-full max-w-lg md:max-w-2xl bg-white rounded-2xl md:rounded-[2.5rem] shadow-2xl overflow-hidden"
           >
             {/* Header */}
-            <div className="bg-teal p-8 text-white relative">
+            <div className="bg-teal p-5 md:p-8 text-white relative">
               <button 
                 onClick={onClose}
                 className="absolute top-6 right-6 p-2 hover:bg-white/10 rounded-full transition-colors"
@@ -64,13 +64,13 @@ export const SizeGuide: React.FC<SizeGuideProps> = ({ isOpen, onClose, category 
                 <div className="p-3 bg-white/20 rounded-2xl">
                   <Ruler size={28} />
                 </div>
-                <h2 className="text-3xl font-bold tracking-tight">Size Guide</h2>
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Size Guide</h2>
               </div>
               <p className="opacity-90 text-sm">Find your perfect fit for {category} collection.</p>
             </div>
 
             {/* Content */}
-            <div className="p-8">
+            <div className="p-4 md:p-8">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>

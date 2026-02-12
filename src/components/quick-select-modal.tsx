@@ -76,7 +76,7 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            className={`bg-blush w-full max-w-md rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-teal/10 ${locale === 'ar' ? 'text-right' : 'text-left'}`}
+            className={`bg-blush w-full max-w-sm md:max-w-md rounded-2xl md:rounded-[2.5rem] overflow-hidden shadow-2xl relative z-10 border border-teal/10 ${locale === 'ar' ? 'text-right' : 'text-left'}`}
             dir={locale === 'ar' ? 'rtl' : 'ltr'}
           >
             <button
@@ -86,9 +86,9 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
               <X size={20} />
             </button>
 
-            <div className="p-8">
+            <div className="p-5 md:p-8">
               <div className="flex gap-6 mb-8">
-                <div className="w-24 h-32 rounded-2xl overflow-hidden bg-white flex-shrink-0 shadow-sm border border-teal/5">
+                <div className="w-20 h-28 md:w-24 md:h-32 rounded-2xl overflow-hidden bg-white flex-shrink-0 shadow-sm border border-teal/5">
                   <ImageWithFallback src={product.image} alt={product.name} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex flex-col justify-center">
@@ -136,7 +136,7 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
                         <Info size={12} /> {locale === 'ar' ? 'دليل المقاسات' : 'SIZE GUIDE'}
                       </button>
                     </div>
-                    <div className="grid grid-cols-4 gap-2">
+                    <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
                       {product.sizes.map((size) => (
                         <button
                           key={size}
@@ -154,11 +154,11 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
                 )}
               </div>
 
-              <div className="mt-10">
+              <div className="mt-8 md:mt-10">
                 <button
                   onClick={handleAdd}
                   disabled={product.sizes.length > 0 && !selectedSize}
-                  className={`w-full py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 shadow-xl transition-all cursor-pointer ${(product.sizes.length === 0 || selectedSize)
+                  className={`w-full py-4 md:py-5 rounded-2xl font-bold text-base md:text-lg flex items-center justify-center gap-3 shadow-xl transition-all cursor-pointer ${(product.sizes.length === 0 || selectedSize)
                     ? 'bg-coral text-white shadow-coral/20 hover:scale-[1.02] active:scale-[0.98]'
                     : 'bg-teal/5 text-teal/20 cursor-not-allowed shadow-none'
                     }`}

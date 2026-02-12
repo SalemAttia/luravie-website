@@ -36,21 +36,21 @@ export default function ContactPage() {
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="py-20"
+            className="py-12 md:py-20"
             dir={locale === 'ar' ? 'rtl' : 'ltr'}
         >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-20">
+                <div className="text-center mb-12 md:mb-20">
                     <span className="text-xs font-bold text-coral uppercase tracking-[0.3em] mb-4 block">{t('getInTouch')}</span>
-                    <h1 className="text-5xl font-bold text-teal mb-6">{t('title')}</h1>
+                    <h1 className="text-3xl md:text-5xl font-bold text-teal mb-6">{t('title')}</h1>
                     <p className="text-teal/60 text-lg max-w-2xl mx-auto">
                         {t('subtitle')}
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16">
                     <div className="space-y-10">
-                        <div className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-teal/5 space-y-12">
+                        <div className="bg-white p-6 md:p-10 rounded-2xl md:rounded-[2.5rem] shadow-sm border border-teal/5 space-y-8 md:space-y-12">
                             {contactItems.map((item, i) => (
                                 <div key={i} className={`flex gap-6 ${locale === 'ar' ? 'flex-row-reverse text-right' : ''}`}>
                                     <div className="w-14 h-14 bg-blush rounded-2xl flex items-center justify-center text-coral flex-shrink-0">
@@ -69,7 +69,7 @@ export default function ContactPage() {
                             ))}
                         </div>
 
-                        <div className="bg-teal text-white p-10 rounded-[2.5rem] shadow-xl relative overflow-hidden group">
+                        <div className="bg-teal text-white p-6 md:p-10 rounded-2xl md:rounded-[2.5rem] shadow-xl relative overflow-hidden group">
                             <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors" />
                             <h3 className={`text-2xl font-bold mb-4 ${locale === 'ar' ? 'text-right' : ''}`}>{t('onlineOnly')}</h3>
                             <p className={`text-white/70 leading-relaxed mb-8 ${locale === 'ar' ? 'text-right' : ''}`}>
@@ -82,8 +82,8 @@ export default function ContactPage() {
                         </div>
                     </div>
 
-                    <div className="bg-white p-10 rounded-[3rem] shadow-lg border border-teal/5">
-                        <h3 className={`text-3xl font-bold text-teal mb-8 ${locale === 'ar' ? 'text-right' : ''}`}>{t('sendMessage')}</h3>
+                    <div className="bg-white p-6 md:p-10 rounded-2xl md:rounded-[3rem] shadow-lg border border-teal/5">
+                        <h3 className={`text-2xl md:text-3xl font-bold text-teal mb-6 md:mb-8 ${locale === 'ar' ? 'text-right' : ''}`}>{t('sendMessage')}</h3>
                         <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); alert(t('successMessage')); }}>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div className="space-y-2">

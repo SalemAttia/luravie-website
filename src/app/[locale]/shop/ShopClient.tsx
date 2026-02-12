@@ -79,18 +79,18 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className={`flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12 ${locale === 'ar' ? 'md:flex-row-reverse' : ''}`}>
                     <div className={locale === 'ar' ? 'text-right' : 'text-left'}>
-                        <h1 className="text-4xl font-bold text-teal">
+                        <h1 className="text-2xl md:text-4xl font-bold text-teal">
                             {activeCategory === 'Favorites' ? t('wishlist') : t('collection')}
                         </h1>
                         <p className="text-teal/60">{t('subtitle')}</p>
                     </div>
-                    <div className={`flex flex-wrap gap-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                        <div className={`flex bg-blush rounded-2xl p-1 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                    <div className={`flex flex-wrap gap-2 md:gap-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                        <div className={`flex bg-blush rounded-2xl p-1 overflow-x-auto ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                             {['All', 'Bra', 'Pants', 'Lingerie', 'Socks'].map(cat => (
                                 <button
                                     key={cat}
                                     onClick={() => navigate(`/shop?category=${cat}`)}
-                                    className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer ${activeCategory === cat ? 'bg-coral text-white shadow-lg' : 'text-teal/60 hover:text-teal'
+                                    className={`px-3 py-2 md:px-5 md:py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all cursor-pointer whitespace-nowrap ${activeCategory === cat ? 'bg-coral text-white shadow-lg' : 'text-teal/60 hover:text-teal'
                                         }`}
                                 >
                                     {tCommon(`categories.${cat.toLowerCase()}`)}
@@ -99,14 +99,14 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
                         </div>
                         <button
                             onClick={() => setIsFilterOpen(true)}
-                            className={`px-5 py-3 bg-blush border border-teal/10 rounded-2xl text-sm font-bold flex items-center gap-2 cursor-pointer ${locale === 'ar' ? 'flex-row-reverse' : ''}`}
+                            className={`px-3 py-2 md:px-5 md:py-3 bg-blush border border-teal/10 rounded-xl md:rounded-2xl text-xs md:text-sm font-bold flex items-center gap-2 cursor-pointer ${locale === 'ar' ? 'flex-row-reverse' : ''}`}
                         >
                             <SlidersHorizontal size={18} /> {t('filters')}
                         </button>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-10">
                     {filteredProducts.map(product => (
                         <ProductCard
                             key={product.id}

@@ -35,7 +35,7 @@ export default function AboutPage() {
             className="pb-20"
             dir={locale === 'ar' ? 'rtl' : 'ltr'}
         >
-            <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
+            <section className="relative h-[50vh] md:h-[60vh] flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0 bg-teal/5 z-0" />
                 <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
                     <motion.span
@@ -49,7 +49,7 @@ export default function AboutPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-5xl md:text-7xl font-bold text-teal mb-8"
+                        className="text-3xl sm:text-5xl md:text-7xl font-bold text-teal mb-8"
                     >
                         {t('title')}
                     </motion.h1>
@@ -57,24 +57,24 @@ export default function AboutPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="text-xl text-teal/70 leading-relaxed"
+                        className="text-base md:text-xl text-teal/70 leading-relaxed"
                     >
                         {t('subtitle')}
                     </motion.p>
                 </div>
             </section>
 
-            <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className={`grid grid-cols-1 md:grid-cols-2 gap-20 items-center ${locale === 'ar' ? 'md:flex-row-reverse' : ''}`}>
+            <section className="py-12 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className={`grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-20 items-center ${locale === 'ar' ? 'md:flex-row-reverse' : ''}`}>
                     <div className="relative">
-                        <div className="aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl">
+                        <div className="aspect-[4/5] rounded-2xl md:rounded-[3rem] overflow-hidden shadow-2xl">
                             <ImageWithFallback
                                 src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?q=80&w=1886&auto=format&fit=crop"
                                 alt="Brand philosophy"
                                 className="w-full h-full object-cover"
                             />
                         </div>
-                        <div className={`absolute -bottom-10 ${locale === 'ar' ? '-left-10' : '-right-10'} w-48 h-48 bg-blush rounded-full flex items-center justify-center p-8 border-8 border-white shadow-xl`}>
+                        <div className={`absolute -bottom-6 md:-bottom-10 ${locale === 'ar' ? '-left-4 md:-left-10' : '-right-4 md:-right-10'} w-32 h-32 md:w-48 md:h-48 bg-blush rounded-full flex items-center justify-center p-4 md:p-8 border-4 md:border-8 border-white shadow-xl`}>
                             <p className="text-teal font-bold text-center leading-tight">{t('cottonComfort')}</p>
                         </div>
                     </div>

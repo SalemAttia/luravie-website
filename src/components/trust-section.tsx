@@ -31,7 +31,7 @@ export const TrustSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-24 bg-rose relative overflow-hidden">
+    <section className="py-12 md:py-24 bg-rose relative overflow-hidden">
       {/* Decorative text bg */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none opacity-[0.03]">
         <span className="text-[10rem] md:text-[20rem] font-bold text-teal whitespace-nowrap">
@@ -40,12 +40,12 @@ export const TrustSection: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-        <div className="text-center mb-16">
+        <div className="text-center mb-10 md:mb-16">
           <span className="text-[10px] font-bold text-teal/40 uppercase tracking-[0.4em] mb-4 block">{t('commitment')}</span>
-          <h2 className="text-4xl font-bold text-teal mb-6 tracking-tight">{t('title')}</h2>
+          <h2 className="text-2xl md:text-4xl font-bold text-teal mb-6 tracking-tight">{t('title')}</h2>
           <div className="w-16 h-1 bg-coral mx-auto rounded-full" />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-12">
           {TRUST_ITEMS.map((item, idx) => (
             <motion.div
               key={idx}
@@ -55,11 +55,11 @@ export const TrustSection: React.FC = () => {
               transition={{ delay: idx * 0.1 }}
               className="flex flex-col items-center text-center p-4 group"
             >
-              <div className="w-20 h-20 bg-white rounded-[2rem] flex items-center justify-center shadow-xl shadow-teal/5 mb-8 group-hover:scale-110 group-hover:bg-coral group-hover:text-white transition-all duration-500">
+              <div className="w-14 h-14 md:w-20 md:h-20 bg-white rounded-2xl md:rounded-[2rem] flex items-center justify-center shadow-xl shadow-teal/5 mb-4 md:mb-8 group-hover:scale-110 group-hover:bg-coral group-hover:text-white transition-all duration-500">
                 {React.cloneElement(item.icon as React.ReactElement, { size: 32 } as any)}
               </div>
-              <h3 className="font-bold text-teal mb-4 text-xl tracking-tight">{item.title}</h3>
-              <p className="text-sm text-teal/60 leading-relaxed font-medium">
+              <h3 className="font-bold text-teal mb-2 md:mb-4 text-sm md:text-xl tracking-tight">{item.title}</h3>
+              <p className="text-xs md:text-sm text-teal/60 leading-relaxed font-medium">
                 {item.desc}
               </p>
             </motion.div>
