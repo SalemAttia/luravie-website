@@ -4,9 +4,11 @@ import { PRODUCTS } from '@/data';
 import { getWooProductById, getWooProducts } from '@/lib/woocommerce';
 import { getTranslations } from 'next-intl/server';
 import { Metadata } from 'next';
+import { localePath, localizedAlternates, stripHtml, truncate, getSiteUrl } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string, locale: string }> }): Promise<Metadata> {
-    const { id } = await params;
+    const { id, locale } = await params;
     let product = await getWooProductById(id);
 
     if (!product) {
@@ -15,26 +17,35 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
     if (!product) return { title: 'Product Not Found' };
 
+    const description = truncate(stripHtml(product.description), 160);
+    const canonical = localePath(locale, `/product/${id}`);
+
     return {
         title: product.name,
-        description: product.description.substring(0, 160).replace(/<[^>]*>?/gm, ''), // Stripping HTML
+        description,
+        alternates: {
+            canonical,
+            ...localizedAlternates(`/product/${id}`),
+        },
         openGraph: {
             title: product.name,
-            description: product.description.substring(0, 160).replace(/<[^>]*>?/gm, ''),
+            description,
+            url: canonical,
             images: [product.image],
         },
         twitter: {
             card: 'summary_large_image',
             title: product.name,
-            description: product.description.substring(0, 160).replace(/<[^>]*>?/gm, ''),
+            description,
             images: [product.image],
-        }
+        },
     };
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string, locale: string }> }) {
     const { id, locale } = await params;
     const t = await getTranslations({ locale, namespace: 'product' });
+    const siteUrl = getSiteUrl();
 
     let product = await getWooProductById(id);
     let allProducts = await getWooProducts();
@@ -58,5 +69,55 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
     const relatedProducts = allProducts.filter(p => p.id !== product!.id).slice(0, 4);
 
-    return <ProductClient product={product} relatedProducts={relatedProducts} />;
+    const productJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: product.name,
+        description: stripHtml(product.description),
+        image: product.image,
+        brand: {
+            '@type': 'Brand',
+            name: 'Luravie',
+        },
+        offers: {
+            '@type': 'Offer',
+            price: product.price,
+            priceCurrency: 'EGP',
+            availability: 'https://schema.org/InStock',
+            url: `${siteUrl}/${locale}/product/${id}`,
+        },
+    };
+
+    const breadcrumbJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: `${siteUrl}/${locale}`,
+            },
+            {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Shop',
+                item: `${siteUrl}/${locale}/shop`,
+            },
+            {
+                '@type': 'ListItem',
+                position: 3,
+                name: product.name,
+                item: `${siteUrl}/${locale}/product/${id}`,
+            },
+        ],
+    };
+
+    return (
+        <>
+            <JsonLd data={productJsonLd} />
+            <JsonLd data={breadcrumbJsonLd} />
+            <ProductClient product={product} relatedProducts={relatedProducts} />
+        </>
+    );
 }
