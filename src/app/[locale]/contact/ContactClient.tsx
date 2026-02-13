@@ -21,8 +21,8 @@ export default function ContactClient() {
             icon: <MessageCircle size={24} />,
             title: t('whatsapp'),
             subtitle: t('whatsappSubtitle'),
-            link: "https://wa.me/201234567890",
-            linkText: "+20 123 456 7890"
+            link: "https://wa.me/201505555388",
+            linkText: "+20 150 555 5388"
         },
         {
             icon: <Clock size={24} />,
