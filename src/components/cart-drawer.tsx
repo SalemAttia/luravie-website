@@ -134,7 +134,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                             <Plus size={14} />
                           </button>
                         </div>
-                        <span className="font-bold text-coral">{item.price * item.quantity} {locale === 'ar' ? 'ج.م' : 'EGP'}</span>
+                        <span className="font-bold text-coral">{item.price * item.quantity} {t('currency')}</span>
                       </div>
                     </div>
                   </div>
@@ -143,10 +143,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             </div>
 
             {cartItems.length > 0 && (
-              <div className="p-8 bg-white border-t border-teal/5 space-y-6">
+              <div className="p-5 md:p-8 bg-white border-t border-teal/5 space-y-4 md:space-y-6">
                 <div className={`flex justify-between items-center ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                   <span className="text-teal/40 font-bold uppercase tracking-widest text-xs">{t('subtotal')}</span>
-                  <span className="text-2xl font-bold text-teal">{subtotal} {locale === 'ar' ? 'ج.م' : 'EGP'}</span>
+                  <span className="text-xl md:text-2xl font-bold text-teal">{subtotal} {t('currency')}</span>
                 </div>
                 <p className={`text-[10px] text-teal/30 leading-relaxed font-bold uppercase tracking-widest ${locale === 'ar' ? 'text-right' : ''}`}>
                   {t('taxesNotice')}
@@ -154,7 +154,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                 <div className="pt-2">
                   <button
                     onClick={onCheckout}
-                    className="w-full py-5 bg-coral text-white rounded-[1.5rem] font-bold text-lg shadow-xl shadow-coral/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-3"
+                    className="w-full py-4 md:py-5 bg-coral text-white rounded-[1.5rem] font-bold text-base md:text-lg shadow-xl shadow-coral/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-3"
                   >
                     {t('checkout')}
                     <ArrowRight size={20} className={locale === 'ar' ? 'rotate-180' : ''} />

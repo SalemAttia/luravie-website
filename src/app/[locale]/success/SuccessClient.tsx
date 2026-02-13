@@ -64,7 +64,7 @@ export default function SuccessClient() {
 
                     <div className={`flex items-center justify-center gap-3 text-xs text-muted-foreground font-bold ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                         <ShieldCheck size={16} className="text-teal" />
-                        <span>{locale === 'ar' ? 'سيصلك طلبك في غضون 2-4 أيام عمل' : 'Delivery expected in 2-4 business days'}</span>
+                        <span>{t('deliveryExpected')}</span>
                     </div>
                 </div>
             </motion.div>

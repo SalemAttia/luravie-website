@@ -1,10 +1,11 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from '@/i18n/routing';
 import { motion } from 'framer-motion';
 import { ProductDetail } from '@/components/product-detail';
 import { ProductCard } from '@/components/product-card';
+import { QuickSelectModal } from '@/components/quick-select-modal';
 import { useApp } from '@/context/AppContext';
 import { Product, PRODUCTS } from '@/data';
 import { useTranslations, useLocale } from 'next-intl';
@@ -19,9 +20,16 @@ export function ProductClient({ product, relatedProducts }: ProductClientProps) 
     const locale = useLocale();
     const router = useRouter();
     const { favorites, toggleFavorite, addToCart, buyNow } = useApp();
+    const [isQuickSelectOpen, setIsQuickSelectOpen] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
     const navigate = (path: string) => {
         router.push(path as any);
+    };
+
+    const openQuickSelect = (p: Product) => {
+        setSelectedProduct(p);
+        setIsQuickSelectOpen(true);
     };
 
     return (
@@ -37,7 +45,7 @@ export function ProductClient({ product, relatedProducts }: ProductClientProps) 
                     navigate('/checkout');
                 }}
             />
-            <section className="py-20 border-t border-teal/10">
+            <section className="py-10 md:py-20 border-t border-teal/10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <h2 className={`text-2xl font-bold text-teal mb-10 ${locale === 'ar' ? 'text-right' : ''}`}>{t('related')}</h2>
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
@@ -53,12 +61,22 @@ export function ProductClient({ product, relatedProducts }: ProductClientProps) 
                                     navigate('/checkout');
                                 }}
                                 onClick={() => navigate(`/product/${p.id}` as any)}
-                                onOpenQuickSelect={() => { }}
+                                onOpenQuickSelect={() => openQuickSelect(p)}
                             />
                         ))}
                     </div>
                 </div>
             </section>
+            <QuickSelectModal
+                isOpen={isQuickSelectOpen}
+                onClose={() => setIsQuickSelectOpen(false)}
+                product={selectedProduct}
+                onAddToCart={addToCart}
+                onBuyNow={(p, s, c) => {
+                    buyNow(p, s, c);
+                    navigate('/checkout');
+                }}
+            />
         </motion.div>
     );
 }

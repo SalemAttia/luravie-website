@@ -14,6 +14,7 @@ interface SearchOverlayProps {
 
 export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, onSearch, initialQuery = '' }) => {
   const t = useTranslations('shop');
+  const tCommon = useTranslations('common');
   const locale = useLocale();
   const [query, setQuery] = useState(initialQuery);
   const [products, setProducts] = useState<Product[]>(PRODUCTS);
@@ -38,15 +39,15 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, o
   };
 
   const suggestions = [
-    'Cotton Briefs',
-    'Silk Lingerie',
-    'Everyday Bra',
-    'Bamboo Socks',
+    t('suggestions.cottonBriefs'),
+    t('suggestions.silkLingerie'),
+    t('suggestions.everydayBra'),
+    t('suggestions.bambooSocks'),
   ];
 
   const recentSearches = [
-    'Seamless Collection',
-    'Nude Tones',
+    t('recentItems.seamlessCollection'),
+    t('recentItems.nudeTones'),
   ];
 
   return (
@@ -68,9 +69,9 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, o
             </button>
           </div>
 
-          <div className="flex-1 flex flex-col items-center justify-start pt-12 px-4 max-w-4xl mx-auto w-full">
+          <div className="flex-1 flex flex-col items-center justify-start pt-6 md:pt-12 px-4 max-w-4xl mx-auto w-full">
             <div className="w-full relative group">
-              <Search className={`absolute ${locale === 'ar' ? 'right-6' : 'left-6'} top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-coral transition-colors`} size={32} />
+              <Search className={`absolute ${locale === 'ar' ? 'right-4 md:right-6' : 'left-4 md:left-6'} top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-coral transition-colors w-6 h-6 md:w-8 md:h-8`} />
               <input
                 ref={inputRef}
                 type="text"
@@ -78,7 +79,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, o
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch(query)}
                 placeholder={t('searchPlaceholder')}
-                className={`w-full bg-white/5 border-b-4 border-white/10 py-8 ${locale === 'ar' ? 'pr-20 pl-10' : 'pl-20 pr-10'} text-3xl md:text-5xl font-bold text-white placeholder:text-white/20 focus:outline-none focus:border-coral transition-all ${locale === 'ar' ? 'text-right' : ''}`}
+                className={`w-full bg-white/5 border-b-4 border-white/10 py-5 md:py-8 ${locale === 'ar' ? 'pr-14 pl-6 md:pr-20 md:pl-10' : 'pl-14 pr-6 md:pl-20 md:pr-10'} text-xl md:text-5xl font-bold text-white placeholder:text-white/20 focus:outline-none focus:border-coral transition-all ${locale === 'ar' ? 'text-right' : ''}`}
               />
               {query && (
                 <button
@@ -90,7 +91,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, o
               )}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-16 w-full mt-20">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 w-full mt-10 md:mt-20">
               <div className="space-y-8">
                 <div className={`flex items-center gap-3 text-rose uppercase tracking-[0.3em] text-[10px] font-bold ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                   <TrendingUp size={16} className="text-coral" />
@@ -121,7 +122,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, o
                       onClick={() => handleSearch(s)}
                       className={`flex items-center justify-between w-full group text-white/60 hover:text-white transition-colors py-2 ${locale === 'ar' ? 'flex-row-reverse text-right' : ''}`}
                     >
-                      <span className="text-xl font-medium">{s}</span>
+                      <span className="text-base md:text-xl font-medium">{s}</span>
                       <ArrowRight size={20} className={`opacity-0 group-hover:opacity-100 transition-all ${locale === 'ar' ? 'rotate-180 -translate-x-2 group-hover:translate-x-0' : 'translate-x-2 group-hover:translate-x-0'}`} />
                     </button>
                   ))}
@@ -129,7 +130,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, o
               </div>
             </div>
 
-            <div className="mt-20 w-full pt-10 border-t border-white/5">
+            <div className="mt-10 md:mt-20 w-full pt-6 md:pt-10 border-t border-white/5">
               <p className={`text-white/40 text-xs font-bold uppercase tracking-widest mb-8 ${locale === 'ar' ? 'text-right' : ''}`}>{t('popular')}</p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                 {products.slice(0, 4).map(p => (
@@ -143,7 +144,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, o
                     </div>
                     <div className={locale === 'ar' ? 'text-right' : ''}>
                       <p className="text-white font-bold text-sm truncate">{p.name}</p>
-                      <p className="text-rose/60 text-xs">{p.price} {locale === 'ar' ? 'ج.م' : 'EGP'}</p>
+                      <p className="text-rose/60 text-xs">{p.price} {tCommon('currency')}</p>
                     </div>
                   </button>
                 ))}

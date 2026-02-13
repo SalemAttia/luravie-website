@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from '@/i18n/routing';
 import { motion } from 'framer-motion';
-import { ShieldCheck, Truck, CreditCard, ChevronRight, Package, Info, ChevronLeft, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Truck, CreditCard, ChevronRight, Package, Info, ChevronLeft, AlertCircle, Minus, Plus, Trash2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Product } from '@/data';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
@@ -28,8 +28,9 @@ const EGYPTIAN_CITIES = [
 
 export default function CheckoutClient() {
     const t = useTranslations('checkout');
+    const tCommon = useTranslations('common');
     const locale = useLocale();
-    const { cartItems, clearCart } = useApp();
+    const { cartItems, clearCart, updateQuantity, removeFromCart } = useApp();
     const router = useRouter();
     const [step, setStep] = useState(1);
     const [shippingData, setShippingData] = useState<ShippingFormData | null>(null);
@@ -124,7 +125,7 @@ export default function CheckoutClient() {
 
     return (
         <div className="max-w-6xl mx-auto px-4 py-12 min-h-screen" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-12">
                 {/* Main Checkout Flow */}
                 <div className="lg:col-span-7">
                     <div className={`flex items-center justify-between mb-12 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
@@ -150,7 +151,7 @@ export default function CheckoutClient() {
                         )}
                     </div>
 
-                    <div className="bg-white rounded-3xl p-8 shadow-sm border border-teal/5">
+                    <div className="bg-white rounded-2xl md:rounded-3xl p-5 md:p-8 shadow-sm border border-teal/5">
                         {step === 1 && (
                             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                                 <h2 className={`text-2xl font-bold text-gray-900 mb-8 flex items-center gap-3 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
@@ -302,7 +303,7 @@ export default function CheckoutClient() {
                                             <ShieldCheck />
                                         </div>
                                         <div>
-                                            <p className="font-bold">{locale === 'ar' ? 'الدفع عند الاستلام (COD)' : 'Cash on Delivery (COD)'}</p>
+                                            <p className="font-bold">{t('codPayment')}</p>
                                             <p className="text-sm text-muted-foreground">{t('inspectNotice')}</p>
                                         </div>
                                     </div>
@@ -332,7 +333,7 @@ export default function CheckoutClient() {
                                                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                                                 className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
                                             />
-                                            {locale === 'ar' ? 'جاري تنفيذ طلبك...' : 'Processing Order...'}
+                                            {t('processingOrder')}
                                         </>
                                     ) : (
                                         t('placeOrder')
@@ -345,7 +346,7 @@ export default function CheckoutClient() {
 
                 {/* Order Summary */}
                 <div className="lg:col-span-5">
-                    <div className={`bg-white rounded-3xl p-8 shadow-sm border border-teal/5 sticky top-24 ${locale === 'ar' ? 'text-right' : ''}`}>
+                    <div className={`bg-white rounded-2xl md:rounded-3xl p-5 md:p-8 shadow-sm border border-teal/5 lg:sticky lg:top-24 ${locale === 'ar' ? 'text-right' : ''}`}>
                         <h3 className="text-xl font-bold mb-6">{t('summary')}</h3>
                         <div className="space-y-6 mb-8 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-teal/10">
                             {cartItems.map((item, idx) => (
@@ -372,8 +373,30 @@ export default function CheckoutClient() {
                                             )}
                                         </div>
                                         <div className={`flex justify-between items-center mt-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                                            <p className="text-sm text-muted-foreground">{locale === 'ar' ? 'الكمية:' : 'Qty:'} {item.quantity}</p>
-                                            <p className="font-bold text-teal">{(item.price * item.quantity).toFixed(0)} {locale === 'ar' ? 'ج.م' : 'EGP'}</p>
+                                            <div className={`flex items-center gap-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                                                <div className={`flex items-center bg-blush rounded-lg ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                                                    <button
+                                                        onClick={() => updateQuantity(item.id, item.selectedSize, item.selectedColor?.name, -1)}
+                                                        className="p-1.5 hover:bg-teal/10 rounded-lg transition-colors cursor-pointer"
+                                                    >
+                                                        <Minus size={12} />
+                                                    </button>
+                                                    <span className="text-xs font-bold w-6 text-center">{item.quantity}</span>
+                                                    <button
+                                                        onClick={() => updateQuantity(item.id, item.selectedSize, item.selectedColor?.name, 1)}
+                                                        className="p-1.5 hover:bg-teal/10 rounded-lg transition-colors cursor-pointer"
+                                                    >
+                                                        <Plus size={12} />
+                                                    </button>
+                                                </div>
+                                                <button
+                                                    onClick={() => removeFromCart(item.id, item.selectedSize, item.selectedColor?.name)}
+                                                    className="p-1.5 text-coral/60 hover:text-coral hover:bg-coral/10 rounded-lg transition-colors cursor-pointer"
+                                                >
+                                                    <Trash2 size={12} />
+                                                </button>
+                                            </div>
+                                            <p className="font-bold text-teal">{(item.price * item.quantity).toFixed(0)} {tCommon('currency')}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -383,7 +406,7 @@ export default function CheckoutClient() {
                         <div className="space-y-4 pt-6 border-t border-teal/5">
                             <div className={`flex justify-between text-muted-foreground ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                 <span>{t('subtotal')}</span>
-                                <span>{subtotal.toFixed(0)} {locale === 'ar' ? 'ج.م' : 'EGP'}</span>
+                                <span>{subtotal.toFixed(0)} {tCommon('currency')}</span>
                             </div>
                             <div className={`flex justify-between text-muted-foreground ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                 <span>{t('shipping')}</span>
@@ -391,7 +414,7 @@ export default function CheckoutClient() {
                             </div>
                             <div className={`flex justify-between text-xl font-bold pt-4 border-t border-teal/5 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                 <span>{t('total')}</span>
-                                <span className="text-teal">{subtotal.toFixed(0)} {locale === 'ar' ? 'ج.م' : 'EGP'}</span>
+                                <span className="text-teal">{subtotal.toFixed(0)} {tCommon('currency')}</span>
                             </div>
                         </div>
 
