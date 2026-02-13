@@ -87,7 +87,7 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
               <div className={locale === 'ar' ? 'text-right' : 'text-left'}>
                 <h2 className="text-xl font-bold text-teal">{t('filters')}</h2>
                 <p className="text-xs text-teal/60 font-medium">
-                  {locale === 'ar' ? 'تحسين اختيارك' : 'Refine your selection'}
+                  {t('refineSelection')}
                 </p>
               </div>
               <button
@@ -122,7 +122,7 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
               {/* Sizes */}
               <section>
                 <h3 className={`text-xs font-bold text-teal/40 uppercase tracking-[0.2em] mb-4 ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
-                  {locale === 'ar' ? 'المقاسات' : 'Sizes'}
+                  {t('sizes')}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {ALL_SIZES.map((size) => (
@@ -143,7 +143,7 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
               {/* Colors */}
               <section>
                 <h3 className={`text-xs font-bold text-teal/40 uppercase tracking-[0.2em] mb-4 ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
-                  {locale === 'ar' ? 'الألوان' : 'Colors'}
+                  {t('colors')}
                 </h3>
                 <div className="flex flex-wrap gap-4">
                   {COMMON_COLORS.map((color) => (
@@ -180,13 +180,13 @@ export const FilterDrawer: React.FC<FilterDrawerProps> = ({
                 onClick={clearAll}
                 className="flex-1 py-4 text-teal font-bold text-sm hover:underline"
               >
-                {locale === 'ar' ? 'مسح الكل' : 'Clear All'}
+                {t('clearAll')}
               </button>
               <button
                 onClick={onClose}
                 className="flex-[2] py-4 bg-teal text-white rounded-2xl font-bold shadow-lg shadow-teal/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
-                {locale === 'ar' ? 'عرض النتائج' : 'Show Results'}
+                {t('showResults')}
               </button>
             </div>
           </motion.div>

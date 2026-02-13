@@ -44,14 +44,35 @@
             "fastTitle": "Fast Shipping",
             "fastDesc": "Reliable delivery to your home within 2-4 business days."
         },
+        "currency": "EGP",
+        "cancel": "Cancel",
         "refundPolicy": "Refund Policy",
-        "shippingPolicy": "Shipping Policy"
+        "shippingPolicy": "Shipping Policy",
+        "allProducts": "All Products",
+        "stayConnected": "Stay Connected",
+        "allRightsReserved": "All rights reserved.",
+        "discreetShipping": "Discreet Shipping",
+        "brandName": "LURAVIE"
     },
     "home": {
         "heroTitle": "Confidence Starts Within",
         "heroSubtitle": "Premium intimate essentials designed for the modern woman who values comfort, elegance, and discretion.",
         "sectionTitle": "Everyday Essentials",
-        "sectionSubtitle": "Quality fabric, perfect fit, and discreet style. Designed to make you feel your best every single day."
+        "sectionSubtitle": "Quality fabric, perfect fit, and discreet style. Designed to make you feel your best every single day.",
+        "collections": "The Collections",
+        "essentialSilhouettes": "Essential Silhouettes",
+        "eleganceInEveryLayer": "Elegance in every layer.",
+        "exploreAllItems": "Explore all items",
+        "collection": "Collection",
+        "luravieEssentials": "Luravie Essentials",
+        "heroLine1": "Confident",
+        "heroLine2": "Inside.",
+        "ourValues": "Our Values",
+        "discreet": "Discreet",
+        "premium": "Premium",
+        "silkCotton": "Silk & Cotton",
+        "superiorComfort": "Superior Comfort",
+        "premiumSilk": "Premium Silk"
     },
     "shop": {
         "wishlist": "Your Wishlist",
@@ -65,14 +86,44 @@
         "searchPlaceholder": "Search for essentials...",
         "trending": "Trending Searches",
         "recent": "Recent Searches",
-        "popular": "Popular Products"
+        "popular": "Popular Products",
+        "refineSelection": "Refine your selection",
+        "sizes": "Sizes",
+        "colors": "Colors",
+        "clearAll": "Clear All",
+        "showResults": "Show Results",
+        "suggestions": {
+            "cottonBriefs": "Cotton Briefs",
+            "silkLingerie": "Silk Lingerie",
+            "everydayBra": "Everyday Bra",
+            "bambooSocks": "Bamboo Socks"
+        },
+        "recentItems": {
+            "seamlessCollection": "Seamless Collection",
+            "nudeTones": "Nude Tones"
+        }
     },
     "product": {
         "notFound": "Product not found.",
         "backToShop": "Back to Shop",
         "related": "You might also like",
         "selectSize": "Select Size",
-        "selectColor": "Select Color"
+        "selectColor": "Select Color",
+        "selectASize": "Select a Size",
+        "sizeGuide": "Size Guide",
+        "codNotice": "Pay Cash on Delivery after inspection",
+        "tabs": {
+            "description": "Description",
+            "materials": "Materials & Care",
+            "shipping": "Shipping & Privacy"
+        },
+        "composition": "Composition",
+        "careInstructions": "Machine wash cold with like colors. Do not bleach. Tumble dry low. Do not iron.",
+        "discreet": "Discreet",
+        "plainBoxes": "Plain unmarked boxes",
+        "inspection": "Inspection",
+        "payAfterInspection": "Pay after inspection",
+        "orderNowFreeShipping": "Order Now — Free Shipping"
     },
     "about": {
         "ourStory": "Our Story",
@@ -156,8 +207,21 @@
             "title": "Thank you for your order!",
             "subtitle": "Your order has been received and is currently being processed. You will receive a confirmation call shortly.",
             "orderNumber": "Order Number",
-            "backToShop": "Back to Shop"
-        }
+            "backToShop": "Back to Shop",
+            "deliveryExpected": "Delivery expected in 2-4 business days"
+        },
+        "codPayment": "Cash on Delivery (COD)",
+        "processingOrder": "Processing Order...",
+        "orderFailed": "Failed to create order",
+        "qty": "Qty:"
+    },
+    "sizeGuide": {
+        "title": "Size Guide",
+        "subtitle": "Find your perfect fit for {category} collection.",
+        "size": "Size",
+        "howToMeasure": "How to measure?",
+        "measureTip": "Use a fabric tape measure. For the best fit, measure while wearing minimal clothing. If you fall between two sizes, we recommend ordering the larger size for a more comfortable experience.",
+        "gotIt": "Got it, Thanks"
     },
     "policyPage": {
         "title": "Shipping & Privacy Policy",

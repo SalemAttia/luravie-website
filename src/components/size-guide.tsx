@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Ruler, Info } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface SizeGuideProps {
   isOpen: boolean;
@@ -33,6 +34,7 @@ const SIZE_CHART = {
 };
 
 export const SizeGuide: React.FC<SizeGuideProps> = ({ isOpen, onClose, category }) => {
+  const t = useTranslations('sizeGuide');
   const chart = SIZE_CHART[category as keyof typeof SIZE_CHART] || SIZE_CHART['General'];
 
   return (
@@ -50,34 +52,34 @@ export const SizeGuide: React.FC<SizeGuideProps> = ({ isOpen, onClose, category 
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-lg md:max-w-2xl bg-white rounded-2xl md:rounded-[2.5rem] shadow-2xl overflow-hidden"
+            className="relative w-full max-w-lg md:max-w-2xl max-h-[85vh] bg-white rounded-2xl md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col"
           >
             {/* Header */}
-            <div className="bg-teal p-5 md:p-8 text-white relative">
-              <button 
+            <div className="bg-teal p-4 md:p-8 text-white relative shrink-0">
+              <button
                 onClick={onClose}
-                className="absolute top-6 right-6 p-2 hover:bg-white/10 rounded-full transition-colors"
+                className="absolute top-3 right-3 md:top-6 md:right-6 p-1.5 md:p-2 hover:bg-white/10 rounded-full transition-colors"
               >
-                <X size={24} />
+                <X className="w-5 h-5 md:w-6 md:h-6" />
               </button>
-              <div className="flex items-center gap-4 mb-2">
-                <div className="p-3 bg-white/20 rounded-2xl">
-                  <Ruler size={28} />
+              <div className="flex items-center gap-3 md:gap-4 mb-1 md:mb-2">
+                <div className="p-2 md:p-3 bg-white/20 rounded-xl md:rounded-2xl">
+                  <Ruler className="w-5 h-5 md:w-7 md:h-7" />
                 </div>
-                <h2 className="text-2xl md:text-3xl font-bold tracking-tight">Size Guide</h2>
+                <h2 className="text-xl md:text-3xl font-bold tracking-tight">{t('title')}</h2>
               </div>
-              <p className="opacity-90 text-sm">Find your perfect fit for {category} collection.</p>
+              <p className="opacity-90 text-xs md:text-sm">{t('subtitle', { category })}</p>
             </div>
 
             {/* Content */}
-            <div className="p-4 md:p-8">
+            <div className="p-4 md:p-8 overflow-y-auto">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-teal/10">
-                      <th className="py-4 text-left text-teal font-bold text-sm tracking-widest uppercase">Size</th>
+                      <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('size')}</th>
                       {Object.keys(chart[0]).filter(k => k !== 'size').map(key => (
-                        <th key={key} className="py-4 text-left text-teal font-bold text-sm tracking-widest uppercase">
+                        <th key={key} className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">
                           {key.replace('_', ' ')}
                         </th>
                       ))}
@@ -86,13 +88,13 @@ export const SizeGuide: React.FC<SizeGuideProps> = ({ isOpen, onClose, category 
                   <tbody>
                     {chart.map((row, idx) => (
                       <tr key={idx} className="border-b border-teal/5 hover:bg-teal/5 transition-colors group">
-                        <td className="py-6">
-                          <span className="w-10 h-10 flex items-center justify-center bg-blush text-teal rounded-xl font-bold group-hover:bg-teal group-hover:text-white transition-colors">
+                        <td className="py-2.5 md:py-6">
+                          <span className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-blush text-teal rounded-lg md:rounded-xl font-bold text-xs md:text-base group-hover:bg-teal group-hover:text-white transition-colors">
                             {row.size}
                           </span>
                         </td>
                         {Object.entries(row).filter(([k]) => k !== 'size').map(([key, value]) => (
-                          <td key={key} className="py-6 text-gray-600 font-medium">
+                          <td key={key} className="py-2.5 md:py-6 text-gray-600 font-medium text-xs md:text-base">
                             {value}
                           </td>
                         ))}
@@ -103,24 +105,24 @@ export const SizeGuide: React.FC<SizeGuideProps> = ({ isOpen, onClose, category 
               </div>
 
               {/* Tips Section */}
-              <div className="mt-8 p-6 bg-rose/30 rounded-3xl flex gap-4 items-start border border-rose">
-                <div className="p-2 bg-white rounded-xl text-teal">
-                  <Info size={20} />
+              <div className="mt-4 md:mt-8 p-3 md:p-6 bg-rose/30 rounded-xl md:rounded-3xl flex gap-3 md:gap-4 items-start border border-rose">
+                <div className="p-1.5 md:p-2 bg-white rounded-lg md:rounded-xl text-teal shrink-0">
+                  <Info className="w-4 h-4 md:w-5 md:h-5" />
                 </div>
                 <div className="space-y-1">
-                  <p className="font-bold text-gray-900 text-sm">How to measure?</p>
-                  <p className="text-xs text-gray-600 leading-relaxed">
-                    Use a fabric tape measure. For the best fit, measure while wearing minimal clothing. If you fall between two sizes, we recommend ordering the larger size for a more comfortable experience.
+                  <p className="font-bold text-gray-900 text-xs md:text-sm">{t('howToMeasure')}</p>
+                  <p className="text-[10px] md:text-xs text-gray-600 leading-relaxed">
+                    {t('measureTip')}
                   </p>
                 </div>
               </div>
 
-              <div className="mt-8 flex justify-center">
+              <div className="mt-4 md:mt-8 flex justify-center">
                 <button
                   onClick={onClose}
-                  className="px-8 py-3 bg-teal text-white rounded-2xl font-bold shadow-lg shadow-teal/20 hover:scale-105 transition-all"
+                  className="px-6 py-2.5 md:px-8 md:py-3 bg-teal text-white rounded-xl md:rounded-2xl font-bold text-sm md:text-base shadow-lg shadow-teal/20 hover:scale-105 transition-all"
                 >
-                  Got it, Thanks
+                  {t('gotIt')}
                 </button>
               </div>
             </div>

@@ -81,39 +81,39 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
           >
             <button
               onClick={onClose}
-              className={`absolute top-6 ${locale === 'ar' ? 'left-6' : 'right-6'} p-2 bg-white rounded-full hover:bg-coral hover:text-white transition-all z-20 shadow-sm cursor-pointer`}
+              className={`absolute top-4 md:top-6 ${locale === 'ar' ? 'left-4 md:left-6' : 'right-4 md:right-6'} p-1.5 md:p-2 bg-white rounded-full hover:bg-coral hover:text-white transition-all z-20 shadow-sm cursor-pointer`}
             >
               <X size={20} />
             </button>
 
-            <div className="p-5 md:p-8">
-              <div className="flex gap-6 mb-8">
-                <div className="w-20 h-28 md:w-24 md:h-32 rounded-2xl overflow-hidden bg-white flex-shrink-0 shadow-sm border border-teal/5">
+            <div className="p-4 md:p-8">
+              <div className="flex gap-3 md:gap-6 mb-4 md:mb-8">
+                <div className="w-14 h-20 md:w-24 md:h-32 rounded-lg md:rounded-2xl overflow-hidden bg-white flex-shrink-0 shadow-sm border border-teal/5">
                   <ImageWithFallback src={product.image} alt={product.name} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex flex-col justify-center">
-                  <h3 className="text-xl font-bold text-teal mb-1">{product.name}</h3>
-                  <p className="text-coral font-bold text-lg">{product.price} {locale === 'ar' ? 'ج.م' : 'EGP'}</p>
+                  <h3 className="text-sm md:text-xl font-bold text-teal mb-0.5 md:mb-1">{product.name}</h3>
+                  <p className="text-coral font-bold text-sm md:text-lg">{product.price} {tCommon('currency')}</p>
                 </div>
               </div>
 
-              <div className="space-y-8">
+              <div className="space-y-4 md:space-y-8">
                 {/* Color Selection */}
                 {product.colors.length > 0 && (
                   <div>
-                    <label className="text-xs font-bold uppercase tracking-widest text-teal/40 mb-4 block">
+                    <label className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-teal/40 mb-2 md:mb-4 block">
                       {t('selectColor')}: <span className="text-teal">{selectedColor?.name}</span>
                     </label>
-                    <div className="flex flex-wrap gap-4">
+                    <div className="flex flex-wrap gap-2.5 md:gap-4">
                       {product.colors.map((color) => (
                         <button
                           key={color.name}
                           onClick={() => setSelectedColor(color)}
-                          className={`group relative p-1 rounded-full border-2 transition-all cursor-pointer ${selectedColor?.name === color.name ? 'border-coral' : 'border-transparent'
+                          className={`group relative p-0.5 md:p-1 rounded-full border-2 transition-all cursor-pointer ${selectedColor?.name === color.name ? 'border-coral' : 'border-transparent'
                             }`}
                         >
                           <div
-                            className="w-8 h-8 rounded-full border border-black/5"
+                            className="w-6 h-6 md:w-8 md:h-8 rounded-full border border-black/5"
                             style={{ backgroundColor: color.hex }}
                           />
                           <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[10px] font-bold text-teal/60 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-tighter">
@@ -128,20 +128,20 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
                 {/* Size Selection */}
                 {product.sizes.length > 0 && (
                   <div>
-                    <div className="flex justify-between items-center mb-4">
-                      <label className="text-xs font-bold uppercase tracking-widest text-teal/40 block">
+                    <div className="flex justify-between items-center mb-2 md:mb-4">
+                      <label className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-teal/40 block">
                         {t('selectSize')}
                       </label>
                       <button className="text-[10px] font-bold text-coral flex items-center gap-1 hover:underline cursor-pointer">
-                        <Info size={12} /> {locale === 'ar' ? 'دليل المقاسات' : 'SIZE GUIDE'}
+                        <Info size={12} /> {t('sizeGuide')}
                       </button>
                     </div>
-                    <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
+                    <div className="grid grid-cols-4 gap-1.5 md:gap-2">
                       {product.sizes.map((size) => (
                         <button
                           key={size}
                           onClick={() => setSelectedSize(size)}
-                          className={`py-3 rounded-xl text-sm font-bold transition-all border-2 cursor-pointer ${selectedSize === size
+                          className={`py-2 md:py-3 rounded-lg md:rounded-xl text-[11px] md:text-sm font-bold transition-all border-2 cursor-pointer ${selectedSize === size
                             ? 'border-coral bg-coral/5 text-coral shadow-sm shadow-coral/10'
                             : 'border-white bg-white text-teal/60 hover:border-coral/20'
                             }`}
@@ -154,37 +154,37 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
                 )}
               </div>
 
-              <div className="mt-8 md:mt-10">
+              <div className="mt-5 md:mt-10">
                 <button
                   onClick={handleAdd}
                   disabled={product.sizes.length > 0 && !selectedSize}
-                  className={`w-full py-4 md:py-5 rounded-2xl font-bold text-base md:text-lg flex items-center justify-center gap-3 shadow-xl transition-all cursor-pointer ${(product.sizes.length === 0 || selectedSize)
+                  className={`w-full py-3 md:py-5 rounded-xl md:rounded-2xl font-bold text-sm md:text-lg flex items-center justify-center gap-2 md:gap-3 shadow-xl transition-all cursor-pointer ${(product.sizes.length === 0 || selectedSize)
                     ? 'bg-coral text-white shadow-coral/20 hover:scale-[1.02] active:scale-[0.98]'
                     : 'bg-teal/5 text-teal/20 cursor-not-allowed shadow-none'
                     }`}
                 >
-                  <ShoppingBag size={20} />
+                  <ShoppingBag size={16} className="md:w-5 md:h-5" />
                   {product.sizes.length === 0 || selectedSize
-                    ? (locale === 'ar' ? `أضف للحقيبة` : `Add to Bag`)
-                    : (locale === 'ar' ? 'اختر المقاس' : 'Select a Size')}
+                    ? tCommon('addToBag')
+                    : t('selectASize')}
                 </button>
                 {onBuyNow && (
                   <button
                     onClick={handleBuyNow}
                     disabled={product.sizes.length > 0 && !selectedSize}
-                    className={`w-full mt-4 py-5 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 shadow-xl transition-all cursor-pointer ${(product.sizes.length === 0 || selectedSize)
+                    className={`w-full mt-2 md:mt-4 py-3 md:py-5 rounded-xl md:rounded-2xl font-bold text-sm md:text-lg flex items-center justify-center gap-2 md:gap-3 shadow-xl transition-all cursor-pointer ${(product.sizes.length === 0 || selectedSize)
                       ? 'bg-teal text-white shadow-teal/20 hover:scale-[1.02] active:scale-[0.98]'
                       : 'bg-teal/5 text-teal/20 cursor-not-allowed shadow-none'
                       }`}
                   >
-                    {locale === 'ar' ? 'اطلب الآن — شحن مجاني' : 'Order Now — Free Shipping'}
+                    {t('orderNowFreeShipping')}
                   </button>
                 )}
                 <button
                   onClick={onClose}
-                  className="w-full mt-4 py-2 text-sm font-bold text-teal/40 hover:text-teal transition-colors cursor-pointer"
+                  className="w-full mt-1 md:mt-4 py-1.5 md:py-2 text-xs md:text-sm font-bold text-teal/40 hover:text-teal transition-colors cursor-pointer"
                 >
-                  {locale === 'ar' ? 'إلغاء' : 'Cancel'}
+                  {tCommon('cancel')}
                 </button>
               </div>
             </div>

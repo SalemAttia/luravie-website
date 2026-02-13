@@ -14,6 +14,7 @@ const CATEGORIES = [
 
 export const CategorySection: React.FC<{ onNavigate: (c: string) => void }> = ({ onNavigate }) => {
   const tCommon = useTranslations('common');
+  const t = useTranslations('home');
   const locale = useLocale();
 
   return (
@@ -22,20 +23,20 @@ export const CategorySection: React.FC<{ onNavigate: (c: string) => void }> = ({
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
           <div>
             <span className="text-teal font-bold tracking-[0.4em] text-[10px] uppercase mb-4 block opacity-40">
-              {locale === 'ar' ? 'المجموعات' : 'The Collections'}
+              {t('collections')}
             </span>
             <h2 className="text-3xl md:text-5xl font-bold text-teal mb-3 tracking-tighter">
-              {locale === 'ar' ? 'تصاميم أساسية' : 'Essential Silhouettes'}
+              {t('essentialSilhouettes')}
             </h2>
             <p className="text-teal/50 text-base md:text-xl font-light">
-              {locale === 'ar' ? 'الأناقة في كل طبقة.' : 'Elegance in every layer.'}
+              {t('eleganceInEveryLayer')}
             </p>
           </div>
           <button
             onClick={() => onNavigate('All')}
             className="group flex items-center gap-3 text-coral font-bold hover:gap-5 transition-all cursor-pointer uppercase tracking-widest text-xs"
           >
-            {locale === 'ar' ? 'استكشفي كل المنتجات' : 'Explore all items'}
+            {t('exploreAllItems')}
             <ArrowRight size={20} className={locale === 'ar' ? 'rotate-180' : ''} />
           </button>
         </div>
@@ -60,7 +61,7 @@ export const CategorySection: React.FC<{ onNavigate: (c: string) => void }> = ({
               <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-8 flex justify-between items-center text-white">
                 <div>
                   <p className="text-xs font-bold tracking-widest uppercase mb-1 opacity-80">
-                    {locale === 'ar' ? 'مجموعة' : 'Collection'}
+                    {t('collection')}
                   </p>
                   <span className="text-lg md:text-2xl font-bold">{tCommon(`categories.${cat.name.toLowerCase()}`)}</span>
                 </div>
@@ -98,15 +99,11 @@ export const Hero: React.FC<{ onShopNow: () => void; onAboutClick: () => void }>
           >
             <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/10 text-rose text-xs font-bold uppercase tracking-[0.3em] border border-white/5 backdrop-blur-md">
               <Sparkles size={16} className="text-coral" />
-              {locale === 'ar' ? 'أساسيات لورافي' : 'Luravie Essentials'}
+              {t('luravieEssentials')}
             </div>
 
             <h1 className="text-4xl sm:text-6xl md:text-[9rem] font-bold text-white leading-[0.85] tracking-tighter">
-              {locale === 'ar' ? (
-                <>ثقة <br /><span className="text-rose italic font-serif font-light">داخلك.</span></>
-              ) : (
-                <>Confident <br /><span className="text-rose italic font-serif font-light">Inside.</span></>
-              )}
+              {t('heroLine1')} <br /><span className="text-rose italic font-serif font-light">{t('heroLine2')}</span>
             </h1>
 
             <p className="text-lg md:text-2xl text-white/70 leading-relaxed max-w-xl font-light">
@@ -125,7 +122,7 @@ export const Hero: React.FC<{ onShopNow: () => void; onAboutClick: () => void }>
                 onClick={onAboutClick}
                 className="px-8 py-4 md:px-12 md:py-6 bg-white/5 text-rose rounded-2xl md:rounded-[2rem] font-bold text-base md:text-xl border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all cursor-pointer"
               >
-                {locale === 'ar' ? 'قيمنا' : 'Our Values'}
+                {t('ourValues')}
               </button>
             </div>
 
@@ -133,13 +130,13 @@ export const Hero: React.FC<{ onShopNow: () => void; onAboutClick: () => void }>
               <div className="flex flex-col gap-1">
                 <span className="text-2xl md:text-4xl font-bold text-rose">100%</span>
                 <span className="text-[10px] font-bold text-white/40 uppercase tracking-[0.3em]">
-                  {locale === 'ar' ? 'خصوصية' : 'Discreet'}
+                  {t('discreet')}
                 </span>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="text-2xl md:text-4xl font-bold text-rose">{locale === 'ar' ? 'فخامة' : 'Premium'}</span>
+                <span className="text-2xl md:text-4xl font-bold text-rose">{t('premium')}</span>
                 <span className="text-[10px] font-bold text-white/40 uppercase tracking-[0.3em]">
-                  {locale === 'ar' ? 'حرير وقطن' : 'Silk & Cotton'}
+                  {t('silkCotton')}
                 </span>
               </div>
             </div>
@@ -173,10 +170,10 @@ export const Hero: React.FC<{ onShopNow: () => void; onAboutClick: () => void }>
                 </div>
                 <div>
                   <p className="text-lg font-bold text-teal">
-                    {locale === 'ar' ? 'راحة فائقة' : 'Superior Comfort'}
+                    {t('superiorComfort')}
                   </p>
                   <p className="text-xs font-bold text-coral uppercase tracking-widest">
-                    {locale === 'ar' ? 'حرير فاخر' : 'Premium Silk'}
+                    {t('premiumSilk')}
                   </p>
                 </div>
               </div>

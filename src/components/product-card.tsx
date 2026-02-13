@@ -73,7 +73,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             }}
             className="w-full py-2 md:py-4 bg-coral text-white rounded-lg md:rounded-[1.5rem] font-bold text-[11px] md:text-sm flex items-center justify-center gap-1.5 md:gap-3 shadow-2xl shadow-coral/30 cursor-pointer hover:scale-[1.05] active:scale-[0.95] transition-all"
           >
-            {locale === 'ar' ? 'اطلبي الآن' : 'Order Now'}
+            {t('orderNow')}
           </button>
           <button
             onClick={handleQuickAdd}
@@ -85,12 +85,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             {isAdded ? (
               <>
                 <Check className="w-3 h-3 md:w-4 md:h-4" />
-                {locale === 'ar' ? 'تمت الإضافة' : 'Added'}
+                {t('added')}
               </>
             ) : (
               <>
                 <ShoppingBag className="w-3 h-3 md:w-4 md:h-4" />
-                {locale === 'ar' ? 'أضف للحقيبة' : 'Add to Bag'}
+                {t('addToBag')}
               </>
             )}
           </button>
@@ -100,7 +100,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <div className="space-y-1 md:space-y-2 px-1 md:px-2 cursor-pointer" onClick={() => onClick(product)}>
         <div className={`flex justify-between items-start gap-1 md:gap-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
           <h3 className={`font-bold text-teal text-xs md:text-lg tracking-tight leading-tight ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{product.name}</h3>
-          <span className="font-black text-coral whitespace-nowrap text-xs md:text-base">{product.price} <span className="text-[8px] md:text-[10px] font-bold">{locale === 'ar' ? 'ج.م' : 'EGP'}</span></span>
+          <span className="font-black text-coral whitespace-nowrap text-xs md:text-base">{product.price} <span className="text-[8px] md:text-[10px] font-bold">{t('currency')}</span></span>
         </div>
         <div className={`flex items-center gap-1.5 md:gap-3 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
           <p className="text-[9px] md:text-xs font-bold text-teal/40 uppercase tracking-widest">{t(`categories.${product.category.toLowerCase()}`)}</p>

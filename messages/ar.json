@@ -44,14 +44,35 @@
             "fastTitle": "شحن سريع",
             "fastDesc": "توصيل موثوق إلى منزلك في غضون 2-4 أيام عمل."
         },
+        "currency": "ج.م",
+        "cancel": "إلغاء",
         "refundPolicy": "سياسة الاسترجاع",
-        "shippingPolicy": "سياسة الشحن"
+        "shippingPolicy": "سياسة الشحن",
+        "allProducts": "كل المنتجات",
+        "stayConnected": "ابق على تواصل",
+        "allRightsReserved": "جميع الحقوق محفوظة.",
+        "discreetShipping": "شحن سري",
+        "brandName": "لورافي"
     },
     "home": {
         "heroTitle": "ثقتك تبدأ من الداخل",
         "heroSubtitle": "أساسيات فاخرة مصممة للمرأة العصرية التي تقدر الراحة والأناقة والخصوصية.",
         "sectionTitle": "أساسيات يومية",
-        "sectionSubtitle": "نسيج عالي الجودة ، ملاءمة مثالية ، وأسلوب سري. مصممة لتجعلك تشعرين بأفضل حال كل يوم."
+        "sectionSubtitle": "نسيج عالي الجودة ، ملاءمة مثالية ، وأسلوب سري. مصممة لتجعلك تشعرين بأفضل حال كل يوم.",
+        "collections": "المجموعات",
+        "essentialSilhouettes": "تصاميم أساسية",
+        "eleganceInEveryLayer": "الأناقة في كل طبقة.",
+        "exploreAllItems": "استكشفي كل المنتجات",
+        "collection": "مجموعة",
+        "luravieEssentials": "أساسيات لورافي",
+        "heroLine1": "ثقة",
+        "heroLine2": "داخلك.",
+        "ourValues": "قيمنا",
+        "discreet": "خصوصية",
+        "premium": "فخامة",
+        "silkCotton": "حرير وقطن",
+        "superiorComfort": "راحة فائقة",
+        "premiumSilk": "حرير فاخر"
     },
     "shop": {
         "wishlist": "قائمة المفضلة",
@@ -65,14 +86,44 @@
         "searchPlaceholder": "ابحثي عن أساسياتك...",
         "trending": "عمليات البحث الشائعة",
         "recent": "عمليات البحث الأخيرة",
-        "popular": "المنتجات الأكثر رواجاً"
+        "popular": "المنتجات الأكثر رواجاً",
+        "refineSelection": "تحسين اختيارك",
+        "sizes": "المقاسات",
+        "colors": "الألوان",
+        "clearAll": "مسح الكل",
+        "showResults": "عرض النتائج",
+        "suggestions": {
+            "cottonBriefs": "سراويل قطنية",
+            "silkLingerie": "لانجري حريري",
+            "everydayBra": "حمالة صدر يومية",
+            "bambooSocks": "جوارب بامبو"
+        },
+        "recentItems": {
+            "seamlessCollection": "مجموعة سيملس",
+            "nudeTones": "درجات اللون الطبيعي"
+        }
     },
     "product": {
         "notFound": "المنتج غير موجود.",
         "backToShop": "العودة للمتجر",
         "related": "قد يعجبك أيضاً",
         "selectSize": "اختاري المقاس",
-        "selectColor": "اختاري اللون"
+        "selectColor": "اختاري اللون",
+        "selectASize": "اختر المقاس",
+        "sizeGuide": "دليل المقاسات",
+        "codNotice": "ادفع نقداً عند الاستلام بعد المعاينة",
+        "tabs": {
+            "description": "الوصف",
+            "materials": "المواد والعناية",
+            "shipping": "الشحن والخصوصية"
+        },
+        "composition": "التركيب",
+        "careInstructions": "غسيل آلي بماء بارد مع ألوان مماثلة. لا تستخدم المبيض. تجفيف بالمجفف على درجة حرارة منخفضة. لا تكوي.",
+        "discreet": "سري",
+        "plainBoxes": "صناديق سادة غير مميزة",
+        "inspection": "المعاينة",
+        "payAfterInspection": "ادفع بعد المعاينة",
+        "orderNowFreeShipping": "اطلب الآن — شحن مجاني"
     },
     "about": {
         "ourStory": "قصتنا",
@@ -156,8 +207,13 @@
             "title": "شكراً لطلبك!",
             "subtitle": "تم استلام طلبك وهو قيد المعالجة حالياً. ستتلقى مكالمة تأكيد قريباً.",
             "orderNumber": "رقم الطلب",
-            "backToShop": "العودة للمتجر"
+            "backToShop": "العودة للمتجر",
+            "deliveryExpected": "سيصلك طلبك في غضون 2-4 أيام عمل"
         },
+        "codPayment": "الدفع عند الاستلام (COD)",
+        "processingOrder": "جاري تنفيذ طلبك...",
+        "orderFailed": "فشل في إنشاء الطلب",
+        "qty": "الكمية:",
         "cities": {
             "Cairo": "القاهرة",
             "Alexandria": "الإسكندرية",
@@ -189,6 +245,14 @@
             "Bilbais": "بلبيس",
             "Marsa Matruh": "مرسى مطروح"
         }
+    },
+    "sizeGuide": {
+        "title": "دليل المقاسات",
+        "subtitle": "اعثري على المقاس المثالي لمجموعة {category}.",
+        "size": "المقاس",
+        "howToMeasure": "كيفية أخذ القياسات؟",
+        "measureTip": "استخدمي شريط قياس قماشي. للحصول على أفضل ملاءمة، قومي بأخذ القياسات بملابس خفيفة. إذا كنتِ بين مقاسين، ننصحك باختيار المقاس الأكبر لراحة أفضل.",
+        "gotIt": "فهمت، شكراً"
     },
     "policyPage": {
         "title": "سياسة الشحن والخصوصية",

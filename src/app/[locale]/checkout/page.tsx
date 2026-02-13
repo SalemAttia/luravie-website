@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from '@/i18n/routing';
 import { motion } from 'framer-motion';
-import { ShieldCheck, Truck, CreditCard, ChevronRight, Package, Info, ChevronLeft, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Truck, CreditCard, ChevronRight, Package, Info, ChevronLeft, AlertCircle, Minus, Plus, Trash2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Product } from '@/data';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
@@ -28,8 +28,9 @@ const EGYPTIAN_CITIES = [
 
 export default function CheckoutPage() {
     const t = useTranslations('checkout');
+    const tCommon = useTranslations('common');
     const locale = useLocale();
-    const { cartItems, clearCart } = useApp();
+    const { cartItems, clearCart, updateQuantity, removeFromCart } = useApp();
     const router = useRouter();
     const [step, setStep] = useState(1);
     const [shippingData, setShippingData] = useState<ShippingFormData | null>(null);
@@ -302,7 +303,7 @@ export default function CheckoutPage() {
                                             <ShieldCheck />
                                         </div>
                                         <div>
-                                            <p className="font-bold">{locale === 'ar' ? 'الدفع عند الاستلام (COD)' : 'Cash on Delivery (COD)'}</p>
+                                            <p className="font-bold">{t('codPayment')}</p>
                                             <p className="text-sm text-muted-foreground">{t('inspectNotice')}</p>
                                         </div>
                                     </div>
@@ -332,7 +333,7 @@ export default function CheckoutPage() {
                                                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                                                 className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
                                             />
-                                            {locale === 'ar' ? 'جاري تنفيذ طلبك...' : 'Processing Order...'}
+                                            {t('processingOrder')}
                                         </>
                                     ) : (
                                         t('placeOrder')
@@ -347,33 +348,55 @@ export default function CheckoutPage() {
                 <div className="lg:col-span-5">
                     <div className={`bg-white rounded-2xl md:rounded-3xl p-5 md:p-8 shadow-sm border border-teal/5 lg:sticky lg:top-24 ${locale === 'ar' ? 'text-right' : ''}`}>
                         <h3 className="text-xl font-bold mb-6">{t('summary')}</h3>
-                        <div className="space-y-6 mb-8 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-teal/10">
+                        <div className="space-y-4 mb-8 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-teal/10">
                             {cartItems.map((item, idx) => (
-                                <div key={`${item.id}-${item.selectedSize || idx}-${item.selectedColor?.name || ''}`} className={`flex gap-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                                    <div className="w-20 h-20 rounded-xl overflow-hidden bg-blush flex-shrink-0">
+                                <div key={`${item.id}-${item.selectedSize || idx}-${item.selectedColor?.name || ''}`} className={`flex gap-3 md:gap-4 p-3 bg-blush/50 rounded-xl ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-lg md:rounded-xl overflow-hidden bg-blush flex-shrink-0">
                                         <ImageWithFallback src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h4 className="font-bold text-gray-900 line-clamp-1">{item.name}</h4>
-                                        <div className={`flex items-center gap-2 mt-1 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                                        <div className={`flex justify-between items-start gap-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                                            <h4 className="font-bold text-gray-900 text-sm line-clamp-1">{item.name}</h4>
+                                            <button
+                                                onClick={() => removeFromCart(item.id, item.selectedSize, item.selectedColor?.name)}
+                                                className="p-1 text-teal/30 hover:text-coral transition-colors cursor-pointer shrink-0"
+                                            >
+                                                <Trash2 size={14} />
+                                            </button>
+                                        </div>
+                                        <div className={`flex items-center gap-2 mt-0.5 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                             {item.selectedSize && (
-                                                <span className="text-xs bg-teal/5 text-teal px-2 py-0.5 rounded-full font-bold">
+                                                <span className="text-[10px] bg-teal/5 text-teal px-1.5 py-0.5 rounded-full font-bold">
                                                     {item.selectedSize}
                                                 </span>
                                             )}
                                             {item.selectedColor && (
-                                                <div className={`flex items-center gap-1.5 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                                                <div className={`flex items-center gap-1 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                                     <div
                                                         className="w-2.5 h-2.5 rounded-full border border-black/5"
                                                         style={{ backgroundColor: item.selectedColor.hex }}
                                                     />
-                                                    <span className="text-xs text-muted-foreground">{item.selectedColor.name}</span>
+                                                    <span className="text-[10px] text-muted-foreground">{item.selectedColor.name}</span>
                                                 </div>
                                             )}
                                         </div>
                                         <div className={`flex justify-between items-center mt-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                                            <p className="text-sm text-muted-foreground">{locale === 'ar' ? 'الكمية:' : 'Qty:'} {item.quantity}</p>
-                                            <p className="font-bold text-teal">{(item.price * item.quantity).toFixed(0)} {locale === 'ar' ? 'ج.م' : 'EGP'}</p>
+                                            <div className={`flex items-center gap-1 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                                                <button
+                                                    onClick={() => updateQuantity(item.id, item.selectedSize, item.selectedColor?.name, -1)}
+                                                    className="w-6 h-6 rounded-md bg-white border border-teal/10 flex items-center justify-center text-teal/60 hover:border-teal/30 transition-colors cursor-pointer"
+                                                >
+                                                    <Minus size={12} />
+                                                </button>
+                                                <span className="w-7 text-center text-sm font-bold text-teal">{item.quantity}</span>
+                                                <button
+                                                    onClick={() => updateQuantity(item.id, item.selectedSize, item.selectedColor?.name, 1)}
+                                                    className="w-6 h-6 rounded-md bg-white border border-teal/10 flex items-center justify-center text-teal/60 hover:border-teal/30 transition-colors cursor-pointer"
+                                                >
+                                                    <Plus size={12} />
+                                                </button>
+                                            </div>
+                                            <p className="font-bold text-teal text-sm">{(item.price * item.quantity).toFixed(0)} {tCommon('currency')}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -383,7 +406,7 @@ export default function CheckoutPage() {
                         <div className="space-y-4 pt-6 border-t border-teal/5">
                             <div className={`flex justify-between text-muted-foreground ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                 <span>{t('subtotal')}</span>
-                                <span>{subtotal.toFixed(0)} {locale === 'ar' ? 'ج.م' : 'EGP'}</span>
+                                <span>{subtotal.toFixed(0)} {tCommon('currency')}</span>
                             </div>
                             <div className={`flex justify-between text-muted-foreground ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                 <span>{t('shipping')}</span>
@@ -391,7 +414,7 @@ export default function CheckoutPage() {
                             </div>
                             <div className={`flex justify-between text-xl font-bold pt-4 border-t border-teal/5 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                 <span>{t('total')}</span>
-                                <span className="text-teal">{subtotal.toFixed(0)} {locale === 'ar' ? 'ج.م' : 'EGP'}</span>
+                                <span className="text-teal">{subtotal.toFixed(0)} {tCommon('currency')}</span>
                             </div>
                         </div>
 

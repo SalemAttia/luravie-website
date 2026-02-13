@@ -57,13 +57,13 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                         <div>
                             <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">{tCommon('shop')}</h4>
                             <ul className="space-y-4 text-sm">
-                                <li><button onClick={() => navigate('/shop')} className="hover:text-coral transition-colors cursor-pointer text-left">{locale === 'ar' ? 'كل المنتجات' : 'All Products'}</button></li>
+                                <li><button onClick={() => navigate('/shop')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('allProducts')}</button></li>
                                 <li><button onClick={() => navigate('/shop?category=Bra')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('categories.bra')}</button></li>
                                 <li><button onClick={() => navigate('/shop?category=Lingerie')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('categories.lingerie')}</button></li>
                             </ul>
                         </div>
                         <div>
-                            <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">{locale === 'ar' ? 'الدعم' : 'Support'}</h4>
+                            <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">{tCommon('support')}</h4>
                             <ul className="space-y-4 text-sm">
                                 <li><button onClick={() => navigate('/policy')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('policy')}</button></li>
                                 <li><button onClick={() => navigate('/refund')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('refundPolicy')}</button></li>
@@ -73,7 +73,7 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                             </ul>
                         </div>
                         <div>
-                            <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">{locale === 'ar' ? 'ابق على تواصل' : 'Stay Connected'}</h4>
+                            <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">{tCommon('stayConnected')}</h4>
                             <div className="flex gap-4">
                                 <Instagram className="cursor-pointer hover:text-coral transition-colors" />
                                 <Facebook className="cursor-pointer hover:text-coral transition-colors" />
@@ -81,10 +81,10 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                         </div>
                     </div>
                     <div className="pt-10 border-t border-white/10 text-xs text-rose/60 flex flex-col md:flex-row justify-between items-center gap-6">
-                        <p>© 2026 Luravie. {locale === 'ar' ? 'جميع الحقوق محفوظة.' : 'All rights reserved.'}</p>
+                        <p>© 2026 Luravie. {tCommon('allRightsReserved')}</p>
                         <div className="flex gap-8">
                             <span>{tCommon('cod')}</span>
-                            <span>{locale === 'ar' ? 'شحن سري' : 'Discreet Shipping'}</span>
+                            <span>{tCommon('discreetShipping')}</span>
                         </div>
                     </div>
                 </div>

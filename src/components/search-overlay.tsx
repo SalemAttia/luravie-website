@@ -14,6 +14,7 @@ interface SearchOverlayProps {
 
 export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, onSearch, initialQuery = '' }) => {
   const t = useTranslations('shop');
+  const tCommon = useTranslations('common');
   const locale = useLocale();
   const [query, setQuery] = useState(initialQuery);
   const [products, setProducts] = useState<Product[]>(PRODUCTS);
@@ -38,15 +39,15 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, o
   };
 
   const suggestions = [
-    'Cotton Briefs',
-    'Silk Lingerie',
-    'Everyday Bra',
-    'Bamboo Socks',
+    t('suggestions.cottonBriefs'),
+    t('suggestions.silkLingerie'),
+    t('suggestions.everydayBra'),
+    t('suggestions.bambooSocks'),
   ];
 
   const recentSearches = [
-    'Seamless Collection',
-    'Nude Tones',
+    t('recentItems.seamlessCollection'),
+    t('recentItems.nudeTones'),
   ];
 
   return (
@@ -143,7 +144,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = ({ isOpen, onClose, o
                     </div>
                     <div className={locale === 'ar' ? 'text-right' : ''}>
                       <p className="text-white font-bold text-sm truncate">{p.name}</p>
-                      <p className="text-rose/60 text-xs">{p.price} {locale === 'ar' ? 'ج.م' : 'EGP'}</p>
+                      <p className="text-rose/60 text-xs">{p.price} {tCommon('currency')}</p>
                     </div>
                   </button>
                 ))}

@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from 'next-intl';
 
 export const TrustSection: React.FC = () => {
   const t = useTranslations('common.trust');
+  const tCommon = useTranslations('common');
   const locale = useLocale();
 
   const TRUST_ITEMS = [
@@ -35,7 +36,7 @@ export const TrustSection: React.FC = () => {
       {/* Decorative text bg */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none opacity-[0.03]">
         <span className="text-[10rem] md:text-[20rem] font-bold text-teal whitespace-nowrap">
-          {locale === 'ar' ? 'لورافي' : 'LURAVIE'}
+          {tCommon('brandName')}
         </span>
       </div>
 
