@@ -99,6 +99,7 @@ export default async function RootLayout({
     logo: `${siteUrl}/opengraph-image`,
     contactPoint: {
       '@type': 'ContactPoint',
+      telephone: '+201505555388',
       email: 'support@luravie.com',
       contactType: 'customer service',
       areaServed: 'EG',
