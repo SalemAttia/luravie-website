@@ -3,11 +3,28 @@ import { ShopClient } from './ShopClient';
 import { PRODUCTS } from '@/data';
 import { getWooProducts } from '@/lib/woocommerce';
 import { Metadata } from 'next';
+import { localePath, localizedAlternates } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const canonical = localePath(locale, '/shop');
+
+  return {
     title: 'Shop All Collections',
-    description: 'Browse our exclusive collection of women\'s fashion, including luxury bras, lingerie, and accessories.',
-};
+    description: "Browse our exclusive collection of women's fashion, including luxury bras, lingerie, and accessories.",
+    alternates: {
+      canonical,
+      ...localizedAlternates('/shop'),
+    },
+    openGraph: {
+      url: canonical,
+    },
+  };
+}
 
 export default async function ShopPage() {
     const wooProducts = await getWooProducts();
