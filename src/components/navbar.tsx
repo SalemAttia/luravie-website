@@ -74,6 +74,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Mobile: Left Hamburger */}
             <button
               onClick={() => setIsMenuOpen(true)}
+              aria-label="Open menu"
               className="md:hidden p-2 text-rose hover:scale-110 transition-transform cursor-pointer"
             >
               <Menu size={24} />
@@ -85,6 +86,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <ImageWithFallback
                   src={logoImg}
                   alt="Luravie"
+                  width={56}
+                  height={56}
                   className="h-10 md:h-14 w-auto object-contain transition-all duration-500 hover:scale-105"
                   style={{
                     filter: 'brightness(0) invert(1)'
@@ -106,6 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
               <button
                 onClick={onFavoritesClick}
+                aria-label="Favorites"
                 className="relative p-2 text-white/40 hover:text-rose transition-colors cursor-pointer group"
               >
                 <Heart size={20} className={favoritesCount > 0 ? 'fill-coral text-coral' : ''} />
@@ -118,6 +122,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="w-px h-6 bg-white/10 mx-2 hidden sm:block" />
               <button
                 onClick={onCartClick}
+                aria-label="Shopping cart"
                 className="relative flex items-center gap-2 pl-2 pr-4 py-2 bg-rose text-teal rounded-full hover:bg-rose/90 transition-all group cursor-pointer shadow-lg shadow-black/10"
               >
                 <div className="bg-teal/10 p-1.5 rounded-full">
@@ -159,6 +164,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <ImageWithFallback
                   src={logoImg}
                   alt="Luravie"
+                  width={40}
+                  height={40}
                   className="h-10 w-auto"
                   style={{
                     filter: 'brightness(0) invert(1)'
@@ -166,6 +173,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 />
                 <button
                   onClick={() => setIsMenuOpen(false)}
+                  aria-label="Close menu"
                   className="p-2 text-rose hover:scale-110 transition-transform cursor-pointer"
                 >
                   <X size={24} />
@@ -256,15 +264,15 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <div className="p-8 border-t border-white/10 bg-black/10">
                 <div className="flex justify-center gap-8 mb-6">
-                  <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-rose shadow-sm border border-white/10">
+                  <a href="https://www.instagram.com/luravie" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-rose shadow-sm border border-white/10">
                     <Instagram size={20} />
-                  </div>
-                  <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-rose shadow-sm border border-white/10">
+                  </a>
+                  <a href="https://www.facebook.com/profile.php?id=61587971859017" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-rose shadow-sm border border-white/10">
                     <Facebook size={20} />
-                  </div>
+                  </a>
                 </div>
                 <p className="text-center text-[10px] text-rose/60 uppercase tracking-[0.2em]">
-                  Confidence starts within
+                  {t('confidence')}
                 </p>
               </div>
             </motion.div>

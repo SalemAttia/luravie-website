@@ -15,7 +15,7 @@ export function getSiteUrl(): string {
     '';
 
   const normalized = normalizeSiteUrl(fromEnv);
-  if (!normalized) return 'https://luravie.com';
+  if (!normalized) return 'https://www.luravie.com';
 
   if (normalized.startsWith('http://') || normalized.startsWith('https://')) {
     return normalized;
