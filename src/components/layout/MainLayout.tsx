@@ -48,7 +48,7 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
                         <div className="space-y-6">
                             <button onClick={() => navigate('/')} className="cursor-pointer">
-                                <ImageWithFallback src={logoImg} alt="Luravie" className="h-14 w-auto brightness-0 invert" />
+                                <ImageWithFallback src={logoImg} alt="Luravie" width={56} height={56} className="h-14 w-auto brightness-0 invert" />
                             </button>
                             <p className="text-sm text-rose/80">{tCommon('description')}</p>
                         </div>
@@ -73,13 +73,17 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                         <div>
                             <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">{tCommon('stayConnected')}</h4>
                             <div className="flex gap-4">
-                                <a href="https://www.instagram.com/luravie" target="_blank" rel="noopener noreferrer"><Instagram className="cursor-pointer hover:text-coral transition-colors" /></a>
-                                <a href="https://www.facebook.com/profile.php?id=61587971859017" target="_blank" rel="noopener noreferrer"><Facebook className="cursor-pointer hover:text-coral transition-colors" /></a>
+                                <a href="https://www.instagram.com/luravie" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                                    <Instagram className="cursor-pointer hover:text-coral transition-colors" />
+                                </a>
+                                <a href="https://www.facebook.com/profile.php?id=61587971859017" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                                    <Facebook className="cursor-pointer hover:text-coral transition-colors" />
+                                </a>
                             </div>
                         </div>
                     </div>
                     <div className="pt-10 border-t border-white/10 text-xs text-rose/60 flex flex-col md:flex-row justify-between items-center gap-6">
-                        <p>© 2026 Luravie. {tCommon('allRightsReserved')}</p>
+                        <p>{tCommon('copyright')} {tCommon('allRightsReserved')}</p>
                         <div className="flex gap-8">
                             <span>{tCommon('cod')}</span>
                             <span>{tCommon('discreetShipping')}</span>
