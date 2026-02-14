@@ -33,8 +33,6 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                 onCartClick={() => setIsCartOpen(true)}
                 onFavoritesClick={() => navigate('/shop?category=Favorites')}
                 onCategoryClick={(cat) => navigate(`/shop?category=${cat}`)}
-                onSearch={(q) => navigate(`/shop?search=${q}`)}
-                searchQuery=""
                 onNavigate={(p) => navigate(p === 'home' ? '/' : `/${p}`)}
                 currentPage={pathname === '/' ? 'home' : pathname.substring(1)}
             />

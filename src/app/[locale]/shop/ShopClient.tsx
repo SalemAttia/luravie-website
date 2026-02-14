@@ -27,7 +27,6 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isQuickSelectOpen, setIsQuickSelectOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-    const [searchQuery, setSearchQuery] = useState('');
     const [sortBy, setSortBy] = useState('Newest');
     const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
     const [selectedColors, setSelectedColors] = useState<string[]>([]);
@@ -60,19 +59,11 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
             result = result.filter(p => p.colors.some(c => selectedColors.includes(c.name)));
         }
 
-        if (searchQuery.trim()) {
-            const query = searchQuery.toLowerCase().trim();
-            result = result.filter(p =>
-                p.name.toLowerCase().includes(query) ||
-                p.category.toLowerCase().includes(query)
-            );
-        }
-
         if (sortBy === 'Price: Low to High') result.sort((a, b) => a.price - b.price);
         else if (sortBy === 'Price: High to Low') result.sort((a, b) => b.price - a.price);
 
         return result;
-    }, [activeCategory, favorites, searchQuery, sortBy, selectedSizes, selectedColors, initialProducts]);
+    }, [activeCategory, favorites, sortBy, selectedSizes, selectedColors, initialProducts]);
 
     return (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-12" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
