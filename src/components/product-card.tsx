@@ -59,13 +59,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           }}
           className={`absolute top-2 md:top-6 ${locale === 'ar' ? 'left-2 md:left-6' : 'right-2 md:right-6'} p-1.5 md:p-3 backdrop-blur-md rounded-full transition-all hover:scale-110 active:scale-90 cursor-pointer shadow-lg ${isFavorite
             ? 'bg-coral text-white border-coral'
-            : 'bg-white/80 text-teal border border-white opacity-100 md:opacity-0 md:group-hover:opacity-100'
+            : 'bg-white/80 text-teal border border-white opacity-100 lg:opacity-0 lg:group-hover:opacity-100'
             }`}
         >
           <Heart className={`w-4 h-4 md:w-5 md:h-5 ${isFavorite ? 'fill-white' : ''}`} />
         </button>
 
-        <div className="absolute bottom-2 left-2 right-2 md:bottom-6 md:left-6 md:right-6 translate-y-0 opacity-100 md:translate-y-4 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100 transition-all duration-500 space-y-1.5 md:space-y-3">
+        <div className="absolute bottom-2 left-2 right-2 md:bottom-6 md:left-6 md:right-6 translate-y-0 opacity-100 lg:translate-y-4 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 transition-all duration-500 space-y-1.5 md:space-y-3">
           <button
             onClick={(e) => {
               e.stopPropagation();
