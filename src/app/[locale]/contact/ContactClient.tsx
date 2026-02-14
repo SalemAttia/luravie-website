@@ -1,13 +1,63 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, MessageCircle, Clock } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
+import { toast } from 'sonner';
 
 export default function ContactClient() {
     const t = useTranslations('contact');
     const locale = useLocale();
+
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        subject: '',
+        message: '',
+    });
+    const [loading, setLoading] = useState(false);
+
+    // Set default subject once translations are ready
+    const subjectOptions = [
+        t('orderSupport'),
+        t('sizeGuide'),
+        t('wholesale'),
+        t('feedback'),
+    ];
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const subject = formData.subject || subjectOptions[0];
+
+        if (!formData.name || !formData.email || !formData.message) {
+            toast.error(locale === 'ar' ? 'يرجى ملء جميع الحقول' : 'Please fill in all fields');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const res = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...formData, subject }),
+            });
+
+            if (!res.ok) throw new Error();
+
+            toast.success(t('successMessage'));
+            setFormData({ name: '', email: '', subject: '', message: '' });
+        } catch {
+            toast.error(locale === 'ar' ? 'فشل إرسال الرسالة. حاول مرة أخرى.' : 'Failed to send message. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const contactItems = [
         {
@@ -84,12 +134,16 @@ export default function ContactClient() {
 
                     <div className="bg-white p-10 rounded-[3rem] shadow-lg border border-teal/5">
                         <h3 className={`text-3xl font-bold text-teal mb-8 ${locale === 'ar' ? 'text-right' : ''}`}>{t('sendMessage')}</h3>
-                        <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); alert(t('successMessage')); }}>
+                        <form className="space-y-6" onSubmit={handleSubmit}>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className={`text-xs font-bold text-teal uppercase tracking-widest ml-1 ${locale === 'ar' ? 'mr-1 block text-right' : ''}`}>{t('fullName')}</label>
                                     <input
                                         type="text"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        required
                                         placeholder={t('placeholderName')}
                                         className={`w-full px-6 py-4 bg-blush border border-teal/5 rounded-2xl focus:outline-none focus:ring-2 ring-coral/50 transition-all ${locale === 'ar' ? 'text-right' : ''}`}
                                     />
@@ -98,6 +152,10 @@ export default function ContactClient() {
                                     <label className={`text-xs font-bold text-teal uppercase tracking-widest ml-1 ${locale === 'ar' ? 'mr-1 block text-right' : ''}`}>{t('email')}</label>
                                     <input
                                         type="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        required
                                         placeholder={t('placeholderEmail')}
                                         className={`w-full px-6 py-4 bg-blush border border-teal/5 rounded-2xl focus:outline-none focus:ring-2 ring-coral/50 transition-all ${locale === 'ar' ? 'text-right' : ''}`}
                                     />
@@ -105,26 +163,38 @@ export default function ContactClient() {
                             </div>
                             <div className="space-y-2">
                                 <label className={`text-xs font-bold text-teal uppercase tracking-widest ml-1 ${locale === 'ar' ? 'mr-1 block text-right' : ''}`}>{t('subject')}</label>
-                                <select className={`w-full px-6 py-4 bg-blush border border-teal/5 rounded-2xl focus:outline-none focus:ring-2 ring-coral/50 transition-all appearance-none ${locale === 'ar' ? 'text-right' : ''}`}>
-                                    <option>{t('orderSupport')}</option>
-                                    <option>{t('sizeGuide')}</option>
-                                    <option>{t('wholesale')}</option>
-                                    <option>{t('feedback')}</option>
+                                <select
+                                    name="subject"
+                                    value={formData.subject}
+                                    onChange={handleChange}
+                                    className={`w-full px-6 py-4 bg-blush border border-teal/5 rounded-2xl focus:outline-none focus:ring-2 ring-coral/50 transition-all appearance-none ${locale === 'ar' ? 'text-right' : ''}`}
+                                >
+                                    {subjectOptions.map((option) => (
+                                        <option key={option} value={option}>{option}</option>
+                                    ))}
                                 </select>
                             </div>
                             <div className="space-y-2">
                                 <label className={`text-xs font-bold text-teal uppercase tracking-widest ml-1 ${locale === 'ar' ? 'mr-1 block text-right' : ''}`}>{t('message')}</label>
                                 <textarea
                                     rows={5}
+                                    name="message"
+                                    value={formData.message}
+                                    onChange={handleChange}
+                                    required
                                     placeholder={t('placeholderMessage')}
                                     className={`w-full px-6 py-4 bg-blush border border-teal/5 rounded-2xl focus:outline-none focus:ring-2 ring-coral/50 transition-all resize-none ${locale === 'ar' ? 'text-right' : ''}`}
                                 />
                             </div>
                             <button
                                 type="submit"
-                                className="w-full py-5 bg-coral text-white rounded-2xl font-bold text-lg shadow-lg shadow-coral/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                                disabled={loading}
+                                className="w-full py-5 bg-coral text-white rounded-2xl font-bold text-lg shadow-lg shadow-coral/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
                             >
-                                {t('send')}
+                                {loading
+                                    ? (locale === 'ar' ? 'جارٍ الإرسال...' : 'Sending...')
+                                    : t('send')
+                                }
                             </button>
                         </form>
                     </div>
