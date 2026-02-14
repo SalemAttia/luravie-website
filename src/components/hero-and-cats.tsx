@@ -146,7 +146,7 @@ export const Hero: React.FC<{ onShopNow: () => void; onAboutClick: () => void }>
             initial={{ opacity: 0, scale: 0.9, rotate: 2 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             transition={{ duration: 1, delay: 0.2 }}
-            className="lg:col-span-5 relative max-w-xs mx-auto lg:max-w-none"
+            className="lg:col-span-5 relative max-w-xs mx-auto lg:max-w-none hidden lg:block"
           >
             {/* Main Visual Frame */}
             <div className="relative aspect-square lg:aspect-[4/5] rounded-[2rem] md:rounded-[4rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.4)] border-[6px] md:border-[12px] border-white/5 backdrop-blur-3xl">

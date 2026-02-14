@@ -256,12 +256,12 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <div className="p-8 border-t border-white/10 bg-black/10">
                 <div className="flex justify-center gap-8 mb-6">
-                  <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-rose shadow-sm border border-white/10">
+                  <a href="https://www.instagram.com/luravie" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-rose shadow-sm border border-white/10">
                     <Instagram size={20} />
-                  </div>
-                  <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-rose shadow-sm border border-white/10">
+                  </a>
+                  <a href="https://www.facebook.com/profile.php?id=61587971859017" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-rose shadow-sm border border-white/10">
                     <Facebook size={20} />
-                  </div>
+                  </a>
                 </div>
                 <p className="text-center text-[10px] text-rose/60 uppercase tracking-[0.2em]">
                   Confidence starts within
