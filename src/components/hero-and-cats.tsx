@@ -83,7 +83,7 @@ export const Hero: React.FC<{ onShopNow: () => void; onAboutClick: () => void }>
   const locale = useLocale();
 
   return (
-    <div className="relative min-h-[95vh] flex items-center overflow-hidden bg-teal">
+    <div className="relative lg:min-h-[95vh] flex items-center overflow-hidden bg-teal">
       {/* Texture Overlay */}
       <div className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay"
         style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
@@ -146,7 +146,7 @@ export const Hero: React.FC<{ onShopNow: () => void; onAboutClick: () => void }>
             initial={{ opacity: 0, scale: 0.9, rotate: 2 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             transition={{ duration: 1, delay: 0.2 }}
-            className="lg:col-span-5 relative max-w-xs mx-auto lg:max-w-none"
+            className="lg:col-span-5 relative max-w-xs mx-auto lg:max-w-none hidden lg:block"
           >
             {/* Main Visual Frame */}
             <div className="relative aspect-square lg:aspect-[4/5] rounded-[2rem] md:rounded-[4rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.4)] border-[6px] md:border-[12px] border-white/5 backdrop-blur-3xl">

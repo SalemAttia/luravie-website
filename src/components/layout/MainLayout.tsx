@@ -73,8 +73,8 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                         <div>
                             <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">{tCommon('stayConnected')}</h4>
                             <div className="flex gap-4">
-                                <Instagram className="cursor-pointer hover:text-coral transition-colors" />
-                                <Facebook className="cursor-pointer hover:text-coral transition-colors" />
+                                <a href="https://www.instagram.com/luravie" target="_blank" rel="noopener noreferrer"><Instagram className="cursor-pointer hover:text-coral transition-colors" /></a>
+                                <a href="https://www.facebook.com/profile.php?id=61587971859017" target="_blank" rel="noopener noreferrer"><Facebook className="cursor-pointer hover:text-coral transition-colors" /></a>
                             </div>
                         </div>
                     </div>
