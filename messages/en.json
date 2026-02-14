@@ -216,6 +216,13 @@
         "orderFailed": "Failed to create order",
         "qty": "Qty:"
     },
+    "notFound": {
+        "title": "Page Not Found",
+        "heading": "Oops!",
+        "description": "The page you're looking for seems to have wandered off. Let's get you back on track.",
+        "backHome": "Back to Home",
+        "exploreShop": "Explore Shop"
+    },
     "sizeGuide": {
         "title": "Size Guide",
         "subtitle": "Find your perfect fit for {category} collection.",
