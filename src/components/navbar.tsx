@@ -1,14 +1,12 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ShoppingBag, Search, Menu, Heart, X, ChevronRight, Instagram, Facebook, Globe } from 'lucide-react';
+import { ShoppingBag, Menu, Heart, X, ChevronRight, Instagram, Facebook, Globe } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import logoImg from "@/assets/9fa13cb21775809b44829beac6f211643ef2d854.png";
 import { useTranslations, useLocale } from 'next-intl';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
-
-import { SearchOverlay } from '@/components/search-overlay';
 
 interface NavbarProps {
   cartCount: number;
@@ -17,8 +15,6 @@ interface NavbarProps {
   onFavoritesClick: () => void;
   onNavigate: (page: string) => void;
   onCategoryClick: (category: string) => void;
-  onSearch: (query: string) => void;
-  searchQuery: string;
   currentPage: string;
 }
 
@@ -29,8 +25,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onFavoritesClick,
   onNavigate,
   onCategoryClick,
-  onSearch,
-  searchQuery,
   currentPage
 }) => {
   const t = useTranslations('common');
@@ -39,7 +33,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   const router = useRouter();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const categories = ['Bra', 'Pants', 'Lingerie', 'Socks'];
 
@@ -110,12 +103,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <span className="text-teal font-bold text-xs">
                   {locale === 'en' ? 'عربي' : 'English'}
                 </span>
-              </button>
-              <button
-                onClick={() => setIsSearchOpen(true)}
-                className="p-2 text-white/40 hover:text-rose transition-colors cursor-pointer"
-              >
-                <Search size={20} />
               </button>
               <button
                 onClick={onFavoritesClick}
@@ -284,12 +271,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           </>
         )}
       </AnimatePresence>
-      <SearchOverlay
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-        onSearch={onSearch}
-        initialQuery={searchQuery}
-      />
     </>
   );
 };
