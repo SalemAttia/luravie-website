@@ -1,4 +1,4 @@
-type GtagEventParams = Record<string, string | number | boolean | undefined>;
+type GtagEventParams = Record<string, string | number | boolean | object[] | undefined>;
 
 declare global {
   interface Window {
@@ -21,14 +21,14 @@ export function trackViewItem(product: {
   trackEvent('view_item', {
     currency: 'EGP',
     value: product.price,
-    items: JSON.stringify([
+    items: [
       {
         item_id: product.id,
         item_name: product.name,
         item_category: product.category,
         price: product.price,
       },
-    ]),
+    ],
   });
 }
 
@@ -40,7 +40,7 @@ export function trackAddToCart(
   trackEvent('add_to_cart', {
     currency: 'EGP',
     value: product.price,
-    items: JSON.stringify([
+    items: [
       {
         item_id: product.id,
         item_name: product.name,
@@ -49,7 +49,7 @@ export function trackAddToCart(
         item_variant: [size, color].filter(Boolean).join(' / ') || undefined,
         quantity: 1,
       },
-    ]),
+    ],
   });
 }
 
@@ -62,14 +62,14 @@ export function trackRemoveFromCart(product: {
   trackEvent('remove_from_cart', {
     currency: 'EGP',
     value: product.price,
-    items: JSON.stringify([
+    items: [
       {
         item_id: product.id,
         item_name: product.name,
         item_category: product.category,
         price: product.price,
       },
-    ]),
+    ],
   });
 }
 
@@ -80,15 +80,13 @@ export function trackBeginCheckout(
   trackEvent('begin_checkout', {
     currency: 'EGP',
     value: total,
-    items: JSON.stringify(
-      items.map((item) => ({
-        item_id: item.id,
-        item_name: item.name,
-        item_category: item.category,
-        price: item.price,
-        quantity: item.quantity,
-      })),
-    ),
+    items: items.map((item) => ({
+      item_id: item.id,
+      item_name: item.name,
+      item_category: item.category,
+      price: item.price,
+      quantity: item.quantity,
+    })),
   });
 }
 
@@ -100,14 +98,12 @@ export function trackPurchase(
     currency: 'EGP',
     value: total,
     transaction_id: `${Date.now()}`,
-    items: JSON.stringify(
-      items.map((item) => ({
-        item_id: item.id,
-        item_name: item.name,
-        item_category: item.category,
-        price: item.price,
-        quantity: item.quantity,
-      })),
-    ),
+    items: items.map((item) => ({
+      item_id: item.id,
+      item_name: item.name,
+      item_category: item.category,
+      price: item.price,
+      quantity: item.quantity,
+    })),
   });
 }
