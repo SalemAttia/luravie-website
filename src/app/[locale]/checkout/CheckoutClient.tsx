@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from '@/i18n/routing';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Truck, CreditCard, ChevronRight, Package, Info, ChevronLeft, AlertCircle, Minus, Plus, Trash2 } from 'lucide-react';
@@ -10,6 +10,7 @@ import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import { useApp } from '@/context/AppContext';
 import { useTranslations, useLocale } from 'next-intl';
 import * as Sentry from "@sentry/nextjs";
+import { trackBeginCheckout, trackPurchase } from '@/lib/analytics';
 
 interface ShippingFormData {
     fullName: string;
@@ -39,8 +40,16 @@ export default function CheckoutClient() {
     const [orderError, setOrderError] = useState<string | null>(null);
 
     const { register, handleSubmit, formState: { errors } } = useForm<ShippingFormData>();
+    const hasTrackedCheckout = useRef(false);
 
     const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    useEffect(() => {
+        if (cartItems.length > 0 && !hasTrackedCheckout.current) {
+            hasTrackedCheckout.current = true;
+            trackBeginCheckout(cartItems, subtotal);
+        }
+    }, [cartItems, subtotal]);
 
     const navigate = (path: string) => {
         router.push(path as any);
@@ -94,6 +103,7 @@ export default function CheckoutClient() {
                 throw new Error(error.error || 'Failed to create order');
             }
 
+            trackPurchase(cartItems, subtotal);
             clearCart();
             navigate('/success');
         } catch (error: any) {
