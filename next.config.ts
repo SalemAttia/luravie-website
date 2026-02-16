@@ -21,6 +21,8 @@ export default withSentryConfig(withNextIntl(nextConfig), {
 
   widenClientFileUpload: true,
 
+  tunnelRoute: "/api/t",
+
   sourcemaps: {
     deleteSourcemapsAfterUpload: true,
   },
