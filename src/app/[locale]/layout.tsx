@@ -15,6 +15,7 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { getMetadataBase, getSiteUrl, ogLocaleFromLocale } from '@/lib/seo';
 import { JsonLd } from '@/components/JsonLd';
+import { GoogleAnalytics } from '@next/third-parties/google';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -119,6 +120,9 @@ export default async function RootLayout({
             </MainLayout>
           </AppProvider>
         </NextIntlClientProvider>
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        )}
       </body>
     </html>
   );

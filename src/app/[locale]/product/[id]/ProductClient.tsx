@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from '@/i18n/routing';
 import { motion } from 'framer-motion';
 import { ProductDetail } from '@/components/product-detail';
@@ -9,6 +9,7 @@ import { QuickSelectModal } from '@/components/quick-select-modal';
 import { useApp } from '@/context/AppContext';
 import { Product, PRODUCTS } from '@/data';
 import { useTranslations, useLocale } from 'next-intl';
+import { trackViewItem } from '@/lib/analytics';
 
 interface ProductClientProps {
     product: Product;
@@ -22,6 +23,10 @@ export function ProductClient({ product, relatedProducts }: ProductClientProps) 
     const { favorites, toggleFavorite, addToCart, buyNow } = useApp();
     const [isQuickSelectOpen, setIsQuickSelectOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+    useEffect(() => {
+        trackViewItem(product);
+    }, [product]);
 
     const navigate = (path: string) => {
         router.push(path as any);

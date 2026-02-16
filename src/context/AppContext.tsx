@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useMemo, useEffect } from '
 import { toast } from 'sonner';
 import { PRODUCTS, Product } from '@/data';
 import { useTranslations } from 'next-intl';
+import { trackAddToCart, trackRemoveFromCart } from '@/lib/analytics';
 
 interface CartItem extends Product {
   quantity: number;
@@ -110,6 +111,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return [...prev, { ...product, quantity: 1, selectedSize: size, selectedColor: color }];
     });
 
+    trackAddToCart(product, size, color?.name);
+
     toast.success(t('addedToBag'), {
       description: `${product.name}${color ? ` - ${color.name}` : ''}${size ? `, ${size}` : ''}`,
       icon: '✨',
@@ -130,6 +133,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const removeFromCart = (id: string, size?: string, colorName?: string) => {
+    const item = cartItems.find(i => i.id === id && i.selectedSize === size && i.selectedColor?.name === colorName);
+    if (item) {
+      trackRemoveFromCart(item);
+    }
     setCartItems(prev => prev.filter(item =>
       !(item.id === id && item.selectedSize === size && item.selectedColor?.name === colorName)
     ));
