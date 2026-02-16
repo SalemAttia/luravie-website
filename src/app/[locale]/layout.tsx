@@ -110,7 +110,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${inter.className} antialiased`} suppressHydrationWarning>
         <JsonLd data={organizationJsonLd} />
         <NextIntlClientProvider messages={messages}>
           <AppProvider>
