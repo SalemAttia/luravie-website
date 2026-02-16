@@ -9,6 +9,7 @@ import { Product } from '@/data';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import { useApp } from '@/context/AppContext';
 import { useTranslations, useLocale } from 'next-intl';
+import * as Sentry from "@sentry/nextjs";
 
 interface ShippingFormData {
     fullName: string;
@@ -96,6 +97,10 @@ export default function CheckoutClient() {
             clearCart();
             navigate('/success');
         } catch (error: any) {
+            Sentry.captureException(error, {
+                tags: { flow: "checkout", component: "CheckoutClient" },
+                extra: { itemCount: cartItems.length },
+            });
             console.error('Checkout error:', error);
             setOrderError(error.message);
         } finally {
@@ -105,6 +110,8 @@ export default function CheckoutClient() {
 
     const onSubmitShipping = (data: ShippingFormData) => {
         setShippingData(data);
+        Sentry.setUser({ email: data.email });
+        Sentry.setTag("checkout.city", data.city);
         setStep(2);
     };
 

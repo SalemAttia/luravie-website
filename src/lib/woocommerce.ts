@@ -1,4 +1,5 @@
 import { Product } from '@/data';
+import * as Sentry from "@sentry/nextjs";
 
 const WOO_URL = process.env.NEXT_PUBLIC_WOOCOMMERCE_URL;
 const WOO_KEY = process.env.WOOCOMMERCE_CONSUMER_KEY;
@@ -20,6 +21,11 @@ export async function getWooProducts(): Promise<Product[]> {
         });
 
         if (!response.ok) {
+            Sentry.captureMessage(`WooCommerce API error: ${response.status} ${response.statusText}`, {
+                level: "warning",
+                tags: { service: "woocommerce", operation: "getProducts" },
+                extra: { status: response.status, statusText: response.statusText },
+            });
             console.error(`WooCommerce API error: ${response.status} ${response.statusText}`);
             return [];
         }
@@ -73,6 +79,9 @@ export async function getWooProducts(): Promise<Product[]> {
             };
         });
     } catch (error) {
+        Sentry.captureException(error, {
+            tags: { service: "woocommerce", operation: "getProducts" },
+        });
         console.error('Error fetching WooCommerce products:', error);
         return [];
     }
@@ -139,6 +148,10 @@ export async function getWooProductById(id: string): Promise<Product | null> {
             images: p.images?.map((img: any) => img.src) || [],
         };
     } catch (error) {
+        Sentry.captureException(error, {
+            tags: { service: "woocommerce", operation: "getProductById" },
+            extra: { productId: id },
+        });
         console.error(`Error fetching WooCommerce product ${id}:`, error);
         return null;
     }
@@ -146,8 +159,23 @@ export async function getWooProductById(id: string): Promise<Product | null> {
 
 export async function createWooOrder(orderData: any): Promise<any> {
     if (!WOO_URL || !WOO_KEY || !WOO_SECRET) {
-        throw new Error('WooCommerce credentials not found');
+        const error = new Error('WooCommerce credentials not found');
+        Sentry.captureException(error, {
+            tags: { service: "woocommerce", operation: "createOrder" },
+            level: "fatal",
+        });
+        throw error;
     }
+
+    Sentry.addBreadcrumb({
+        category: "woocommerce",
+        message: "Creating WooCommerce order",
+        level: "info",
+        data: {
+            itemCount: orderData.line_items?.length,
+            paymentMethod: orderData.payment_method,
+        },
+    });
 
     const auth = Buffer.from(`${WOO_KEY}:${WOO_SECRET}`).toString('base64');
     const response = await fetch(`${WOO_URL}/wp-json/wc/v3/orders`, {
@@ -160,8 +188,13 @@ export async function createWooOrder(orderData: any): Promise<any> {
     });
 
     if (!response.ok) {
-        const error = await response.json();
-        throw new Error(`WooCommerce API error: ${error.message || response.statusText}`);
+        const errorData = await response.json();
+        const orderError = new Error(`WooCommerce API error: ${errorData.message || response.statusText}`);
+        Sentry.captureException(orderError, {
+            tags: { service: "woocommerce", operation: "createOrder" },
+            extra: { status: response.status, wooError: errorData.message },
+        });
+        throw orderError;
     }
 
     return await response.json();

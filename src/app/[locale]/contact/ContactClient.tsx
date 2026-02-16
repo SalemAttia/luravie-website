@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, MessageCircle, Clock } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import { toast } from 'sonner';
+import * as Sentry from "@sentry/nextjs";
 
 export default function ContactClient() {
     const t = useTranslations('contact');
@@ -52,7 +53,10 @@ export default function ContactClient() {
 
             toast.success(t('successMessage'));
             setFormData({ name: '', email: '', subject: '', message: '' });
-        } catch {
+        } catch (error) {
+            Sentry.captureException(error, {
+                tags: { flow: "contact", component: "ContactClient" },
+            });
             toast.error(locale === 'ar' ? 'فشل إرسال الرسالة. حاول مرة أخرى.' : 'Failed to send message. Please try again.');
         } finally {
             setLoading(false);

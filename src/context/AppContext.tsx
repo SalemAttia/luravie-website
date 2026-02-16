@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useMemo, useEffect } from '
 import { toast } from 'sonner';
 import { PRODUCTS, Product } from '@/data';
 import { useTranslations } from 'next-intl';
+import * as Sentry from "@sentry/nextjs";
 
 interface CartItem extends Product {
   quantity: number;
@@ -43,6 +44,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           setCartItems(parsed);
         }
       } catch (e) {
+        Sentry.captureException(e, {
+            tags: { component: "AppContext" },
+            extra: { action: "parse_cart_localstorage" },
+            level: "warning",
+        });
         console.error('Failed to parse cart from localStorage', e);
       }
     }
@@ -54,6 +60,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           setFavorites(parsed);
         }
       } catch (e) {
+        Sentry.captureException(e, {
+            tags: { component: "AppContext" },
+            extra: { action: "parse_favorites_localstorage" },
+            level: "warning",
+        });
         console.error('Failed to parse favorites from localStorage', e);
       }
     }
