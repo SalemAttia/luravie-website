@@ -100,17 +100,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="flex items-center gap-1 sm:gap-2">
               <button
                 onClick={toggleLanguage}
-                className="hidden md:flex items-center gap-2 bg-rose px-3 py-1.5 rounded-full border border-teal/10 hover:scale-105 transition-all mr-2 cursor-pointer group"
+                className="hidden min-[433px]:flex items-center gap-1 md:gap-2 bg-rose px-2 py-1 md:px-3 md:py-1.5 rounded-full border border-teal/10 hover:scale-105 transition-all mr-1 md:mr-2 cursor-pointer group"
               >
-                <Globe size={14} className="text-teal group-hover:rotate-12 transition-transform" />
-                <span className="text-teal font-bold text-xs">
-                  {locale === 'en' ? 'عربي' : 'English'}
+                <Globe size={12} className="text-teal group-hover:rotate-12 transition-transform md:w-[14px] md:h-[14px]" />
+                <span className="text-teal font-bold text-[10px] md:text-xs">
+                  {locale === 'en' ? 'عربي' : 'EN'}
                 </span>
               </button>
               <button
                 onClick={onFavoritesClick}
                 aria-label="Favorites"
-                className="relative p-2 text-white/40 hover:text-rose transition-colors cursor-pointer group"
+                className="relative p-2 text-rose/70 hover:text-rose transition-colors cursor-pointer group"
               >
                 <Heart size={20} className={favoritesCount > 0 ? 'fill-coral text-coral' : ''} />
                 {favoritesCount > 0 && (
@@ -123,10 +123,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 onClick={onCartClick}
                 aria-label="Shopping cart"
-                className="relative flex items-center gap-2 pl-2 pr-4 py-2 bg-rose text-teal rounded-full hover:bg-rose/90 transition-all group cursor-pointer shadow-lg shadow-black/10"
+                className="relative flex items-center gap-1 md:gap-2 pl-1.5 pr-2 py-1.5 md:pl-2 md:pr-4 md:py-2 bg-rose text-teal rounded-full hover:bg-rose/90 transition-all group cursor-pointer shadow-lg shadow-black/10"
               >
-                <div className="bg-teal/10 p-1.5 rounded-full">
-                  <ShoppingBag size={16} />
+                <div className="bg-teal/10 p-1 md:p-1.5 rounded-full">
+                  <ShoppingBag size={14} className="md:w-4 md:h-4" />
                 </div>
                 <span className="text-xs font-bold uppercase tracking-wider hidden sm:inline">
                   {t('cart')}
