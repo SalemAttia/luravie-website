@@ -10,6 +10,7 @@ export interface Product {
   sizes: string[];
   colors: { name: string; hex: string }[];
   images?: string[];
+  outOfStock?: boolean;
 }
 
 const COMMON_COLORS = [
@@ -55,7 +56,8 @@ export const PRODUCTS: Product[] = [
     features: ['Premium lace detail', 'Silk lining', 'Adjustable fit'],
     materials: 'Lace: 90% Polyamide, 10% Elastane. Lining: 100% Silk',
     sizes: ['S', 'M', 'L'],
-    colors: [COMMON_COLORS[0], COMMON_COLORS[3]]
+    colors: [COMMON_COLORS[0], COMMON_COLORS[3]],
+    outOfStock: true
   },
   {
     id: '4',

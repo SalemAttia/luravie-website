@@ -124,7 +124,25 @@
         "plainBoxes": "Plain unmarked boxes",
         "inspection": "Inspection",
         "payAfterInspection": "Pay after inspection",
-        "orderNowFreeShipping": "Order Now — Free Shipping"
+        "orderNowFreeShipping": "Order Now — Free Shipping",
+        "soldOut": "Sold Out",
+        "notifyMe": {
+            "button": "Notify Me When Available",
+            "hint": "Join the waitlist — we'll reach out when it's back.",
+            "title": "Get Notified",
+            "subtitle": "We'll contact you the moment this item is back in stock.",
+            "name": "Your Name",
+            "phone": "WhatsApp / Phone Number",
+            "email": "Email Address (optional)",
+            "namePlaceholder": "Jane Doe",
+            "phonePlaceholder": "01012345678",
+            "emailPlaceholder": "jane@example.com",
+            "submit": "Notify Me",
+            "success": "You're on the list!",
+            "successSub": "We'll reach out when it's back in stock.",
+            "error": "Something went wrong. Please try again.",
+            "phoneRequired": "Phone number is required"
+        }
     },
     "about": {
         "ourStory": "Our Story",
