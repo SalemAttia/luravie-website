@@ -7,6 +7,7 @@ import { Hero, CategorySection } from '@/components/hero-and-cats';
 import { ProductCard } from '@/components/product-card';
 import { TrustSection } from '@/components/trust-section';
 import { QuickSelectModal } from '@/components/quick-select-modal';
+import { NotifyMeModal } from '@/components/notify-me-modal';
 import { useApp } from '@/context/AppContext';
 import { Product } from '@/data';
 import { useTranslations } from 'next-intl';
@@ -20,6 +21,7 @@ export function HomeClient({ initialProducts }: HomeClientProps) {
     const router = useRouter();
     const { favorites, toggleFavorite, addToCart, buyNow } = useApp();
     const [isQuickSelectOpen, setIsQuickSelectOpen] = useState(false);
+    const [isNotifyMeOpen, setIsNotifyMeOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
     const navigate = (path: string) => {
@@ -61,6 +63,7 @@ export function HomeClient({ initialProducts }: HomeClientProps) {
                                 }}
                                 onClick={() => navigate(`/product/${product.id}`)}
                                 onOpenQuickSelect={() => openQuickSelect(product)}
+                                onNotifyMe={(p) => { setSelectedProduct(p); setIsNotifyMeOpen(true); }}
                             />
                         ))}
                     </div>
@@ -76,6 +79,12 @@ export function HomeClient({ initialProducts }: HomeClientProps) {
                     buyNow(p, s, c);
                     navigate('/checkout');
                 }}
+            />
+
+            <NotifyMeModal
+                isOpen={isNotifyMeOpen}
+                onClose={() => setIsNotifyMeOpen(false)}
+                product={selectedProduct}
             />
 
             <TrustSection />

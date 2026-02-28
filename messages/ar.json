@@ -124,7 +124,25 @@
         "plainBoxes": "صناديق سادة غير مميزة",
         "inspection": "المعاينة",
         "payAfterInspection": "ادفع بعد المعاينة",
-        "orderNowFreeShipping": "اطلب الآن — شحن مجاني"
+        "orderNowFreeShipping": "اطلب الآن — شحن مجاني",
+        "soldOut": "نفذ المخزون",
+        "notifyMe": {
+            "button": "أخبريني عند توفره",
+            "hint": "انضمي لقائمة الانتظار — سنتواصل معك عند عودته.",
+            "title": "أبلغيني",
+            "subtitle": "سنتواصل معك فور توفر هذا المنتج مجدداً.",
+            "name": "اسمك",
+            "phone": "رقم الواتساب / الهاتف",
+            "email": "البريد الإلكتروني (اختياري)",
+            "namePlaceholder": "Jane Doe",
+            "phonePlaceholder": "01012345678",
+            "emailPlaceholder": "jane@example.com",
+            "submit": "أبلغيني",
+            "success": "أنت على القائمة!",
+            "successSub": "سنتواصل معك عند عودة المنتج للمخزون.",
+            "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+            "phoneRequired": "رقم الهاتف مطلوب"
+        }
     },
     "about": {
         "ourStory": "قصتنا",

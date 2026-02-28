@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ChevronLeft, ShoppingBag, Heart, Shield, RefreshCw, Package, Check, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ShoppingBag, Heart, RefreshCw, Package, Check, ChevronRight, Bell } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import { SizeGuide } from '@/components/size-guide';
+import { NotifyMeModal } from '@/components/notify-me-modal';
 import { Product } from '@/data';
 import { useTranslations, useLocale } from 'next-intl';
 
@@ -33,6 +34,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   const [selectedColor, setSelectedColor] = useState(product.colors.length > 0 ? product.colors[0] : undefined);
   const [mainImage, setMainImage] = useState(product.image);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+  const [isNotifyMeOpen, setIsNotifyMeOpen] = useState(false);
   const [addedStatus, setAddedStatus] = useState(false);
 
   const tabKeys = ['description', 'materials', 'shipping'] as const;
@@ -50,6 +52,11 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
         isOpen={isSizeGuideOpen}
         onClose={() => setIsSizeGuideOpen(false)}
         category={product.category}
+      />
+      <NotifyMeModal
+        isOpen={isNotifyMeOpen}
+        onClose={() => setIsNotifyMeOpen(false)}
+        product={product}
       />
       <button
         onClick={onBack}
@@ -90,15 +97,22 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
 
         <div className="flex flex-col">
           <div className={`mb-4 md:mb-8 ${locale === 'ar' ? 'text-right' : ''}`}>
-            <p className="text-coral font-bold text-[10px] md:text-xs tracking-[0.3em] uppercase mb-2 md:mb-3">
-              {t_common(`categories.${product.category.toLowerCase()}`)}
-            </p>
+            <div className={`flex items-center gap-2 mb-2 md:mb-3 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+              <p className="text-coral font-bold text-[10px] md:text-xs tracking-[0.3em] uppercase">
+                {t_common(`categories.${product.category.toLowerCase()}`)}
+              </p>
+              {product.outOfStock && (
+                <span className="bg-teal/10 text-teal/70 text-[9px] md:text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full">
+                  {t_product('soldOut')}
+                </span>
+              )}
+            </div>
             <h1 className="text-xl md:text-5xl font-bold text-teal mb-1 md:mb-4 leading-tight">{product.name}</h1>
             <p className="text-lg md:text-4xl font-bold text-coral">{product.price} {t_common('currency')}</p>
           </div>
 
           {product.colors.length > 0 && (
-            <div className="mb-4 md:mb-8">
+            <div className={`mb-4 md:mb-8 ${product.outOfStock ? 'opacity-40' : ''}`}>
               <div className={`flex justify-between items-center mb-2 md:mb-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                 <span className="font-bold text-teal uppercase tracking-widest text-[10px] md:text-xs">{t_product('selectColor')}</span>
                 <span className="text-xs md:text-sm font-bold text-teal/60">{selectedColor?.name}</span>
@@ -124,12 +138,12 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           )}
 
           {product.sizes.length > 0 && (
-            <div className="mb-4 md:mb-8">
+            <div className={`mb-4 md:mb-8 ${product.outOfStock ? 'opacity-40' : ''}`}>
               <div className={`flex justify-between items-center mb-2 md:mb-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                 <span className="font-bold text-teal uppercase tracking-widest text-[10px] md:text-xs">{t_product('selectSize')}</span>
                 <button
                   onClick={() => setIsSizeGuideOpen(true)}
-                  className="text-coral text-xs font-bold uppercase tracking-widest underline cursor-pointer hover:text-teal transition-colors"
+                  className="text-coral text-xs font-bold uppercase tracking-widest underline transition-colors cursor-pointer hover:text-teal"
                 >
                   {t_product('sizeGuide')}
                 </button>
@@ -152,46 +166,63 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           )}
 
           <div className="space-y-2 md:space-y-4 mb-6 md:mb-12">
-            <div className="flex flex-row gap-2 sm:gap-4">
-              <button
-                onClick={handleAddAction}
-                className={`flex-1 py-3 md:py-5 rounded-xl md:rounded-2xl font-bold text-sm md:text-lg flex items-center justify-center gap-2 md:gap-3 shadow-xl transition-all cursor-pointer ${addedStatus
-                  ? 'bg-teal text-white shadow-teal/20'
-                  : 'bg-teal text-rose shadow-teal/20 hover:scale-[1.02] active:scale-[0.98]'
-                  } ${locale === 'ar' ? 'flex-row-reverse' : ''}`}
-              >
-                {addedStatus ? (
-                  <>
-                    <Check size={20} />
-                    {t_common('added')}
-                  </>
-                ) : (
-                  <>
-                    <ShoppingBag size={20} />
-                    {t_common('addToBag')}
-                  </>
-                )}
-              </button>
-              <button
-                onClick={(e) => onToggleFavorite(e)}
-                className={`p-2.5 md:p-5 rounded-xl md:rounded-2xl transition-all border-2 cursor-pointer ${isFavorite
-                  ? 'bg-coral border-coral text-white shadow-xl shadow-coral/20'
-                  : 'bg-white border-white text-coral hover:bg-coral/5'
-                  }`}
-              >
-                <Heart className={`w-5 h-5 md:w-6 md:h-6 ${isFavorite ? 'fill-white' : ''}`} />
-              </button>
-            </div>
+            {product.outOfStock ? (
+              <>
+                <button
+                  onClick={() => setIsNotifyMeOpen(true)}
+                  className={`w-full py-3 md:py-5 bg-coral text-white rounded-xl md:rounded-2xl font-bold text-sm md:text-lg flex items-center justify-center gap-2 md:gap-3 shadow-2xl shadow-coral/40 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer ${locale === 'ar' ? 'flex-row-reverse' : ''}`}
+                >
+                  <Bell size={20} />
+                  {t_product('notifyMe.button')}
+                </button>
+                <p className={`text-center text-[10px] text-teal/40 uppercase tracking-[0.2em] font-bold ${locale === 'ar' ? 'text-right' : ''}`}>
+                  {t_product('notifyMe.hint')}
+                </p>
+              </>
+            ) : (
+              <>
+                <div className="flex flex-row gap-2 sm:gap-4">
+                  <button
+                    onClick={handleAddAction}
+                    className={`flex-1 py-3 md:py-5 rounded-xl md:rounded-2xl font-bold text-sm md:text-lg flex items-center justify-center gap-2 md:gap-3 shadow-xl transition-all cursor-pointer ${addedStatus
+                      ? 'bg-teal text-white shadow-teal/20'
+                      : 'bg-teal text-rose shadow-teal/20 hover:scale-[1.02] active:scale-[0.98]'
+                      } ${locale === 'ar' ? 'flex-row-reverse' : ''}`}
+                  >
+                    {addedStatus ? (
+                      <>
+                        <Check size={20} />
+                        {t_common('added')}
+                      </>
+                    ) : (
+                      <>
+                        <ShoppingBag size={20} />
+                        {t_common('addToBag')}
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={(e) => onToggleFavorite(e)}
+                    className={`p-2.5 md:p-5 rounded-xl md:rounded-2xl transition-all border-2 cursor-pointer ${isFavorite
+                      ? 'bg-coral border-coral text-white shadow-xl shadow-coral/20'
+                      : 'bg-white border-white text-coral hover:bg-coral/5'
+                      }`}
+                  >
+                    <Heart className={`w-5 h-5 md:w-6 md:h-6 ${isFavorite ? 'fill-white' : ''}`} />
+                  </button>
+                </div>
 
-            <button
-              onClick={() => onBuyNow(product, selectedSize || undefined, selectedColor || undefined)}
-              className="w-full py-3 md:py-6 bg-coral text-white rounded-xl md:rounded-2xl font-bold text-xs md:text-xl flex items-center justify-center gap-2 md:gap-3 shadow-2xl shadow-coral/40 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
-            >
-              {t_common('orderNow')} — {t_common('freeShipping')}
-            </button>
-            <p className={`text-center text-[10px] text-teal/40 uppercase tracking-[0.2em] font-bold ${locale === 'ar' ? 'text-right' : ''}`}>
-              {t_product('codNotice')}
-            </p>
+                <button
+                  onClick={() => onBuyNow(product, selectedSize || undefined, selectedColor || undefined)}
+                  className="w-full py-3 md:py-6 bg-coral text-white rounded-xl md:rounded-2xl font-bold text-xs md:text-xl flex items-center justify-center gap-2 md:gap-3 shadow-2xl shadow-coral/40 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                >
+                  {t_common('orderNow')} — {t_common('freeShipping')}
+                </button>
+                <p className={`text-center text-[10px] text-teal/40 uppercase tracking-[0.2em] font-bold ${locale === 'ar' ? 'text-right' : ''}`}>
+                  {t_product('codNotice')}
+                </p>
+              </>
+            )}
           </div>
 
           <div className="border-t border-teal/10 pt-6 md:pt-8">

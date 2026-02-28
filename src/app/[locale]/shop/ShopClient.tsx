@@ -8,6 +8,7 @@ import { SlidersHorizontal } from 'lucide-react';
 import { ProductCard } from '@/components/product-card';
 import { FilterDrawer } from '@/components/filter-drawer';
 import { QuickSelectModal } from '@/components/quick-select-modal';
+import { NotifyMeModal } from '@/components/notify-me-modal';
 import { useApp } from '@/context/AppContext';
 import { Product } from '@/data';
 import { useTranslations, useLocale } from 'next-intl';
@@ -26,6 +27,7 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
 
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isQuickSelectOpen, setIsQuickSelectOpen] = useState(false);
+    const [isNotifyMeOpen, setIsNotifyMeOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [sortBy, setSortBy] = useState('Newest');
     const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
@@ -111,6 +113,7 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
                             }}
                             onClick={() => navigate(`/product/${product.id}`)}
                             onOpenQuickSelect={() => openQuickSelect(product)}
+                            onNotifyMe={(p) => { setSelectedProduct(p); setIsNotifyMeOpen(true); }}
                         />
                     ))}
                 </div>
@@ -125,6 +128,12 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
                     buyNow(p, s, c);
                     navigate('/checkout');
                 }}
+            />
+
+            <NotifyMeModal
+                isOpen={isNotifyMeOpen}
+                onClose={() => setIsNotifyMeOpen(false)}
+                product={selectedProduct}
             />
 
             <FilterDrawer
