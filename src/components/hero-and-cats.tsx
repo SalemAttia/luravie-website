@@ -5,8 +5,8 @@ import { motion } from 'motion/react';
 import { useTranslations, useLocale } from 'next-intl';
 
 const CATEGORIES = [
-  { name: 'Bra', image: 'https://images.unsplash.com/photo-1666112514180-193096c14938?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwc2lsayUyMGJyYSUyMGZsYXRsYXklMjBhZXN0aGV0aWMlMjB0ZWFsJTIwYmFja2dyb3VuZHxlbnwxfHx8fDE3Njk5NTUxMzB8MA&ixlib=rb-4.1.0&q=80&w=1080' },
-  { name: 'Pants', image: 'https://images.unsplash.com/photo-1673710672680-944563ff9cce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBjb3R0b24lMjBicmllZnMlMjBmbGF0bGF5JTIwbWluaW1hbGlzdCUyMGFlc3RoZXRpYyUyMGJlaWdlfGVufDF8fHx8MTc2OTk1NTEyOXww&ixlib=rb-4.1.0&q=80&w=1080' },
+  { name: 'Bra', image: '/products/ribbed-bras.jpg' },
+  { name: 'Pants', image: '/products/lace-panties.jpg' },
   { name: 'Lingerie', image: 'https://images.unsplash.com/photo-1751552147774-c374ae8e9910?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbGVnYW50JTIwc2lsayUyMGxpbmdlcmllJTIwZmxhdGxheSUyMGxhY2UlMjBkZXRhaWwlMjBtaW5pbWFsaXN0fGVufDF8fHx8MTc2OTk1NTEzMHww&ixlib=rb-4.1.0&q=80&w=1080' },
   { name: 'Socks', image: 'https://images.unsplash.com/photo-1535137755190-8a0b337717e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwY290dG9uJTIwc29ja3MlMjBmbGF0bGF5JTIwYWVzdGhldGljJTIwdGV4dHVyZXxlbnwxfHx8fDE3Njk5NTUxMzB8MA&ixlib=rb-4.1.0&q=80&w=1080' },
 ];

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, ShoppingBag, Check } from 'lucide-react';
+import { Heart, ShoppingBag, Check, Bell } from 'lucide-react';
 import { motion } from 'motion/react';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import { Product } from '@/data';
@@ -13,6 +13,7 @@ interface ProductCardProps {
   onBuyNow: (p: Product, size?: string, color?: { name: string; hex: string }) => void;
   onClick: (p: Product) => void;
   onOpenQuickSelect: (product: Product) => void;
+  onNotifyMe?: (product: Product) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -22,7 +23,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onAddToCart,
   onBuyNow,
   onClick,
-  onOpenQuickSelect
+  onOpenQuickSelect,
+  onNotifyMe
 }) => {
   const t = useTranslations('common');
   const tProduct = useTranslations('product');
@@ -79,9 +81,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {product.outOfStock ? (
           <div className="absolute bottom-2 left-2 right-2 md:bottom-6 md:left-6 md:right-6 translate-y-0 opacity-100 lg:translate-y-4 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 transition-all duration-500">
-            <div className="w-full py-2 md:py-4 bg-white/90 text-teal/60 rounded-lg md:rounded-[1.5rem] font-bold text-[11px] md:text-sm flex items-center justify-center gap-1.5 md:gap-3 border border-white/60 backdrop-blur-md">
-              {tProduct('soldOut')}
-            </div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onNotifyMe?.(product);
+              }}
+              className="w-full py-2 md:py-4 bg-coral text-white rounded-lg md:rounded-[1.5rem] font-bold text-[11px] md:text-sm flex items-center justify-center gap-1.5 md:gap-3 shadow-2xl shadow-coral/30 cursor-pointer hover:scale-[1.05] active:scale-[0.95] transition-all border border-white/60 backdrop-blur-md"
+            >
+              <Bell className="w-3 h-3 md:w-4 md:h-4" />
+              {tProduct('notifyMe.button')}
+            </button>
           </div>
         ) : (
           <div className="absolute bottom-2 left-2 right-2 md:bottom-6 md:left-6 md:right-6 translate-y-0 opacity-100 lg:translate-y-4 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 transition-all duration-500 space-y-1.5 md:space-y-3">

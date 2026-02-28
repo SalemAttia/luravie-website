@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { ProductDetail } from '@/components/product-detail';
 import { ProductCard } from '@/components/product-card';
 import { QuickSelectModal } from '@/components/quick-select-modal';
+import { NotifyMeModal } from '@/components/notify-me-modal';
 import { useApp } from '@/context/AppContext';
 import { Product, PRODUCTS } from '@/data';
 import { useTranslations, useLocale } from 'next-intl';
@@ -22,6 +23,7 @@ export function ProductClient({ product, relatedProducts }: ProductClientProps) 
     const router = useRouter();
     const { favorites, toggleFavorite, addToCart, buyNow } = useApp();
     const [isQuickSelectOpen, setIsQuickSelectOpen] = useState(false);
+    const [isNotifyMeOpen, setIsNotifyMeOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
     useEffect(() => {
@@ -67,11 +69,17 @@ export function ProductClient({ product, relatedProducts }: ProductClientProps) 
                                 }}
                                 onClick={() => navigate(`/product/${p.id}` as any)}
                                 onOpenQuickSelect={() => openQuickSelect(p)}
+                                onNotifyMe={(p) => { setSelectedProduct(p); setIsNotifyMeOpen(true); }}
                             />
                         ))}
                     </div>
                 </div>
             </section>
+            <NotifyMeModal
+                isOpen={isNotifyMeOpen}
+                onClose={() => setIsNotifyMeOpen(false)}
+                product={selectedProduct}
+            />
             <QuickSelectModal
                 isOpen={isQuickSelectOpen}
                 onClose={() => setIsQuickSelectOpen(false)}

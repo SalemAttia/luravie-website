@@ -112,7 +112,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           </div>
 
           {product.colors.length > 0 && (
-            <div className={`mb-4 md:mb-8 ${product.outOfStock ? 'opacity-40 pointer-events-none select-none' : ''}`}>
+            <div className={`mb-4 md:mb-8 ${product.outOfStock ? 'opacity-40' : ''}`}>
               <div className={`flex justify-between items-center mb-2 md:mb-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                 <span className="font-bold text-teal uppercase tracking-widest text-[10px] md:text-xs">{t_product('selectColor')}</span>
                 <span className="text-xs md:text-sm font-bold text-teal/60">{selectedColor?.name}</span>
@@ -138,12 +138,12 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           )}
 
           {product.sizes.length > 0 && (
-            <div className={`mb-4 md:mb-8 ${product.outOfStock ? 'opacity-40 pointer-events-none select-none' : ''}`}>
+            <div className={`mb-4 md:mb-8 ${product.outOfStock ? 'opacity-40' : ''}`}>
               <div className={`flex justify-between items-center mb-2 md:mb-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                 <span className="font-bold text-teal uppercase tracking-widest text-[10px] md:text-xs">{t_product('selectSize')}</span>
                 <button
                   onClick={() => setIsSizeGuideOpen(true)}
-                  className="text-coral text-xs font-bold uppercase tracking-widest underline cursor-pointer hover:text-teal transition-colors"
+                  className="text-coral text-xs font-bold uppercase tracking-widest underline transition-colors cursor-pointer hover:text-teal"
                 >
                   {t_product('sizeGuide')}
                 </button>

@@ -76,6 +76,7 @@ export async function getWooProducts(): Promise<Product[]> {
                     hex: mapColorToHex(t.name)
                 }))) || [],
                 images: p.images?.map((img: any) => img.src) || [],
+                outOfStock: p.stock_status === 'outofstock',
             };
         });
     } catch (error) {
@@ -146,6 +147,7 @@ export async function getWooProductById(id: string): Promise<Product | null> {
                 hex: mapColorToHex(t.name)
             }))) || [],
             images: p.images?.map((img: any) => img.src) || [],
+            outOfStock: p.stock_status === 'outofstock',
         };
     } catch (error) {
         Sentry.captureException(error, {
