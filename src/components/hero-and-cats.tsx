@@ -7,7 +7,7 @@ import { useTranslations, useLocale } from 'next-intl';
 const CATEGORIES = [
   { name: 'Bra', image: '/products/ribbed-bras.jpg' },
   { name: 'Pants', image: '/products/lace-panties.jpg' },
-  { name: 'Lingerie', image: 'https://images.unsplash.com/photo-1751552147774-c374ae8e9910?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbGVnYW50JTIwc2lsayUyMGxpbmdlcmllJTIwZmxhdGxheSUyMGxhY2UlMjBkZXRhaWwlMjBtaW5pbWFsaXN0fGVufDF8fHx8MTc2OTk1NTEzMHww&ixlib=rb-4.1.0&q=80&w=1080' },
+  { name: 'Lingerie', image: '/products/lingerie-category.jpg' },
   { name: 'Socks', image: '/products/socks.jpg' },
 ];
 
