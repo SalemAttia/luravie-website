@@ -20,7 +20,7 @@ export const CategorySection: React.FC = () => {
   return (
     <section className="py-12 md:py-24 bg-blush">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
           <div>
             <span className="text-teal font-bold tracking-[0.4em] text-[10px] uppercase mb-4 block opacity-70">
               {t('collections')}
