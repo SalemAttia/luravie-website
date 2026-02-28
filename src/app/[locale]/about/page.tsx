@@ -9,10 +9,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const canonical = localePath(locale, '/about');
+  const isAr = locale === 'ar';
 
   return {
-    title: 'About Luravie',
-    description: 'Learn about Luravie and our commitment to quality, comfort, and confidence.',
+    title: isAr
+      ? 'عن لورافي – مستلزمات نسائية يومية فاخرة في مصر'
+      : "About Luravie – Premium Women's Everyday Essentials in Egypt",
+    description: isAr
+      ? 'لورافي تقدم مستلزمات نسائية يومية بجودة عالية مصممة للراحة والثقة. اكتشفي التزامنا بالأقمشة الفاخرة والأسعار المناسبة والخدمة السرية في مصر.'
+      : "Luravie offers premium quality women's everyday essentials designed for comfort and confidence. Discover our commitment to quality fabrics, affordable luxury, and discreet service in Egypt.",
     alternates: {
       canonical,
       ...localizedAlternates('/about'),

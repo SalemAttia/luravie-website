@@ -9,10 +9,15 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const canonical = localePath(locale, '/policy');
+  const isAr = locale === 'ar';
 
   return {
-    title: 'Shipping & Privacy Policy',
-    description: "Read Luravie's shipping, payment, and privacy policies.",
+    title: isAr
+      ? 'سياسات الخصوصية والشحن والدفع – لورافي'
+      : 'Privacy, Shipping & Payment Policies – Luravie',
+    description: isAr
+      ? 'اقرأي سياسات الشحن والدفع والخصوصية من لورافي. تغليف سري، دفع عند الاستلام، وحماية بياناتك الشخصية في جميع أنحاء مصر.'
+      : "Read Luravie's shipping, payment, and privacy policies. Discreet packaging, cash on delivery, and secure handling of your personal information across Egypt.",
     alternates: {
       canonical,
       ...localizedAlternates('/policy'),

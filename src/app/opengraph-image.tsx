@@ -40,10 +40,13 @@ export default function OpengraphImage() {
             Luravie
           </div>
           <div style={{ fontSize: 34, fontWeight: 600, color: '#0B5D5E', opacity: 0.8, marginTop: 18 }}>
-            Your Confidence Starts Within
+            Women&apos;s Everyday Essentials
           </div>
           <div style={{ fontSize: 26, fontWeight: 600, color: '#E59595', marginTop: 28 }}>
-            Bras • Lingerie • Essentials
+            Bras &bull; Lingerie &bull; Panties &bull; Socks
+          </div>
+          <div style={{ fontSize: 20, fontWeight: 500, color: '#666', marginTop: 16 }}>
+            Free Shipping &bull; Cash on Delivery &bull; Discreet Packaging
           </div>
         </div>
       </div>

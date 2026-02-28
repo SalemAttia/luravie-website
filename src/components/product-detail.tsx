@@ -298,7 +298,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
 
             <div className="border-t border-teal/10 mt-5 pt-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className={`flex gap-3 items-center bg-white/40 p-3 rounded-xl border border-teal/5 ${locale === 'ar' ? 'flex-row-reverse text-right' : ''}`}>
+                <div className="flex gap-3 items-center bg-white/40 p-3 rounded-xl border border-teal/5">
                   <div className="w-9 h-9 rounded-lg bg-teal/10 flex items-center justify-center flex-shrink-0">
                     <Package size={18} className="text-teal" />
                   </div>
@@ -307,7 +307,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                     <p className="text-[10px] text-teal/50 uppercase tracking-tighter">{t_product('plainBoxes')}</p>
                   </div>
                 </div>
-                <div className={`flex gap-3 items-center bg-white/40 p-3 rounded-xl border border-teal/5 ${locale === 'ar' ? 'flex-row-reverse text-right' : ''}`}>
+                <div className="flex gap-3 items-center bg-white/40 p-3 rounded-xl border border-teal/5">
                   <div className="w-9 h-9 rounded-lg bg-teal/10 flex items-center justify-center flex-shrink-0">
                     <RefreshCw size={18} className="text-teal" />
                   </div>
