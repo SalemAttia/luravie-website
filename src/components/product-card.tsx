@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { Heart, ShoppingBag, Check, Bell } from 'lucide-react';
 import { motion } from 'motion/react';

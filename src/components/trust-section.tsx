@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { Package, Truck, ShieldCheck, CreditCard } from 'lucide-react';
 import { motion } from 'motion/react';
