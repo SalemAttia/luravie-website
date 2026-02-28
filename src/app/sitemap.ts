@@ -3,6 +3,28 @@ import { getWooProducts } from '@/lib/woocommerce';
 import { routing } from '@/i18n/routing';
 import { getSiteUrl } from '@/lib/seo';
 
+// Page priority map: home > shop > about/contact > policies
+const pagePriority: Record<string, number> = {
+    '': 1.0,
+    '/shop': 0.9,
+    '/about': 0.7,
+    '/contact': 0.7,
+    '/policy': 0.5,
+    '/refund': 0.5,
+    '/shipping': 0.6,
+};
+
+// Page change frequency map
+const pageFrequency: Record<string, 'daily' | 'weekly' | 'monthly'> = {
+    '': 'weekly',
+    '/shop': 'daily',
+    '/about': 'monthly',
+    '/contact': 'monthly',
+    '/policy': 'monthly',
+    '/refund': 'monthly',
+    '/shipping': 'monthly',
+};
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = getSiteUrl();
     const products = await getWooProducts();
@@ -13,8 +35,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         staticPages.map((page) => ({
             url: `${baseUrl}/${locale}${page}`,
             lastModified: new Date(),
-            changeFrequency: 'weekly' as const,
-            priority: page === '' ? 1 : 0.8,
+            changeFrequency: pageFrequency[page] ?? ('weekly' as const),
+            priority: pagePriority[page] ?? 0.8,
             alternates: {
                 languages: Object.fromEntries(
                     locales.map((l) => [l, `${baseUrl}/${l}${page}`])
@@ -25,13 +47,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     const productRoutes = locales.flatMap((locale) =>
         products.map((product) => ({
-            url: `${baseUrl}/${locale}/product/${product.id}`,
+            url: `${baseUrl}/${locale}/product/${product.slug || product.id}`,
             lastModified: new Date(),
             changeFrequency: 'daily' as const,
-            priority: 0.6,
+            priority: 0.8,
             alternates: {
                 languages: Object.fromEntries(
-                    locales.map((l) => [l, `${baseUrl}/${l}/product/${product.id}`])
+                    locales.map((l) => [l, `${baseUrl}/${l}/product/${product.slug || product.id}`])
                 ),
             },
         }))

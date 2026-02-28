@@ -2,9 +2,12 @@ import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
     return {
-        name: 'Luravie',
+        name: 'Luravie – Women\'s Everyday Essentials',
         short_name: 'Luravie',
-        description: "Shop the latest in bras, lingerie, and more at Luravie. High-quality women's fashion designed for confidence.",
+        description: "Shop premium women's bras, lingerie, panties & socks at Luravie. Affordable luxury with cash on delivery, discreet packaging & free shipping across Egypt. تسوقي مستلزمات نسائية يومية فاخرة من لورافي.",
+        categories: ['shopping', 'lifestyle'],
+        lang: 'en',
+        dir: 'ltr',
         start_url: '/',
         display: 'standalone',
         background_color: '#FFFFFF',

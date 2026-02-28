@@ -9,10 +9,18 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const canonical = localePath(locale, '/shipping');
+  const isAr = locale === 'ar';
 
   return {
-    title: 'Shipping Information',
-    description: 'Delivery timelines, shipping costs, and discreet packaging at Luravie.',
+    title: isAr
+      ? 'معلومات الشحن والتوصيل – شحن مجاني وسري في مصر'
+      : 'Shipping & Delivery – Free Discreet Shipping Across Egypt',
+    description: isAr
+      ? 'لورافي توصل في جميع أنحاء مصر بتغليف سري. القاهرة والجيزة خلال ٤٨ ساعة، باقي المحافظات خلال ٧٢ ساعة. شحن مجاني مع الدفع عند الاستلام.'
+      : 'Luravie delivers across all of Egypt with discreet packaging. Cairo & Giza in 48 hours, other governorates in 72 hours. Free shipping with cash on delivery.',
+    keywords: isAr
+      ? ['شحن مجاني مصر', 'توصيل ملابس داخلية', 'شحن سري', 'الدفع عند الاستلام']
+      : ['free shipping Egypt', 'discreet delivery underwear', 'cash on delivery Egypt', 'lingerie delivery Egypt'],
     alternates: {
       canonical,
       ...localizedAlternates('/shipping'),
