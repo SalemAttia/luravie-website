@@ -18,10 +18,10 @@ export const CategorySection: React.FC = () => {
   const locale = useLocale();
 
   return (
-    <section className="py-12 md:py-24 bg-blush">
+    <section className="py-12 md:py-24 bg-blush" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
-          <div>
+          <div className={locale === 'ar' ? 'text-right' : 'text-left'}>
             <span className="text-teal font-bold tracking-[0.4em] text-[10px] uppercase mb-4 block opacity-70">
               {t('collections')}
             </span>
@@ -86,7 +86,7 @@ export const Hero: React.FC = () => {
   const locale = useLocale();
 
   return (
-    <div className="relative lg:min-h-[95vh] flex items-center overflow-hidden bg-teal">
+    <div className="relative lg:min-h-[95vh] flex items-center overflow-hidden bg-teal" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
       {/* Texture Overlay */}
       <div className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay"
         style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
@@ -95,7 +95,7 @@ export const Hero: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 items-center">
 
           <div
-            className="lg:col-span-7 space-y-6 md:space-y-12 animate-[fadeInUp_0.5s_ease-out_both]"
+            className={`lg:col-span-7 space-y-6 md:space-y-12 animate-[fadeInUp_0.5s_ease-out_both] ${locale === 'ar' ? 'text-right' : 'text-left'}`}
           >
             <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/10 text-rose text-xs font-bold uppercase tracking-[0.3em] border border-white/5 backdrop-blur-md">
               <Sparkles size={16} className="text-coral" />

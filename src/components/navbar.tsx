@@ -56,7 +56,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     }`}
                 >
                   {item === 'Home' ? t('home') : t(`categories.${item.toLowerCase()}`)}
-                  <span className={`absolute -bottom-1 left-0 h-0.5 bg-coral transition-all duration-300 ${(item === 'Home' && currentPage === 'home') ? 'w-full' : 'w-0 group-hover:w-full'
+                  <span className={`absolute -bottom-1 h-0.5 bg-coral transition-all duration-300 ${locale === 'ar' ? 'right-0' : 'left-0'} ${(item === 'Home' && currentPage === 'home') ? 'w-full' : 'w-0 group-hover:w-full'
                     }`} />
                 </Link>
               ))}
@@ -181,7 +181,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       <Link
                         href="/"
                         onClick={() => setIsMenuOpen(false)}
-                        className="flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl text-left font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all"
+                        className={`flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all ${locale === 'ar' ? 'text-right' : 'text-left'}`}
                       >
                         {t('home')}
                         <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
@@ -191,7 +191,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           key={cat}
                           href={`/shop?category=${cat}`}
                           onClick={() => setIsMenuOpen(false)}
-                          className="flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl text-left font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all"
+                          className={`flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all ${locale === 'ar' ? 'text-right' : 'text-left'}`}
                         >
                           {t(`categories.${cat.toLowerCase()}`)}
                           <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
@@ -201,12 +201,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </div>
 
                   <div>
-                    <h3 className="text-xs font-bold text-white/40 uppercase tracking-widest mb-4">Support</h3>
+                    <h3 className="text-xs font-bold text-white/40 uppercase tracking-widest mb-4">{t('support')}</h3>
                     <div className="grid gap-2">
                       <Link
                         href="/about"
                         onClick={() => setIsMenuOpen(false)}
-                        className="flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl text-left font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all"
+                        className={`flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all ${locale === 'ar' ? 'text-right' : 'text-left'}`}
                       >
                         {t('about')}
                         <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
@@ -214,7 +214,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       <Link
                         href="/contact"
                         onClick={() => setIsMenuOpen(false)}
-                        className="flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl text-left font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all"
+                        className={`flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all ${locale === 'ar' ? 'text-right' : 'text-left'}`}
                       >
                         {t('contact')}
                         <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
@@ -222,7 +222,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       <Link
                         href="/policy"
                         onClick={() => setIsMenuOpen(false)}
-                        className="flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl text-left font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all"
+                        className={`flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all ${locale === 'ar' ? 'text-right' : 'text-left'}`}
                       >
                         {t('policy')}
                         <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
@@ -235,7 +235,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <div className="grid gap-2">
                       <button
                         onClick={() => { setIsMenuOpen(false); onFavoritesClick(); }}
-                        className="flex items-center gap-3 w-full p-4 text-left font-medium text-white/80 hover:text-rose transition-colors"
+                        className={`flex items-center gap-3 w-full p-4 font-medium text-white/80 hover:text-rose transition-colors ${locale === 'ar' ? 'text-right' : 'text-left'}`}
                       >
                         <Heart size={20} />
                         {t('favoritesCount')} ({favoritesCount})
@@ -248,7 +248,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <div className="grid gap-2">
                       <button
                         onClick={() => { setIsMenuOpen(false); toggleLanguage(); }}
-                        className="flex items-center gap-3 w-full p-4 text-left font-medium text-white/80 hover:text-rose transition-colors"
+                        className={`flex items-center gap-3 w-full p-4 font-medium text-white/80 hover:text-rose transition-colors ${locale === 'ar' ? 'text-right' : 'text-left'}`}
                       >
                         <Globe size={20} />
                         {locale === 'en' ? 'Switch to Arabic (عربي)' : 'Switch to English'}
