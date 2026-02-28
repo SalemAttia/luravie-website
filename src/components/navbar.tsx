@@ -13,8 +13,6 @@ interface NavbarProps {
   favoritesCount: number;
   onCartClick: () => void;
   onFavoritesClick: () => void;
-  onNavigate: (page: string) => void;
-  onCategoryClick: (category: string) => void;
   currentPage: string;
 }
 
@@ -23,8 +21,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   favoritesCount,
   onCartClick,
   onFavoritesClick,
-  onNavigate,
-  onCategoryClick,
   currentPage
 }) => {
   const t = useTranslations('common');
@@ -35,11 +31,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const categories = ['Bra', 'Pants', 'Lingerie', 'Socks'];
-
-  const handleMobileNav = (action: () => void) => {
-    setIsMenuOpen(false);
-    action();
-  };
 
   const navItems = ['Home', ...categories];
 
@@ -56,9 +47,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Left side: Desktop Menu */}
             <div className="hidden md:flex items-center gap-8 text-xs font-bold uppercase tracking-widest">
               {navItems.map((item) => (
-                <button
+                <Link
                   key={item}
-                  onClick={() => item === 'Home' ? onNavigate('home') : onCategoryClick(item)}
+                  href={item === 'Home' ? '/' : `/shop?category=${item}`}
                   className={`transition-all duration-300 cursor-pointer relative group ${(item === 'Home' && currentPage === 'home') || (currentPage === 'category' && item !== 'Home')
                     ? 'text-rose'
                     : 'text-white/60 hover:text-rose'
@@ -67,7 +58,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   {item === 'Home' ? t('home') : t(`categories.${item.toLowerCase()}`)}
                   <span className={`absolute -bottom-1 left-0 h-0.5 bg-coral transition-all duration-300 ${(item === 'Home' && currentPage === 'home') ? 'w-full' : 'w-0 group-hover:w-full'
                     }`} />
-                </button>
+                </Link>
               ))}
             </div>
 
@@ -82,7 +73,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* Center Logo */}
             <div className="absolute left-1/2 -translate-x-1/2 flex items-center h-full">
-              <button onClick={() => onNavigate('home')} className="flex items-center cursor-pointer">
+              <Link href="/" className="flex items-center">
                 <ImageWithFallback
                   src={logoImg}
                   alt={t('brandName')}
@@ -93,7 +84,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     filter: 'brightness(0) invert(1)'
                   }}
                 />
-              </button>
+              </Link>
             </div>
 
             {/* Right side: Actions */}
@@ -187,22 +178,24 @@ export const Navbar: React.FC<NavbarProps> = ({
                       {t('home')}
                     </h3>
                     <div className="grid gap-2">
-                      <button
-                        onClick={() => handleMobileNav(() => onNavigate('home'))}
+                      <Link
+                        href="/"
+                        onClick={() => setIsMenuOpen(false)}
                         className="flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl text-left font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all"
                       >
                         {t('home')}
                         <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
-                      </button>
+                      </Link>
                       {categories.map((cat) => (
-                        <button
+                        <Link
                           key={cat}
-                          onClick={() => handleMobileNav(() => onCategoryClick(cat))}
+                          href={`/shop?category=${cat}`}
+                          onClick={() => setIsMenuOpen(false)}
                           className="flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl text-left font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all"
                         >
                           {t(`categories.${cat.toLowerCase()}`)}
                           <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
-                        </button>
+                        </Link>
                       ))}
                     </div>
                   </div>
@@ -210,27 +203,30 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <div>
                     <h3 className="text-xs font-bold text-white/40 uppercase tracking-widest mb-4">Support</h3>
                     <div className="grid gap-2">
-                      <button
-                        onClick={() => handleMobileNav(() => onNavigate('about'))}
+                      <Link
+                        href="/about"
+                        onClick={() => setIsMenuOpen(false)}
                         className="flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl text-left font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all"
                       >
                         {t('about')}
                         <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
-                      </button>
-                      <button
-                        onClick={() => handleMobileNav(() => onNavigate('contact'))}
+                      </Link>
+                      <Link
+                        href="/contact"
+                        onClick={() => setIsMenuOpen(false)}
                         className="flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl text-left font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all"
                       >
                         {t('contact')}
                         <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
-                      </button>
-                      <button
-                        onClick={() => handleMobileNav(() => onNavigate('policy'))}
+                      </Link>
+                      <Link
+                        href="/policy"
+                        onClick={() => setIsMenuOpen(false)}
                         className="flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl text-left font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all"
                       >
                         {t('policy')}
                         <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
-                      </button>
+                      </Link>
                     </div>
                   </div>
 
@@ -238,7 +234,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <h3 className="text-xs font-bold text-rose/50 uppercase tracking-widest mb-4">{t('account')}</h3>
                     <div className="grid gap-2">
                       <button
-                        onClick={() => handleMobileNav(onFavoritesClick)}
+                        onClick={() => { setIsMenuOpen(false); onFavoritesClick(); }}
                         className="flex items-center gap-3 w-full p-4 text-left font-medium text-white/80 hover:text-rose transition-colors"
                       >
                         <Heart size={20} />
@@ -251,7 +247,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <h3 className="text-xs font-bold text-rose/50 uppercase tracking-widest mb-4">{t('settings')}</h3>
                     <div className="grid gap-2">
                       <button
-                        onClick={() => handleMobileNav(toggleLanguage)}
+                        onClick={() => { setIsMenuOpen(false); toggleLanguage(); }}
                         className="flex items-center gap-3 w-full p-4 text-left font-medium text-white/80 hover:text-rose transition-colors"
                       >
                         <Globe size={20} />

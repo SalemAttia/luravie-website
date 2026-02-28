@@ -3,7 +3,7 @@
 import React from 'react';
 import { ShoppingBag } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/i18n/routing';
+import { Link } from '@/i18n/routing';
 
 interface EmptyStateProps {
   onClearFilters: () => void;
@@ -11,7 +11,6 @@ interface EmptyStateProps {
 
 export function EmptyState({ onClearFilters }: EmptyStateProps) {
   const t = useTranslations('shop');
-  const router = useRouter();
 
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -31,12 +30,12 @@ export function EmptyState({ onClearFilters }: EmptyStateProps) {
         >
           {t('clearFilters')}
         </button>
-        <button
-          onClick={() => router.push('/shop?category=All' as any)}
+        <Link
+          href="/shop?category=All"
           className="px-6 py-3 bg-white border border-teal/10 text-teal rounded-2xl font-bold text-sm hover:border-teal/20 transition-colors cursor-pointer"
         >
           {t('browseAll')}
-        </button>
+        </Link>
       </div>
     </div>
   );

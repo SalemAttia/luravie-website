@@ -24,22 +24,15 @@ export function HomeClient({ initialProducts }: HomeClientProps) {
     const [isNotifyMeOpen, setIsNotifyMeOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-    const navigate = (path: string) => {
-        router.push(path as any);
-    };
-
     const openQuickSelect = (product: Product) => {
         setSelectedProduct(product);
         setIsQuickSelectOpen(true);
     };
 
     return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <Hero
-                onShopNow={() => navigate('/shop')}
-                onAboutClick={() => navigate('/about')}
-            />
-            <CategorySection onNavigate={(cat) => navigate(`/shop?category=${cat}`)} />
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <Hero />
+            <CategorySection />
 
             <section className="py-12 md:py-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -54,14 +47,14 @@ export function HomeClient({ initialProducts }: HomeClientProps) {
                             <ProductCard
                                 key={product.id}
                                 product={product}
+                                href={`/product/${product.slug}`}
                                 isFavorite={favorites.includes(product.id)}
                                 onToggleFavorite={(e) => toggleFavorite(product.id, e)}
                                 onAddToCart={addToCart}
                                 onBuyNow={(p, s, c) => {
                                     buyNow(p, s, c);
-                                    navigate('/checkout');
+                                    router.push('/checkout' as any);
                                 }}
-                                onClick={() => navigate(`/product/${product.slug}`)}
                                 onOpenQuickSelect={() => openQuickSelect(product)}
                                 onNotifyMe={(p) => { setSelectedProduct(p); setIsNotifyMeOpen(true); }}
                             />
@@ -77,7 +70,7 @@ export function HomeClient({ initialProducts }: HomeClientProps) {
                 onAddToCart={addToCart}
                 onBuyNow={(p, s, c) => {
                     buyNow(p, s, c);
-                    navigate('/checkout');
+                    router.push('/checkout' as any);
                 }}
             />
 

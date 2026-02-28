@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from '@/i18n/routing';
+import { useRouter, Link } from '@/i18n/routing';
 import { ProductCard } from '@/components/product-card';
 import { QuickSelectModal } from '@/components/quick-select-modal';
 import { NotifyMeModal } from '@/components/notify-me-modal';
@@ -50,10 +50,6 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
         clearAll,
     } = useShopFilters(initialProducts, favorites);
 
-    const navigate = (path: string) => {
-        router.push(path as any);
-    };
-
     const openQuickSelect = (product: Product) => {
         setSelectedProduct(product);
         setIsQuickSelectOpen(true);
@@ -72,9 +68,9 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
                     </div>
                     <div className="flex bg-blush rounded-2xl p-1 overflow-x-auto w-fit">
                         {CATEGORIES.map(cat => (
-                            <button
+                            <Link
                                 key={cat}
-                                onClick={() => navigate(`/shop?category=${cat}`)}
+                                href={`/shop?category=${cat}`}
                                 className={`px-3 py-2 md:px-5 md:py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all cursor-pointer whitespace-nowrap ${
                                     activeCategory === cat
                                         ? 'bg-coral text-white shadow-lg'
@@ -82,7 +78,7 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
                                 }`}
                             >
                                 {tCommon(`categories.${cat.toLowerCase()}`)}
-                            </button>
+                            </Link>
                         ))}
                     </div>
                 </div>
@@ -145,14 +141,14 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
                                     <ProductCard
                                         key={product.id}
                                         product={product}
+                                        href={`/product/${product.slug}`}
                                         isFavorite={favorites.includes(product.id)}
                                         onToggleFavorite={(e) => toggleFavorite(product.id, e)}
                                         onAddToCart={addToCart}
                                         onBuyNow={(p, s, c) => {
                                             buyNow(p, s, c);
-                                            navigate('/checkout');
+                                            router.push('/checkout' as any);
                                         }}
-                                        onClick={() => navigate(`/product/${product.slug}`)}
                                         onOpenQuickSelect={() => openQuickSelect(product)}
                                         onNotifyMe={(p) => { setSelectedProduct(p); setIsNotifyMeOpen(true); }}
                                     />
@@ -188,7 +184,7 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
                 onAddToCart={addToCart}
                 onBuyNow={(p, s, c) => {
                     buyNow(p, s, c);
-                    navigate('/checkout');
+                    router.push('/checkout' as any);
                 }}
             />
 

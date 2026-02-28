@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useRouter, usePathname } from '@/i18n/routing';
-import { AnimatePresence } from 'framer-motion';
+import { Link, useRouter, usePathname } from '@/i18n/routing';
 import { useApp } from '@/context/AppContext';
 import { Navbar } from '@/components/navbar';
 import { CartDrawer } from '@/components/cart-drawer';
@@ -20,54 +19,45 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
     const { cartCount, favorites, cartItems, updateQuantity, removeFromCart } = useApp();
     const [isCartOpen, setIsCartOpen] = useState(false);
 
-    // Helper for navigation that mimics react-router-dom's navigate
-    const navigate = (path: string) => {
-        router.push(path as any);
-    };
-
     return (
         <div className="min-h-screen font-sans bg-background text-foreground flex flex-col" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
             <Navbar
                 cartCount={cartCount}
                 favoritesCount={favorites.length}
                 onCartClick={() => setIsCartOpen(true)}
-                onFavoritesClick={() => navigate('/shop?category=Favorites')}
-                onCategoryClick={(cat) => navigate(`/shop?category=${cat}`)}
-                onNavigate={(p) => navigate(p === 'home' ? '/' : `/${p}`)}
+                onFavoritesClick={() => router.push('/shop?category=Favorites' as any)}
                 currentPage={pathname === '/' ? 'home' : pathname.substring(1)}
             />
 
             <main className="flex-grow">
-                <AnimatePresence mode="wait">
-                    {children}
-                </AnimatePresence>
+                {children}
             </main>
 
             <footer className="bg-teal text-white/90 pt-20 pb-10 mt-auto">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
                         <div className="space-y-6">
-                            <button onClick={() => navigate('/')} className="cursor-pointer">
+                            <Link href="/">
                                 <ImageWithFallback src={logoImg} alt={tCommon('brandName')} width={56} height={56} className="h-14 w-auto brightness-0 invert" />
-                            </button>
+                            </Link>
                             <p className="text-sm text-rose/80">{tCommon('description')}</p>
                         </div>
                         <div>
                             <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">{tCommon('shop')}</h4>
                             <ul className="space-y-4 text-sm">
-                                <li><button onClick={() => navigate('/shop')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('allProducts')}</button></li>
-                                <li><button onClick={() => navigate('/shop?category=Bra')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('categories.bra')}</button></li>
-                                <li><button onClick={() => navigate('/shop?category=Lingerie')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('categories.lingerie')}</button></li>
+                                <li><Link href="/shop" className="hover:text-coral transition-colors">{tCommon('allProducts')}</Link></li>
+                                <li><Link href="/shop?category=Bra" className="hover:text-coral transition-colors">{tCommon('categories.bra')}</Link></li>
+                                <li><Link href="/shop?category=Lingerie" className="hover:text-coral transition-colors">{tCommon('categories.lingerie')}</Link></li>
                             </ul>
                         </div>
                         <div>
                             <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">{tCommon('support')}</h4>
                             <ul className="space-y-4 text-sm">
-                                <li><button onClick={() => navigate('/policy')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('policy')}</button></li>
-                                <li><button onClick={() => navigate('/refund')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('refundPolicy')}</button></li>
-                                <li><button onClick={() => navigate('/shipping')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('shippingPolicy')}</button></li>
-                                <li><button onClick={() => navigate('/contact')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('contact')}</button></li>
-                                <li><button onClick={() => navigate('/about')} className="hover:text-coral transition-colors cursor-pointer text-left">{tCommon('about')}</button></li>
+                                <li><Link href="/policy" className="hover:text-coral transition-colors">{tCommon('policy')}</Link></li>
+                                <li><Link href="/refund" className="hover:text-coral transition-colors">{tCommon('refundPolicy')}</Link></li>
+                                <li><Link href="/shipping" className="hover:text-coral transition-colors">{tCommon('shippingPolicy')}</Link></li>
+                                <li><Link href="/contact" className="hover:text-coral transition-colors">{tCommon('contact')}</Link></li>
+                                <li><Link href="/about" className="hover:text-coral transition-colors">{tCommon('about')}</Link></li>
                             </ul>
                         </div>
                         <div>
@@ -100,7 +90,7 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                 onRemove={removeFromCart}
                 onCheckout={() => {
                     setIsCartOpen(false);
-                    navigate('/checkout');
+                    router.push('/checkout' as any);
                 }}
             />
             <WhatsAppButton />
