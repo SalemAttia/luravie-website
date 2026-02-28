@@ -8,7 +8,7 @@ const CATEGORIES = [
   { name: 'Bra', image: '/products/ribbed-bras.jpg' },
   { name: 'Pants', image: '/products/lace-panties.jpg' },
   { name: 'Lingerie', image: 'https://images.unsplash.com/photo-1751552147774-c374ae8e9910?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbGVnYW50JTIwc2lsayUyMGxpbmdlcmllJTIwZmxhdGxheSUyMGxhY2UlMjBkZXRhaWwlMjBtaW5pbWFsaXN0fGVufDF8fHx8MTc2OTk1NTEzMHww&ixlib=rb-4.1.0&q=80&w=1080' },
-  { name: 'Socks', image: 'https://images.unsplash.com/photo-1535137755190-8a0b337717e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwY290dG9uJTIwc29ja3MlMjBmbGF0bGF5JTIwYWVzdGhldGljJTIwdGV4dHVyZXxlbnwxfHx8fDE3Njk5NTUxMzB8MA&ixlib=rb-4.1.0&q=80&w=1080' },
+  { name: 'Socks', image: '/products/socks.jpg' },
 ];
 
 export const CategorySection: React.FC<{ onNavigate: (c: string) => void }> = ({ onNavigate }) => {
@@ -133,9 +133,6 @@ export const Hero: React.FC<{ onShopNow: () => void; onAboutClick: () => void }>
               </div>
               <div className="flex flex-col gap-1">
                 <span className="text-2xl md:text-4xl font-bold text-rose">{t('premium')}</span>
-                <span className="text-[10px] font-bold text-white/40 uppercase tracking-[0.3em]">
-                  {t('silkCotton')}
-                </span>
               </div>
             </div>
           </div>
@@ -147,7 +144,7 @@ export const Hero: React.FC<{ onShopNow: () => void; onAboutClick: () => void }>
             <div className="relative aspect-square lg:aspect-[4/5] rounded-[2rem] md:rounded-[4rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.4)] border-[6px] md:border-[12px] border-white/5 backdrop-blur-3xl">
               <Image
                 src="https://images.unsplash.com/photo-1645654731316-a350fdcf3bae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwc2lsayUyMGZhYnJpYyUyMHRleHR1cmV8ZW58MXx8fHwxNzY5OTU1MjA0fDA&ixlib=rb-4.1.0&q=80&w=1080"
-                alt="Luravie Premium Fabric"
+                alt={tCommon('brandName')}
                 fill
                 priority
                 sizes="(max-width: 1024px) 80vw, 40vw"
@@ -169,9 +166,6 @@ export const Hero: React.FC<{ onShopNow: () => void; onAboutClick: () => void }>
                 <div>
                   <p className="text-lg font-bold text-teal">
                     {t('superiorComfort')}
-                  </p>
-                  <p className="text-xs font-bold text-coral uppercase tracking-widest">
-                    {t('premiumSilk')}
                   </p>
                 </div>
               </div>
