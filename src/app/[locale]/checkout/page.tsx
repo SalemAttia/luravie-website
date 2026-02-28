@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import CheckoutClient from './CheckoutClient';
+import { getShippingCost } from '@/lib/woocommerce';
 
 export const metadata: Metadata = {
   title: 'Checkout',
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CheckoutPage() {
-  return <CheckoutClient />;
+export default async function CheckoutPage() {
+  const shipping = await getShippingCost();
+  return <CheckoutClient shippingCost={shipping.cost} />;
 }

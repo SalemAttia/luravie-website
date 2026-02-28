@@ -235,20 +235,20 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </div>
 
                   <div>
-                    <h3 className="text-xs font-bold text-rose/50 uppercase tracking-widest mb-4">Account & Wishlist</h3>
+                    <h3 className="text-xs font-bold text-rose/50 uppercase tracking-widest mb-4">{t('account')}</h3>
                     <div className="grid gap-2">
                       <button
                         onClick={() => handleMobileNav(onFavoritesClick)}
                         className="flex items-center gap-3 w-full p-4 text-left font-medium text-white/80 hover:text-rose transition-colors"
                       >
                         <Heart size={20} />
-                        Your Favorites ({favoritesCount})
+                        {t('favoritesCount')} ({favoritesCount})
                       </button>
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-xs font-bold text-rose/50 uppercase tracking-widest mb-4">Settings</h3>
+                    <h3 className="text-xs font-bold text-rose/50 uppercase tracking-widest mb-4">{t('settings')}</h3>
                     <div className="grid gap-2">
                       <button
                         onClick={() => handleMobileNav(toggleLanguage)}

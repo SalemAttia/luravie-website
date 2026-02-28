@@ -22,6 +22,7 @@
         "favoritesCount": "Your Favorites",
         "support": "Support",
         "account": "Account & Wishlist",
+        "settings": "Settings",
         "confidence": "Confidence starts within",
         "subtotal": "Subtotal",
         "taxesNotice": "Taxes and shipping calculated at checkout. Discreet packaging included.",
@@ -123,6 +124,8 @@
         "inspection": "Inspection",
         "payAfterInspection": "Pay after inspection",
         "orderNowFreeShipping": "Order Now — Free Shipping",
+        "standardShipping": "Standard Shipping",
+        "total": "Total",
         "soldOut": "Sold Out",
         "notifyMe": {
             "button": "Notify Me When Available",

@@ -10,6 +10,7 @@ interface QuickSelectModalProps {
   product: {
     id: string;
     name: string;
+    nameAr?: string;
     price: number;
     image: string;
     sizes: string[];
@@ -40,6 +41,8 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
   }, [product]);
 
   if (!product) return null;
+
+  const productName = locale === 'ar' && product.nameAr ? product.nameAr : product.name;
 
   const handleAdd = () => {
     const sizeValid = product.sizes.length === 0 || selectedSize;
@@ -92,7 +95,7 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
                   <ImageWithFallback src={product.image} alt={product.name} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex flex-col justify-center">
-                  <h3 className="text-sm md:text-xl font-bold text-teal mb-0.5 md:mb-1">{product.name}</h3>
+                  <h3 className="text-sm md:text-xl font-bold text-teal mb-0.5 md:mb-1">{productName}</h3>
                   <p className="text-coral font-bold text-sm md:text-lg">{product.price} {tCommon('currency')}</p>
                 </div>
               </div>
@@ -177,7 +180,7 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
                       : 'bg-teal/5 text-teal/20 cursor-not-allowed shadow-none'
                       }`}
                   >
-                    {t('orderNowFreeShipping')}
+                    {tCommon('orderNow')}
                   </button>
                 )}
                 <button

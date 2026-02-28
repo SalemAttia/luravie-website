@@ -28,7 +28,7 @@ const EGYPTIAN_CITIES = [
     "Arish", "Mallawi", "10th of Ramadan City", "Bilbais", "Marsa Matruh"
 ].sort();
 
-export default function CheckoutClient() {
+export default function CheckoutClient({ shippingCost }: { shippingCost: number }) {
     const t = useTranslations('checkout');
     const tCommon = useTranslations('common');
     const locale = useLocale();
@@ -62,19 +62,23 @@ export default function CheckoutClient() {
         setOrderError(null);
 
         try {
+            const billing: Record<string, string> = {
+                first_name: shippingData.fullName.split(' ')[0],
+                last_name: shippingData.fullName.split(' ').slice(1).join(' ') || '.',
+                address_1: shippingData.address,
+                city: shippingData.city,
+                country: 'EG',
+                phone: shippingData.phone,
+            };
+            if (shippingData.email) {
+                billing.email = shippingData.email;
+            }
+
             const orderData = {
                 payment_method: 'cod',
                 payment_method_title: 'Cash on Delivery',
                 set_paid: false,
-                billing: {
-                    first_name: shippingData.fullName.split(' ')[0],
-                    last_name: shippingData.fullName.split(' ').slice(1).join(' ') || '.',
-                    address_1: shippingData.address,
-                    city: shippingData.city,
-                    country: 'EG',
-                    email: shippingData.email,
-                    phone: shippingData.phone,
-                },
+                billing,
                 shipping: {
                     first_name: shippingData.fullName.split(' ')[0],
                     last_name: shippingData.fullName.split(' ').slice(1).join(' ') || '.',
@@ -104,8 +108,8 @@ export default function CheckoutClient() {
             }
 
             trackPurchase(cartItems, subtotal);
-            clearCart();
             navigate('/success');
+            clearCart();
         } catch (error: any) {
             Sentry.captureException(error, {
                 tags: { flow: "checkout", component: "CheckoutClient" },
@@ -290,7 +294,7 @@ export default function CheckoutClient() {
                                                 <p className="text-sm text-muted-foreground italic">{t('discreetPackaging')}</p>
                                             </div>
                                         </div>
-                                        <span className="font-bold text-teal">{t('free')}</span>
+                                        <span className="font-bold text-teal">{shippingCost} {tCommon('currency')}</span>
                                     </div>
                                 </div>
                                 <div className={`bg-blush p-4 rounded-2xl mb-8 border border-teal/5 ${locale === 'ar' ? 'text-right' : ''}`}>
@@ -426,11 +430,11 @@ export default function CheckoutClient() {
                             </div>
                             <div className={`flex justify-between text-muted-foreground ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                 <span>{t('shipping')}</span>
-                                <span className="text-teal font-bold">{t('free')}</span>
+                                <span className="text-teal font-bold">{shippingCost} {tCommon('currency')}</span>
                             </div>
                             <div className={`flex justify-between text-xl font-bold pt-4 border-t border-teal/5 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                 <span>{t('total')}</span>
-                                <span className="text-teal">{subtotal.toFixed(0)} {tCommon('currency')}</span>
+                                <span className="text-teal">{(subtotal + shippingCost).toFixed(0)} {tCommon('currency')}</span>
                             </div>
                         </div>
 

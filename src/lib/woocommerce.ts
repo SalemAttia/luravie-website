@@ -5,6 +5,9 @@ const WOO_URL = process.env.NEXT_PUBLIC_WOOCOMMERCE_URL;
 const WOO_KEY = process.env.WOOCOMMERCE_CONSUMER_KEY;
 const WOO_SECRET = process.env.WOOCOMMERCE_CONSUMER_SECRET;
 
+const getMeta = (p: any, key: string): string | undefined =>
+    p.meta_data?.find((m: any) => m.key === key)?.value || undefined;
+
 export async function getWooProducts(): Promise<Product[]> {
     if (!WOO_URL || !WOO_KEY || !WOO_SECRET) {
         console.warn('WooCommerce credentials not found. Using fallback data.');
@@ -50,6 +53,7 @@ export async function getWooProducts(): Promise<Product[]> {
 
             return {
                 id: p.id.toString(),
+                slug: p.slug,
                 name: p.name,
                 price: parseFloat(p.price || p.regular_price || '0'),
                 category: mapCategory(p.categories[0]?.name),
@@ -77,6 +81,8 @@ export async function getWooProducts(): Promise<Product[]> {
                 }))) || [],
                 images: p.images?.map((img: any) => img.src) || [],
                 outOfStock: p.stock_status === 'outofstock',
+                nameAr: getMeta(p, 'title_ar'),
+                descriptionAr: getMeta(p, 'description_ar'),
             };
         });
     } catch (error) {
@@ -121,6 +127,7 @@ export async function getWooProductById(id: string): Promise<Product | null> {
 
         return {
             id: p.id.toString(),
+            slug: p.slug,
             name: p.name,
             price: parseFloat(p.price || p.regular_price || '0'),
             category: mapCategory(p.categories[0]?.name),
@@ -148,6 +155,8 @@ export async function getWooProductById(id: string): Promise<Product | null> {
             }))) || [],
             images: p.images?.map((img: any) => img.src) || [],
             outOfStock: p.stock_status === 'outofstock',
+            nameAr: getMeta(p, 'title_ar'),
+            descriptionAr: getMeta(p, 'description_ar'),
         };
     } catch (error) {
         Sentry.captureException(error, {
@@ -155,6 +164,77 @@ export async function getWooProductById(id: string): Promise<Product | null> {
             extra: { productId: id },
         });
         console.error(`Error fetching WooCommerce product ${id}:`, error);
+        return null;
+    }
+}
+
+export async function getWooProductBySlug(slug: string): Promise<Product | null> {
+    if (!WOO_URL || !WOO_KEY || !WOO_SECRET) return null;
+
+    try {
+        const auth = Buffer.from(`${WOO_KEY}:${WOO_SECRET}`).toString('base64');
+        const response = await fetch(`${WOO_URL}/wp-json/wc/v3/products?slug=${encodeURIComponent(slug)}`, {
+            headers: {
+                'Authorization': `Basic ${auth}`,
+            },
+            next: { revalidate: 60 }
+        });
+
+        if (!response.ok) return null;
+
+        const products = await response.json();
+        if (!products.length) return null;
+
+        const p = products[0];
+
+        const findAttr = (name: string) => p.attributes?.find((a: any) => {
+            const n = (a.name || '').toLowerCase();
+            const s = (a.slug || '').toLowerCase();
+
+            if (name === 'size') {
+                const sizeNames = ['size', 'sizes', 'المقاس', 'مقاس', 'الأحجام', 'حجم', 'sizing', 'length'];
+                return sizeNames.some(sn => n.includes(sn)) || s.includes('size');
+            }
+            if (name === 'color') {
+                const colorNames = ['color', 'colors', 'اللون', 'لون', 'الألوان', 'shade', 'finish'];
+                return colorNames.some(cn => n.includes(cn)) || s.includes('color');
+            }
+            return n.includes(name.toLowerCase());
+        });
+
+        return {
+            id: p.id.toString(),
+            slug: p.slug,
+            name: p.name,
+            price: parseFloat(p.price || p.regular_price || '0'),
+            category: mapCategory(p.categories[0]?.name),
+            image: p.images[0]?.src || '/placeholder-product.svg',
+            description: p.short_description || p.description,
+            features: findAttr('feature')?.options || [],
+            materials: findAttr('material')?.options[0] || '',
+            sizes: findAttr('size')?.options || p.tags?.filter((t: any) =>
+                ['S', 'M', 'L', 'XL', 'XXL', '38', '40', '42', '44'].includes(t.name.toUpperCase())
+            ).map((t: any) => t.name) || [],
+            colors: (findAttr('color')?.options.map((c: string) => {
+                if (c.includes('|')) {
+                    const [name, hex] = c.split('|');
+                    return { name: name.trim(), hex: hex.trim() };
+                }
+                return { name: c, hex: mapColorToHex(c) };
+            }) || p.tags?.filter((t: any) =>
+                ['Black', 'Nude', 'Teal', 'Coral', 'Rose', 'White', 'Grey', 'أسود', 'بيج', 'تيل', 'وردي', 'أبيض'].some(cn => t.name.includes(cn))
+            ).map((t: any) => ({ name: t.name, hex: mapColorToHex(t.name) }))) || [],
+            images: p.images?.map((img: any) => img.src) || [],
+            outOfStock: p.stock_status === 'outofstock',
+            nameAr: getMeta(p, 'title_ar'),
+            descriptionAr: getMeta(p, 'description_ar'),
+        };
+    } catch (error) {
+        Sentry.captureException(error, {
+            tags: { service: "woocommerce", operation: "getProductBySlug" },
+            extra: { slug },
+        });
+        console.error(`Error fetching WooCommerce product by slug "${slug}":`, error);
         return null;
     }
 }
@@ -200,6 +280,54 @@ export async function createWooOrder(orderData: any): Promise<any> {
     }
 
     return await response.json();
+}
+
+export interface ShippingInfo {
+    method: string;
+    cost: number;
+}
+
+const DEFAULT_SHIPPING: ShippingInfo = { method: 'Standard', cost: 75 };
+
+export async function getShippingCost(): Promise<ShippingInfo> {
+    if (!WOO_URL || !WOO_KEY || !WOO_SECRET) return DEFAULT_SHIPPING;
+
+    try {
+        const auth = Buffer.from(`${WOO_KEY}:${WOO_SECRET}`).toString('base64');
+        const headers = { 'Authorization': `Basic ${auth}` };
+
+        const zonesRes = await fetch(`${WOO_URL}/wp-json/wc/v3/shipping/zones`, {
+            headers,
+            next: { revalidate: 3600 },
+        });
+        if (!zonesRes.ok) return DEFAULT_SHIPPING;
+
+        const zones = await zonesRes.json();
+
+        for (const zone of zones) {
+            const methodsRes = await fetch(`${WOO_URL}/wp-json/wc/v3/shipping/zones/${zone.id}/methods`, {
+                headers,
+                next: { revalidate: 3600 },
+            });
+            if (!methodsRes.ok) continue;
+
+            const methods = await methodsRes.json();
+            const flatRate = methods.find((m: any) => m.method_id === 'flat_rate' && m.enabled);
+            if (flatRate) {
+                return {
+                    method: flatRate.title || 'Standard',
+                    cost: parseFloat(flatRate.settings?.cost?.value || '0') || DEFAULT_SHIPPING.cost,
+                };
+            }
+        }
+
+        return DEFAULT_SHIPPING;
+    } catch (error) {
+        Sentry.captureException(error, {
+            tags: { service: 'woocommerce', operation: 'getShippingCost' },
+        });
+        return DEFAULT_SHIPPING;
+    }
 }
 
 function mapCategory(name: string): Product['category'] {
