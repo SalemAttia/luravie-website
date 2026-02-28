@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useRouter } from '@/i18n/routing';
+import { useRouter, Link } from '@/i18n/routing';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Truck, CreditCard, ChevronRight, Package, Info, ChevronLeft, AlertCircle, Minus, Plus, Trash2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -134,12 +134,12 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
             <div className="py-40 text-center max-w-lg mx-auto px-4" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
                 <h2 className="text-3xl font-bold text-teal mb-4">{t('empty')}</h2>
                 <p className="text-teal/60 mb-8">{t('emptySubtitle')}</p>
-                <button
-                    onClick={() => navigate('/shop')}
-                    className="px-10 py-4 bg-coral text-white rounded-2xl font-bold shadow-lg shadow-coral/20 cursor-pointer"
+                <Link
+                    href="/shop"
+                    className="inline-block px-10 py-4 bg-coral text-white rounded-2xl font-bold shadow-lg shadow-coral/20 cursor-pointer"
                 >
                     {t('startShopping')}
-                </button>
+                </Link>
             </div>
         );
     }

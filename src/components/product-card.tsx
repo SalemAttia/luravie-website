@@ -4,25 +4,26 @@ import { motion } from 'motion/react';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import { Product } from '@/data';
 import { useTranslations, useLocale } from 'next-intl';
+import { Link } from '@/i18n/routing';
 
 interface ProductCardProps {
   product: Product;
+  href: string;
   isFavorite: boolean;
   onToggleFavorite: (e?: React.MouseEvent) => void;
   onAddToCart: (p: Product, size?: string, color?: { name: string; hex: string }) => void;
   onBuyNow: (p: Product, size?: string, color?: { name: string; hex: string }) => void;
-  onClick: (p: Product) => void;
   onOpenQuickSelect: (product: Product) => void;
   onNotifyMe?: (product: Product) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
+  href,
   isFavorite,
   onToggleFavorite,
   onAddToCart,
   onBuyNow,
-  onClick,
   onOpenQuickSelect,
   onNotifyMe
 }) => {
@@ -34,6 +35,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault();
     onOpenQuickSelect(product);
   };
 
@@ -46,16 +48,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       dir={locale === 'ar' ? 'rtl' : 'ltr'}
     >
       <div className="relative aspect-[3/4] rounded-2xl md:rounded-[2rem] overflow-hidden bg-blush mb-3 md:mb-6 shadow-sm group-hover:shadow-2xl transition-all duration-500">
-        <div
-          className="cursor-pointer h-full w-full"
-          onClick={() => onClick(product)}
+        <Link
+          href={href}
+          className="cursor-pointer h-full w-full block"
         >
           <ImageWithFallback
             src={product.image}
             alt={product.name}
             className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ${product.outOfStock ? 'brightness-75' : ''}`}
           />
-        </div>
+        </Link>
 
         {/* Sold Out overlay */}
         {product.outOfStock && (
@@ -127,7 +129,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         )}
       </div>
 
-      <div className="space-y-1 md:space-y-2 px-1 md:px-2 cursor-pointer" onClick={() => onClick(product)}>
+      <Link href={href} className="block space-y-1 md:space-y-2 px-1 md:px-2 cursor-pointer">
         <div className={`flex justify-between items-start gap-1 md:gap-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
           <h3 className={`font-bold text-teal text-xs md:text-lg tracking-tight leading-tight ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{productName}</h3>
           <span className="font-black text-coral whitespace-nowrap text-xs md:text-base">{product.price} <span className="text-[8px] md:text-[10px] font-bold">{t('currency')}</span></span>
@@ -145,7 +147,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             ))}
           </div>
         </div>
-      </div>
+      </Link>
     </motion.div>
   );
 };

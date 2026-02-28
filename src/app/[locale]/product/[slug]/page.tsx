@@ -49,8 +49,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     const t = await getTranslations({ locale, namespace: 'product' });
     const siteUrl = getSiteUrl();
 
-    let product = await getWooProductBySlug(slug);
-    let allProducts = await getWooProducts();
+    let [product, allProducts] = await Promise.all([
+        getWooProductBySlug(slug),
+        getWooProducts(),
+    ]);
 
     if (!product) {
         product = PRODUCTS.find(p => p.slug === slug) || null;

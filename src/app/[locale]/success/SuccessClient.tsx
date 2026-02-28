@@ -1,20 +1,15 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { ShieldCheck, ShoppingBag, ArrowRight, CheckCircle2 } from 'lucide-react';
-import { useRouter } from '@/i18n/routing';
+import { Link } from '@/i18n/routing';
 import { useTranslations, useLocale } from 'next-intl';
 
 export default function SuccessClient() {
     const t = useTranslations('checkout.success');
     const locale = useLocale();
-    const router = useRouter();
     const orderNumber = Math.floor(Math.random() * 900000) + 100000;
-
-    const navigate = (path: string) => {
-        router.push(path as any);
-    };
 
     return (
         <div className="min-h-[80vh] flex items-center justify-center px-4 py-20" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
@@ -54,13 +49,13 @@ export default function SuccessClient() {
                 </div>
 
                 <div className="space-y-4">
-                    <button
-                        onClick={() => navigate('/shop')}
+                    <Link
+                        href="/shop"
                         className={`w-full py-4 bg-teal text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-teal/20 cursor-pointer hover:bg-teal/90 transition-all ${locale === 'ar' ? 'flex-row-reverse' : ''}`}
                     >
                         {t('backToShop')}
                         <ShoppingBag size={20} />
-                    </button>
+                    </Link>
 
                     <div className={`flex items-center justify-center gap-3 text-xs text-muted-foreground font-bold ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                         <ShieldCheck size={16} className="text-teal" />

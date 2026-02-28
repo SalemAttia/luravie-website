@@ -30,26 +30,22 @@ export function ProductClient({ product, relatedProducts }: ProductClientProps) 
         trackViewItem(product);
     }, [product]);
 
-    const navigate = (path: string) => {
-        router.push(path as any);
-    };
-
     const openQuickSelect = (p: Product) => {
         setSelectedProduct(p);
         setIsQuickSelectOpen(true);
     };
 
     return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
             <ProductDetail
                 product={product}
                 isFavorite={favorites.includes(product.id)}
                 onToggleFavorite={(e) => toggleFavorite(product.id, e)}
-                onBack={() => navigate('/shop')}
+                onBack={() => router.push('/shop' as any)}
                 onAddToCart={addToCart}
                 onBuyNow={(p, s, c) => {
                     buyNow(p, s, c);
-                    navigate('/checkout');
+                    router.push('/checkout' as any);
                 }}
             />
             <section className="py-10 md:py-20 border-t border-teal/10">
@@ -60,14 +56,14 @@ export function ProductClient({ product, relatedProducts }: ProductClientProps) 
                             <ProductCard
                                 key={p.id}
                                 product={p}
+                                href={`/product/${p.slug}`}
                                 isFavorite={favorites.includes(p.id)}
                                 onToggleFavorite={(e) => toggleFavorite(p.id, e)}
                                 onAddToCart={addToCart}
                                 onBuyNow={(p, s, c) => {
                                     buyNow(p, s, c);
-                                    navigate('/checkout');
+                                    router.push('/checkout' as any);
                                 }}
-                                onClick={() => navigate(`/product/${p.slug}` as any)}
                                 onOpenQuickSelect={() => openQuickSelect(p)}
                                 onNotifyMe={(p) => { setSelectedProduct(p); setIsNotifyMeOpen(true); }}
                             />
@@ -87,7 +83,7 @@ export function ProductClient({ product, relatedProducts }: ProductClientProps) 
                 onAddToCart={addToCart}
                 onBuyNow={(p, s, c) => {
                     buyNow(p, s, c);
-                    navigate('/checkout');
+                    router.push('/checkout' as any);
                 }}
             />
         </motion.div>

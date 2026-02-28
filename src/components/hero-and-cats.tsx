@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useTranslations, useLocale } from 'next-intl';
+import { Link } from '@/i18n/routing';
 
 const CATEGORIES = [
   { name: 'Bra', image: '/products/ribbed-bras.jpg' },
@@ -11,7 +12,7 @@ const CATEGORIES = [
   { name: 'Socks', image: '/products/socks.jpg' },
 ];
 
-export const CategorySection: React.FC<{ onNavigate: (c: string) => void }> = ({ onNavigate }) => {
+export const CategorySection: React.FC = () => {
   const tCommon = useTranslations('common');
   const t = useTranslations('home');
   const locale = useLocale();
@@ -31,13 +32,13 @@ export const CategorySection: React.FC<{ onNavigate: (c: string) => void }> = ({
               {t('eleganceInEveryLayer')}
             </p>
           </div>
-          <button
-            onClick={() => onNavigate('All')}
+          <Link
+            href="/shop"
             className="group flex items-center gap-3 text-coral font-bold hover:gap-5 transition-all cursor-pointer uppercase tracking-widest text-xs"
           >
             {t('exploreAllItems')}
             <ArrowRight size={20} className={locale === 'ar' ? 'rotate-180' : ''} />
-          </button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8">
@@ -48,28 +49,29 @@ export const CategorySection: React.FC<{ onNavigate: (c: string) => void }> = ({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              className="relative aspect-[3/4] rounded-2xl md:rounded-[2rem] overflow-hidden group cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500"
-              onClick={() => onNavigate(cat.name)}
+              className="relative aspect-[3/4] rounded-2xl md:rounded-[2rem] overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-500"
             >
-              <Image
-                src={cat.image}
-                alt={cat.name}
-                fill
-                sizes="(max-width: 768px) 50vw, 25vw"
-                className="object-cover transition-transform duration-1000 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
-              <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-8 flex justify-between items-center text-white">
-                <div>
-                  <p className="text-xs font-bold tracking-widest uppercase mb-1 opacity-80">
-                    {t('collection')}
-                  </p>
-                  <span className="text-lg md:text-2xl font-bold">{tCommon(`categories.${cat.name.toLowerCase()}`)}</span>
+              <Link href={`/shop?category=${cat.name}`} className="block h-full w-full cursor-pointer">
+                <Image
+                  src={cat.image}
+                  alt={cat.name}
+                  fill
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                  className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+                <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-8 flex justify-between items-center text-white">
+                  <div>
+                    <p className="text-xs font-bold tracking-widest uppercase mb-1 opacity-80">
+                      {t('collection')}
+                    </p>
+                    <span className="text-lg md:text-2xl font-bold">{tCommon(`categories.${cat.name.toLowerCase()}`)}</span>
+                  </div>
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                    <ArrowRight size={24} className={locale === 'ar' ? 'rotate-180' : ''} />
+                  </div>
                 </div>
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
-                  <ArrowRight size={24} className={locale === 'ar' ? 'rotate-180' : ''} />
-                </div>
-              </div>
+              </Link>
             </motion.div>
           ))}
         </div>
@@ -78,7 +80,7 @@ export const CategorySection: React.FC<{ onNavigate: (c: string) => void }> = ({
   );
 };
 
-export const Hero: React.FC<{ onShopNow: () => void; onAboutClick: () => void }> = ({ onShopNow, onAboutClick }) => {
+export const Hero: React.FC = () => {
   const t = useTranslations('home');
   const tCommon = useTranslations('common');
   const locale = useLocale();
@@ -109,19 +111,19 @@ export const Hero: React.FC<{ onShopNow: () => void; onAboutClick: () => void }>
             </p>
 
             <div className="flex flex-wrap gap-4 md:gap-8 pt-4">
-              <button
-                onClick={onShopNow}
+              <Link
+                href="/shop"
                 className="group px-8 py-4 md:px-12 md:py-6 bg-[#C27070] text-white rounded-2xl md:rounded-[2rem] font-bold text-base md:text-xl shadow-[0_20px_50px_rgba(194,112,112,0.3)] hover:shadow-[0_25px_60px_rgba(194,112,112,0.4)] hover:-translate-y-1 active:translate-y-0 transition-all flex items-center gap-3 md:gap-4 cursor-pointer"
               >
                 {tCommon('shopNow')}
                 <ArrowRight size={24} className={`group-hover:translate-x-2 transition-transform ${locale === 'ar' ? 'rotate-180 group-hover:-translate-x-2' : ''}`} />
-              </button>
-              <button
-                onClick={onAboutClick}
+              </Link>
+              <Link
+                href="/about"
                 className="px-8 py-4 md:px-12 md:py-6 bg-white/5 text-rose rounded-2xl md:rounded-[2rem] font-bold text-base md:text-xl border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all cursor-pointer"
               >
                 {t('ourValues')}
-              </button>
+              </Link>
             </div>
 
             <div className="flex items-center gap-8 md:gap-16 pt-8 md:pt-12 border-t border-white/10">
