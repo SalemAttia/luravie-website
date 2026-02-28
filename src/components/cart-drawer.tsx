@@ -29,6 +29,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   onCheckout
 }) => {
   const t = useTranslations('common');
+  const tCheckout = useTranslations('checkout');
   const locale = useLocale();
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -67,16 +68,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     <ShoppingBag size={40} />
                   </div>
                   <div>
-                    <p className="text-xl font-bold text-teal mb-2">{t('checkout.empty')}</p>
+                    <p className="text-xl font-bold text-teal mb-2">{tCheckout('empty')}</p>
                     <p className="text-teal/40 text-sm leading-relaxed px-4">
-                      {t('checkout.emptySubtitle')}
+                      {tCheckout('emptySubtitle')}
                     </p>
                   </div>
                   <button
                     onClick={onClose}
                     className="px-10 py-4 bg-teal text-white rounded-2xl font-bold shadow-lg shadow-teal/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
                   >
-                    {t('checkout.startShopping')}
+                    {tCheckout('startShopping')}
                   </button>
                 </div>
               ) : (

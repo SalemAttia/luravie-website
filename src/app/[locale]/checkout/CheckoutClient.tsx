@@ -117,7 +117,6 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
             });
             console.error('Checkout error:', error);
             setOrderError(error.message);
-        } finally {
             setIsLoading(false);
         }
     };
@@ -129,7 +128,7 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
         setStep(2);
     };
 
-    if (cartItems.length === 0) {
+    if (cartItems.length === 0 && !isLoading) {
         return (
             <div className="py-40 text-center max-w-lg mx-auto px-4" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
                 <h2 className="text-3xl font-bold text-teal mb-4">{t('empty')}</h2>
