@@ -120,7 +120,7 @@ export default function CheckoutClient() {
 
     const onSubmitShipping = (data: ShippingFormData) => {
         setShippingData(data);
-        Sentry.setUser({ email: data.email });
+        if (data.email) Sentry.setUser({ email: data.email });
         Sentry.setTag("checkout.city", data.city);
         setStep(2);
     };
@@ -194,7 +194,6 @@ export default function CheckoutClient() {
                                         <div className="space-y-1">
                                             <input
                                                 {...register("email", {
-                                                    required: t('errors.email'),
                                                     pattern: {
                                                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                                                         message: t('errors.invalidEmail')

@@ -85,7 +85,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button onClick={() => onNavigate('home')} className="flex items-center cursor-pointer">
                 <ImageWithFallback
                   src={logoImg}
-                  alt="Luravie"
+                  alt={t('brandName')}
                   width={56}
                   height={56}
                   className="h-10 md:h-14 w-auto object-contain transition-all duration-500 hover:scale-105"
@@ -163,7 +163,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="flex justify-between items-center p-6 border-b border-white/10">
                 <ImageWithFallback
                   src={logoImg}
-                  alt="Luravie"
+                  alt={t('brandName')}
                   width={40}
                   height={40}
                   className="h-10 w-auto"

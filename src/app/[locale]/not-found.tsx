@@ -8,6 +8,7 @@ import { useRouter } from '@/i18n/routing';
 
 export default function NotFound() {
     const t = useTranslations('notFound');
+    const tCommon = useTranslations('common');
     const locale = useLocale();
     const router = useRouter();
 
@@ -105,7 +106,7 @@ export default function NotFound() {
                     transition={{ delay: 0.7, duration: 0.5 }}
                     className="mt-10 sm:mt-14 text-xs tracking-[0.25em] uppercase text-teal/25 font-bold"
                 >
-                    LURAVIE
+                    {tCommon('brandName')}
                 </motion.p>
             </div>
         </div>

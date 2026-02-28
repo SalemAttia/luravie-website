@@ -48,7 +48,7 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
                         <div className="space-y-6">
                             <button onClick={() => navigate('/')} className="cursor-pointer">
-                                <ImageWithFallback src={logoImg} alt="Luravie" width={56} height={56} className="h-14 w-auto brightness-0 invert" />
+                                <ImageWithFallback src={logoImg} alt={tCommon('brandName')} width={56} height={56} className="h-14 w-auto brightness-0 invert" />
                             </button>
                             <p className="text-sm text-rose/80">{tCommon('description')}</p>
                         </div>

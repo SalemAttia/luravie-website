@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
-import { Heart, Shield, Sparkles } from 'lucide-react';
+import { Heart, Shield, Sparkles, Leaf, Truck, Award } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 
 export default function AboutClient() {
@@ -66,17 +65,26 @@ export default function AboutClient() {
 
             <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className={`grid grid-cols-1 md:grid-cols-2 gap-20 items-center ${locale === 'ar' ? 'md:flex-row-reverse' : ''}`}>
-                    <div className="relative">
-                        <div className="aspect-[4/5] rounded-[3rem] overflow-hidden shadow-2xl">
-                            <ImageWithFallback
-                                src="https://images.unsplash.com/photo-1581044777550-4cfa60707c03?q=80&w=1886&auto=format&fit=crop"
-                                alt="Brand philosophy"
-                                className="w-full h-full object-cover"
-                            />
-                        </div>
-                        <div className={`absolute -bottom-10 ${locale === 'ar' ? '-left-10' : '-right-10'} w-48 h-48 bg-blush rounded-full flex items-center justify-center p-8 border-8 border-white shadow-xl`}>
-                            <p className="text-teal font-bold text-center leading-tight">{t('cottonComfort')}</p>
-                        </div>
+                    <div className="grid grid-cols-2 gap-6">
+                        {[
+                            { icon: <Leaf size={32} />, label: t('cottonComfort') },
+                            { icon: <Shield size={32} />, label: t('qualityTitle') },
+                            { icon: <Truck size={32} />, label: t('confTitle') },
+                            { icon: <Award size={32} />, label: t('aestheticTitle') },
+                        ].map((item, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.1 * i }}
+                                className="flex flex-col items-center gap-4 p-8 bg-teal/5 rounded-3xl border border-teal/10"
+                            >
+                                <div className="w-16 h-16 bg-blush rounded-2xl flex items-center justify-center text-coral">
+                                    {item.icon}
+                                </div>
+                                <p className="text-teal font-bold text-center text-sm leading-tight">{item.label}</p>
+                            </motion.div>
+                        ))}
                     </div>
                     <div className="space-y-10">
                         <h2 className={`text-4xl font-bold text-teal ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{t('modernWoman')}</h2>
