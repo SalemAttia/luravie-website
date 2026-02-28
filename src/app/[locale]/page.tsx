@@ -1,8 +1,15 @@
-import { PRODUCTS } from "@/data";
-import { getWooProducts } from "@/lib/woocommerce";
-import { HomeClient } from "./HomeClient";
+import { Suspense } from "react";
+import { Hero, CategorySection } from "@/components/hero-and-cats";
+import { TrustSection } from "@/components/trust-section";
+import { ProductsSkeleton } from "@/components/products-skeleton";
+import { FeaturedProductsServer } from "./FeaturedProductsServer";
+import { routing } from "@/i18n/routing";
 import type { Metadata } from "next";
 import { localePath, localizedAlternates } from "@/lib/seo";
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 export async function generateMetadata({
   params,
@@ -30,9 +37,15 @@ export async function generateMetadata({
   };
 }
 
-export default async function Home() {
-  const wooProducts = await getWooProducts();
-  const products = wooProducts.length > 0 ? wooProducts : PRODUCTS;
-
-  return <HomeClient initialProducts={products} />;
+export default function Home() {
+  return (
+    <>
+      <Hero />
+      <CategorySection />
+      <Suspense fallback={<ProductsSkeleton />}>
+        <FeaturedProductsServer />
+      </Suspense>
+      <TrustSection />
+    </>
+  );
 }

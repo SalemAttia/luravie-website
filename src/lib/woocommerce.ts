@@ -20,7 +20,7 @@ export async function getWooProducts(): Promise<Product[]> {
             headers: {
                 'Authorization': `Basic ${auth}`,
             },
-            next: { revalidate: 60 } // Reduced to 1 minute for easier debugging
+            next: { revalidate: 300 }
         });
 
         if (!response.ok) {
