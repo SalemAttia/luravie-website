@@ -1,5 +1,6 @@
 export interface Product {
   id: string;
+  slug: string;
   name: string;
   price: number;
   category: 'Bra' | 'Pants' | 'Lingerie' | 'Socks';
@@ -11,6 +12,8 @@ export interface Product {
   colors: { name: string; hex: string }[];
   images?: string[];
   outOfStock?: boolean;
+  nameAr?: string;
+  descriptionAr?: string;
 }
 
 const COMMON_COLORS = [
@@ -24,6 +27,7 @@ const COMMON_COLORS = [
 export const PRODUCTS: Product[] = [
   {
     id: '1',
+    slug: 'confidence-seamless-bra',
     name: 'Confidence Seamless Bra',
     price: 450,
     category: 'Bra',
@@ -36,6 +40,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: '2',
+    slug: 'everyday-essential-briefs',
     name: 'Everyday Essential Briefs',
     price: 180,
     category: 'Pants',
@@ -48,6 +53,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: '3',
+    slug: 'silk-touch-lingerie-set',
     name: 'Silk Touch Lingerie Set',
     price: 650,
     category: 'Lingerie',
@@ -61,6 +67,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: '4',
+    slug: 'cozy-morning-ankle-socks',
     name: 'Cozy Morning Ankle Socks',
     price: 120,
     category: 'Socks',
@@ -73,6 +80,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: '5',
+    slug: 'sculpt-smooth-bants',
     name: 'Sculpt & Smooth Bants',
     price: 240,
     category: 'Pants',
@@ -85,6 +93,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: '6',
+    slug: 'all-day-comfort-bra',
     name: 'All-Day Comfort Bra',
     price: 420,
     category: 'Bra',

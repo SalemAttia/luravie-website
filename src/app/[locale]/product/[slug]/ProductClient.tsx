@@ -67,7 +67,7 @@ export function ProductClient({ product, relatedProducts }: ProductClientProps) 
                                     buyNow(p, s, c);
                                     navigate('/checkout');
                                 }}
-                                onClick={() => navigate(`/product/${p.id}` as any)}
+                                onClick={() => navigate(`/product/${p.slug}` as any)}
                                 onOpenQuickSelect={() => openQuickSelect(p)}
                                 onNotifyMe={(p) => { setSelectedProduct(p); setIsNotifyMeOpen(true); }}
                             />

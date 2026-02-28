@@ -111,7 +111,7 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
                                 buyNow(p, s, c);
                                 navigate('/checkout');
                             }}
-                            onClick={() => navigate(`/product/${product.id}`)}
+                            onClick={() => navigate(`/product/${product.slug}`)}
                             onOpenQuickSelect={() => openQuickSelect(product)}
                             onNotifyMe={(p) => { setSelectedProduct(p); setIsNotifyMeOpen(true); }}
                         />

@@ -81,6 +81,8 @@ export const NotifyMeModal: React.FC<NotifyMeModalProps> = ({
 
   if (!product) return null;
 
+  const productName = locale === 'ar' && product.nameAr ? product.nameAr : product.name;
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -153,7 +155,7 @@ export const NotifyMeModal: React.FC<NotifyMeModalProps> = ({
                       <p className="text-coral font-bold text-[10px] uppercase tracking-widest mb-0.5">
                         {t('title')}
                       </p>
-                      <h3 className="font-bold text-teal text-base leading-tight">{product.name}</h3>
+                      <h3 className="font-bold text-teal text-base leading-tight">{productName}</h3>
                       <p className="text-teal/50 text-xs mt-0.5">{t('subtitle')}</p>
                     </div>
                   </div>

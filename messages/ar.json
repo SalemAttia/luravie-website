@@ -22,6 +22,7 @@
         "favoritesCount": "المفضلة لديك",
         "support": "الدعم",
         "account": "الحساب والمفضلة",
+        "settings": "الإعدادات",
         "confidence": "الثقة تبدأ من الداخل",
         "subtotal": "المجموع الفرعي",
         "taxesNotice": "يتم حساب الضرائب والشحن عند الدفع. تغليف سري متضمن.",
@@ -123,6 +124,8 @@
         "inspection": "المعاينة",
         "payAfterInspection": "ادفع بعد المعاينة",
         "orderNowFreeShipping": "اطلب الآن — شحن مجاني",
+        "standardShipping": "شحن قياسي",
+        "total": "الإجمالي",
         "soldOut": "نفذ المخزون",
         "notifyMe": {
             "button": "أخبريني عند توفره",
