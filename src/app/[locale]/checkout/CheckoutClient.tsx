@@ -90,6 +90,8 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
                     product_id: parseInt(item.id),
                     quantity: item.quantity,
                     ...(item.variationId ? { variation_id: item.variationId } : {}),
+                    subtotal: (item.price * item.quantity).toFixed(2),
+                    total: (item.price * item.quantity).toFixed(2),
                     meta_data: [
                         ...(item.selectedSize ? [{ key: 'Size', value: item.selectedSize }] : []),
                         ...(item.selectedColor ? [{ key: 'Color', value: item.selectedColor.name }] : []),
