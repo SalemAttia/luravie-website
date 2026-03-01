@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import { Product } from '@/data';
 import { useTranslations, useLocale } from 'next-intl';
+import { useRouter } from '@/i18n/routing';
 
 interface CartItem extends Product {
   quantity: number;
@@ -31,6 +32,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const t = useTranslations('common');
   const tCheckout = useTranslations('checkout');
   const locale = useLocale();
+  const router = useRouter();
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
@@ -74,7 +76,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                     </p>
                   </div>
                   <button
-                    onClick={onClose}
+                    onClick={() => { onClose(); router.push('/shop' as any); }}
                     className="px-10 py-4 bg-teal text-white rounded-2xl font-bold shadow-lg shadow-teal/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
                   >
                     {tCheckout('startShopping')}

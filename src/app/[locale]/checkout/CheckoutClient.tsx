@@ -62,9 +62,12 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
         setOrderError(null);
 
         try {
+            const firstName = shippingData.fullName.split(' ')[0];
+            const lastName = shippingData.fullName.split(' ').slice(1).join(' ') || '.';
+
             const billing: Record<string, string> = {
-                first_name: shippingData.fullName.split(' ')[0],
-                last_name: shippingData.fullName.split(' ').slice(1).join(' ') || '.',
+                first_name: firstName,
+                last_name: lastName,
                 address_1: shippingData.address,
                 city: shippingData.city,
                 country: 'EG',
@@ -80,8 +83,8 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
                 set_paid: false,
                 billing,
                 shipping: {
-                    first_name: shippingData.fullName.split(' ')[0],
-                    last_name: shippingData.fullName.split(' ').slice(1).join(' ') || '.',
+                    first_name: firstName,
+                    last_name: lastName,
                     address_1: shippingData.address,
                     city: shippingData.city,
                     country: 'EG',
@@ -90,11 +93,20 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
                     product_id: parseInt(item.id),
                     quantity: item.quantity,
                     ...(item.variationId ? { variation_id: item.variationId } : {}),
+                    subtotal: (item.price * item.quantity).toFixed(2),
+                    total: (item.price * item.quantity).toFixed(2),
                     meta_data: [
                         ...(item.selectedSize ? [{ key: 'Size', value: item.selectedSize }] : []),
                         ...(item.selectedColor ? [{ key: 'Color', value: item.selectedColor.name }] : []),
                     ]
-                }))
+                })),
+                shipping_lines: [
+                    {
+                        method_id: 'flat_rate',
+                        method_title: 'Shipping',
+                        total: shippingCost.toFixed(2),
+                    }
+                ],
             };
 
             const response = await fetch('/api/orders', {
@@ -108,8 +120,33 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
                 throw new Error(error.error || 'Failed to create order');
             }
 
+            const order = await response.json();
+            const orderId = order.id || order.number;
+
+            // Save order to localStorage for "Your Orders" feature
+            const savedOrders = JSON.parse(localStorage.getItem('luravie-orders') || '[]');
+            savedOrders.unshift({
+                id: orderId,
+                date: new Date().toISOString(),
+                subtotal,
+                shippingCost,
+                total: subtotal + shippingCost,
+                status: order.status || 'processing',
+                items: cartItems.map(item => ({
+                    name: item.name,
+                    nameAr: item.nameAr,
+                    quantity: item.quantity,
+                    price: item.price,
+                    image: item.image,
+                    selectedSize: item.selectedSize,
+                    selectedColor: item.selectedColor,
+                })),
+                phone: shippingData.phone,
+            });
+            localStorage.setItem('luravie-orders', JSON.stringify(savedOrders));
+
             trackPurchase(cartItems, subtotal);
-            navigate('/success');
+            navigate(`/success?order=${orderId}` as any);
             clearCart();
         } catch (error: any) {
             Sentry.captureException(error, {

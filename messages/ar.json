@@ -54,7 +54,9 @@
         "allRightsReserved": "جميع الحقوق محفوظة.",
         "copyright": "© 2026 لُوراڤيه.",
         "discreetShipping": "شحن سري",
-        "brandName": "لُوراڤيه"
+        "brandName": "لُوراڤيه",
+        "trackOrder": "تتبع الطلب",
+        "yourOrders": "طلباتك"
     },
     "home": {
         "heroTitle": "ثقتك تبدأ من الداخل",
@@ -238,6 +240,7 @@
             "subtitle": "تم استلام طلبك وهو قيد المعالجة حالياً. ستتلقى مكالمة تأكيد قريباً.",
             "orderNumber": "رقم الطلب",
             "backToShop": "العودة للمتجر",
+            "trackOrder": "تتبع طلبك",
             "deliveryExpected": "سيصلك طلبك في غضون 2-4 أيام عمل"
         },
         "codPayment": "الدفع عند الاستلام (COD)",
@@ -382,6 +385,53 @@
         "outro": {
             "text": "ستتلقين مكالمة تأكيد ورقم تتبع قبل التوصيل.",
             "tagline": "✨ لُوراڤيه – سريع. خاص. موثوق."
+        }
+    },
+    "trackOrder": {
+        "title": "تتبع طلبك",
+        "subtitle": "أدخلي رقم الطلب أو رقم هاتفك للتحقق من حالة طلبك.",
+        "byOrderId": "رقم الطلب",
+        "byPhone": "رقم الهاتف",
+        "orderIdPlaceholder": "أدخلي رقم الطلب (مثلاً 1234)",
+        "phonePlaceholder": "أدخلي رقم هاتفك (مثلاً 01012345678)",
+        "search": "بحث",
+        "orderNumber": "رقم الطلب",
+        "shipping": "الشحن",
+        "noOrders": "لم يتم العثور على طلبات",
+        "noOrdersSub": "يرجى التحقق من رقم الطلب أو رقم الهاتف والمحاولة مرة أخرى.",
+        "statuses": {
+            "pending": "قيد الانتظار",
+            "processing": "قيد المعالجة",
+            "on-hold": "معلق",
+            "completed": "مكتمل",
+            "cancelled": "ملغي",
+            "refunded": "مسترجع",
+            "failed": "فشل",
+            "shipped": "تم الشحن"
+        }
+    },
+    "orders": {
+        "title": "طلباتك",
+        "subtitle": "الطلبات المقدمة من هذا الجهاز محفوظة هنا لراحتك.",
+        "noOrders": "لا توجد طلبات بعد",
+        "noOrdersSub": "ستظهر طلباتك هنا بعد تقديمها.",
+        "startShopping": "ابدئي التسوق",
+        "trackExisting": "تتبع طلب",
+        "orderCount": "{count} طلبات",
+        "trackOrder": "تتبع الطلب",
+        "clearAll": "مسح الكل",
+        "order": "طلب",
+        "shipping": "الشحن",
+        "total": "الإجمالي",
+        "statuses": {
+            "pending": "قيد الانتظار",
+            "processing": "قيد المعالجة",
+            "on-hold": "معلق",
+            "completed": "مكتمل",
+            "cancelled": "ملغي",
+            "refunded": "مسترجع",
+            "failed": "فشل",
+            "shipped": "تم الشحن"
         }
     }
 }
