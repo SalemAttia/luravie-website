@@ -1,4 +1,4 @@
-import { Product } from '@/data';
+import { Product, ProductVariation } from '@/data';
 import * as Sentry from "@sentry/nextjs";
 
 const WOO_URL = process.env.NEXT_PUBLIC_WOOCOMMERCE_URL;
@@ -84,6 +84,7 @@ export async function getWooProducts(): Promise<Product[]> {
                 stockQuantity: p.stock_quantity ?? null,
                 nameAr: getMeta(p, 'title_ar'),
                 descriptionAr: getMeta(p, 'description_ar'),
+                productType: p.type || 'simple',
             };
         });
     } catch (error) {
@@ -126,7 +127,7 @@ export async function getWooProductById(id: string): Promise<Product | null> {
             return n.includes(name.toLowerCase());
         });
 
-        return {
+        const product: Product = {
             id: p.id.toString(),
             slug: p.slug,
             name: p.name,
@@ -159,7 +160,14 @@ export async function getWooProductById(id: string): Promise<Product | null> {
             stockQuantity: p.stock_quantity ?? null,
             nameAr: getMeta(p, 'title_ar'),
             descriptionAr: getMeta(p, 'description_ar'),
+            productType: p.type || 'simple',
         };
+
+        if (p.type === 'variable') {
+            product.variations = await getWooProductVariations(p.id.toString());
+        }
+
+        return product;
     } catch (error) {
         Sentry.captureException(error, {
             tags: { service: "woocommerce", operation: "getProductById" },
@@ -204,7 +212,7 @@ export async function getWooProductBySlug(slug: string): Promise<Product | null>
             return n.includes(name.toLowerCase());
         });
 
-        return {
+        const product: Product = {
             id: p.id.toString(),
             slug: p.slug,
             name: p.name,
@@ -231,7 +239,14 @@ export async function getWooProductBySlug(slug: string): Promise<Product | null>
             stockQuantity: p.stock_quantity ?? null,
             nameAr: getMeta(p, 'title_ar'),
             descriptionAr: getMeta(p, 'description_ar'),
+            productType: p.type || 'simple',
         };
+
+        if (p.type === 'variable') {
+            product.variations = await getWooProductVariations(p.id.toString());
+        }
+
+        return product;
     } catch (error) {
         Sentry.captureException(error, {
             tags: { service: "woocommerce", operation: "getProductBySlug" },
@@ -239,6 +254,57 @@ export async function getWooProductBySlug(slug: string): Promise<Product | null>
         });
         console.error(`Error fetching WooCommerce product by slug "${slug}":`, error);
         return null;
+    }
+}
+
+export async function getWooProductVariations(productId: string): Promise<ProductVariation[]> {
+    if (!WOO_URL || !WOO_KEY || !WOO_SECRET) return [];
+
+    try {
+        const auth = Buffer.from(`${WOO_KEY}:${WOO_SECRET}`).toString('base64');
+        const response = await fetch(
+            `${WOO_URL}/wp-json/wc/v3/products/${productId}/variations?per_page=100`,
+            {
+                headers: { 'Authorization': `Basic ${auth}` },
+                next: { revalidate: 60 }
+            }
+        );
+
+        if (!response.ok) return [];
+
+        const variations = await response.json();
+
+        return variations.map((v: any) => {
+            const attrs: { size?: string; color?: string } = {};
+            for (const attr of v.attributes || []) {
+                const name = (attr.name || '').toLowerCase();
+                const slug = (attr.slug || '').toLowerCase();
+                const sizeNames = ['size', 'sizes', 'المقاس', 'مقاس', 'الأحجام', 'حجم', 'sizing', 'length'];
+                const colorNames = ['color', 'colors', 'اللون', 'لون', 'الألوان', 'shade', 'finish'];
+
+                if (sizeNames.some(sn => name.includes(sn)) || slug.includes('size')) {
+                    attrs.size = attr.option;
+                }
+                if (colorNames.some(cn => name.includes(cn)) || slug.includes('color')) {
+                    const option = attr.option || '';
+                    attrs.color = option.includes('|') ? option.split('|')[0].trim() : option;
+                }
+            }
+
+            return {
+                variationId: v.id,
+                attributes: attrs,
+                stockStatus: v.stock_status || 'instock',
+                stockQuantity: v.stock_quantity ?? null,
+            };
+        });
+    } catch (error) {
+        Sentry.captureException(error, {
+            tags: { service: "woocommerce", operation: "getProductVariations" },
+            extra: { productId },
+        });
+        console.error(`Error fetching variations for product ${productId}:`, error);
+        return [];
     }
 }
 

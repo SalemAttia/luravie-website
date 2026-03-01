@@ -2,8 +2,10 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ShoppingBag, Info } from 'lucide-react';
+import { X, ShoppingBag, Bell, Info } from 'lucide-react';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
+import { ProductVariation } from '@/data';
+import { isSizeOutOfStock, isColorOutOfStock, isCombinationOutOfStock, findVariation } from '@/lib/variant-stock';
 import { useTranslations, useLocale } from 'next-intl';
 
 interface QuickSelectModalProps {
@@ -17,9 +19,12 @@ interface QuickSelectModalProps {
     image: string;
     sizes: string[];
     colors: { name: string; hex: string }[];
+    variations?: ProductVariation[];
+    productType?: string;
   } | null;
-  onAddToCart: (product: any, size?: string, color?: any) => void;
-  onBuyNow?: (product: any, size?: string, color?: any) => void;
+  onAddToCart: (product: any, size?: string, color?: any, variationId?: number) => void;
+  onBuyNow?: (product: any, size?: string, color?: any, variationId?: number) => void;
+  onNotifyMe?: (product: any) => void;
 }
 
 export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
@@ -27,31 +32,48 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
   onClose,
   product,
   onAddToCart,
-  onBuyNow
+  onBuyNow,
+  onNotifyMe
 }) => {
   const t = useTranslations('product');
   const tCommon = useTranslations('common');
   const locale = useLocale();
   const [selectedSize, setSelectedSize] = useState<string | null | undefined>(null);
   const [selectedColor, setSelectedColor] = useState<any>(null);
+  const [variations, setVariations] = useState<ProductVariation[]>([]);
 
   React.useEffect(() => {
-    if (product) {
+    if (product && isOpen) {
+      // Reset selection state
       setSelectedSize(product.sizes.length > 0 ? null : undefined);
       setSelectedColor(product.colors.length > 0 ? product.colors[0] : undefined);
+
+      // Use existing variations if available, otherwise fetch
+      if (product.variations?.length) {
+        setVariations(product.variations);
+      } else if (product.productType === 'variable') {
+        fetch(`/api/variations/${product.id}`)
+          .then(res => res.json())
+          .then(data => setVariations(Array.isArray(data) ? data : []))
+          .catch(() => setVariations([]));
+      } else {
+        setVariations([]);
+      }
     }
-  }, [product]);
+  }, [product, isOpen]);
 
   if (!product) return null;
 
   const productName = locale === 'ar' && product.nameAr ? product.nameAr : product.name;
+  const selectedVariation = findVariation(variations, selectedSize || undefined, selectedColor?.name);
+  const isSelectedOOS = isCombinationOutOfStock(variations, selectedSize || undefined, selectedColor?.name);
 
   const handleAdd = () => {
     const sizeValid = product.sizes.length === 0 || selectedSize;
     const colorValid = product.colors.length === 0 || selectedColor;
 
-    if (sizeValid && colorValid) {
-      onAddToCart(product, selectedSize || undefined, selectedColor || undefined);
+    if (sizeValid && colorValid && !isSelectedOOS) {
+      onAddToCart(product, selectedSize || undefined, selectedColor || undefined, selectedVariation?.variationId);
       onClose();
     }
   };
@@ -60,11 +82,13 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
     const sizeValid = product.sizes.length === 0 || selectedSize;
     const colorValid = product.colors.length === 0 || selectedColor;
 
-    if (sizeValid && colorValid && onBuyNow) {
-      onBuyNow(product, selectedSize || undefined, selectedColor || undefined);
+    if (sizeValid && colorValid && !isSelectedOOS && onBuyNow) {
+      onBuyNow(product, selectedSize || undefined, selectedColor || undefined, selectedVariation?.variationId);
       onClose();
     }
   };
+
+  const canProceed = (product.sizes.length === 0 || selectedSize) && !isSelectedOOS;
 
   return (
     <AnimatePresence>
@@ -110,22 +134,36 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
                       {t('selectColor')}: <span className="text-teal">{selectedColor?.name}</span>
                     </label>
                     <div className="flex flex-wrap gap-2.5 md:gap-4">
-                      {product.colors.map((color) => (
-                        <button
-                          key={color.name}
-                          onClick={() => setSelectedColor(color)}
-                          className={`group relative p-0.5 md:p-1 rounded-full border-2 transition-all cursor-pointer ${selectedColor?.name === color.name ? 'border-coral' : 'border-transparent'
+                      {product.colors.map((color) => {
+                        const colorOOS = isColorOutOfStock(variations, color.name);
+                        return (
+                          <button
+                            key={color.name}
+                            onClick={() => !colorOOS && setSelectedColor(color)}
+                            disabled={colorOOS}
+                            className={`group relative p-0.5 md:p-1 rounded-full border-2 transition-all ${
+                              colorOOS
+                                ? 'opacity-30 cursor-not-allowed'
+                                : selectedColor?.name === color.name
+                                  ? 'border-coral cursor-pointer'
+                                  : 'border-transparent cursor-pointer'
                             }`}
-                        >
-                          <div
-                            className="w-6 h-6 md:w-8 md:h-8 rounded-full border border-black/5"
-                            style={{ backgroundColor: color.hex }}
-                          />
-                          <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[10px] font-bold text-teal/60 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-tighter">
-                            {color.name}
-                          </span>
-                        </button>
-                      ))}
+                          >
+                            <div
+                              className="w-6 h-6 md:w-8 md:h-8 rounded-full border border-black/5"
+                              style={{ backgroundColor: color.hex }}
+                            />
+                            {colorOOS && (
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="w-full h-[1.5px] bg-black/40 rotate-[-45deg] rounded-full" />
+                              </div>
+                            )}
+                            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[10px] font-bold text-teal/60 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-tighter">
+                              {color.name}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
@@ -142,48 +180,77 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
                       </button>
                     </div>
                     <div className="grid grid-cols-4 gap-1.5 md:gap-2">
-                      {product.sizes.map((size) => (
-                        <button
-                          key={size}
-                          onClick={() => setSelectedSize(size)}
-                          className={`py-2 md:py-3 rounded-lg md:rounded-xl text-[11px] md:text-sm font-bold transition-all border-2 cursor-pointer ${selectedSize === size
-                            ? 'border-coral bg-coral/5 text-coral shadow-sm shadow-coral/10'
-                            : 'border-white bg-white text-teal/60 hover:border-coral/20'
+                      {product.sizes.map((size) => {
+                        const sizeOOS = isSizeOutOfStock(variations, size);
+                        return (
+                          <button
+                            key={size}
+                            onClick={() => !sizeOOS && setSelectedSize(size)}
+                            disabled={sizeOOS}
+                            className={`py-2 md:py-3 rounded-lg md:rounded-xl text-[11px] md:text-sm font-bold transition-all border-2 relative ${
+                              sizeOOS
+                                ? 'border-white bg-white text-teal/20 cursor-not-allowed'
+                                : selectedSize === size
+                                  ? 'border-coral bg-coral/5 text-coral shadow-sm shadow-coral/10 cursor-pointer'
+                                  : 'border-white bg-white text-teal/60 hover:border-coral/20 cursor-pointer'
                             }`}
-                        >
-                          {size}
-                        </button>
-                      ))}
+                          >
+                            {size}
+                            {sizeOOS && (
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="w-[calc(100%+4px)] h-[1.5px] bg-teal/30 rotate-[-15deg]" />
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
               </div>
 
               <div className="mt-5 md:mt-10">
-                <button
-                  onClick={handleAdd}
-                  disabled={product.sizes.length > 0 && !selectedSize}
-                  className={`w-full py-3 md:py-5 rounded-xl md:rounded-2xl font-bold text-sm md:text-lg flex items-center justify-center gap-2 md:gap-3 shadow-xl transition-all cursor-pointer ${(product.sizes.length === 0 || selectedSize)
-                    ? 'bg-coral text-white shadow-coral/20 hover:scale-[1.02] active:scale-[0.98]'
-                    : 'bg-teal/5 text-teal/20 cursor-not-allowed shadow-none'
-                    }`}
-                >
-                  <ShoppingBag size={16} className="md:w-5 md:h-5" />
-                  {product.sizes.length === 0 || selectedSize
-                    ? tCommon('addToBag')
-                    : t('selectASize')}
-                </button>
-                {onBuyNow && (
-                  <button
-                    onClick={handleBuyNow}
-                    disabled={product.sizes.length > 0 && !selectedSize}
-                    className={`w-full mt-2 md:mt-4 py-3 md:py-5 rounded-xl md:rounded-2xl font-bold text-sm md:text-lg flex items-center justify-center gap-2 md:gap-3 shadow-xl transition-all cursor-pointer ${(product.sizes.length === 0 || selectedSize)
-                      ? 'bg-teal text-white shadow-teal/20 hover:scale-[1.02] active:scale-[0.98]'
-                      : 'bg-teal/5 text-teal/20 cursor-not-allowed shadow-none'
-                      }`}
-                  >
-                    {tCommon('orderNow')}
-                  </button>
+                {isSelectedOOS && selectedSize ? (
+                  <>
+                    <button
+                      onClick={() => { onNotifyMe?.(product); onClose(); }}
+                      className="w-full py-3 md:py-5 rounded-xl md:rounded-2xl font-bold text-sm md:text-lg flex items-center justify-center gap-2 md:gap-3 shadow-xl transition-all cursor-pointer bg-coral text-white shadow-coral/20 hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      <Bell size={16} className="md:w-5 md:h-5" />
+                      {t('notifyMe.button')}
+                    </button>
+                    <p className="text-center text-[10px] text-teal/40 uppercase tracking-[0.2em] font-bold mt-2">
+                      {t('variantSoldOut')}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={handleAdd}
+                      disabled={product.sizes.length > 0 && !selectedSize}
+                      className={`w-full py-3 md:py-5 rounded-xl md:rounded-2xl font-bold text-sm md:text-lg flex items-center justify-center gap-2 md:gap-3 shadow-xl transition-all cursor-pointer ${canProceed
+                        ? 'bg-coral text-white shadow-coral/20 hover:scale-[1.02] active:scale-[0.98]'
+                        : 'bg-teal/5 text-teal/20 cursor-not-allowed shadow-none'
+                        }`}
+                    >
+                      <ShoppingBag size={16} className="md:w-5 md:h-5" />
+                      {product.sizes.length === 0 || selectedSize
+                        ? tCommon('addToBag')
+                        : t('selectASize')}
+                    </button>
+                    {onBuyNow && (
+                      <button
+                        onClick={handleBuyNow}
+                        disabled={product.sizes.length > 0 && !selectedSize}
+                        className={`w-full mt-2 md:mt-4 py-3 md:py-5 rounded-xl md:rounded-2xl font-bold text-sm md:text-lg flex items-center justify-center gap-2 md:gap-3 shadow-xl transition-all cursor-pointer ${canProceed
+                          ? 'bg-teal text-white shadow-teal/20 hover:scale-[1.02] active:scale-[0.98]'
+                          : 'bg-teal/5 text-teal/20 cursor-not-allowed shadow-none'
+                          }`}
+                      >
+                        {tCommon('orderNow')}
+                      </button>
+                    )}
+                  </>
                 )}
                 <button
                   onClick={onClose}

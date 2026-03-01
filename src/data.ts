@@ -1,3 +1,10 @@
+export interface ProductVariation {
+  variationId: number;
+  attributes: { size?: string; color?: string };
+  stockStatus: 'instock' | 'outofstock' | 'onbackorder';
+  stockQuantity: number | null;
+}
+
 export interface Product {
   id: string;
   slug: string;
@@ -15,6 +22,8 @@ export interface Product {
   stockQuantity?: number | null;
   nameAr?: string;
   descriptionAr?: string;
+  productType?: 'simple' | 'variable';
+  variations?: ProductVariation[];
 }
 
 const COMMON_COLORS = [

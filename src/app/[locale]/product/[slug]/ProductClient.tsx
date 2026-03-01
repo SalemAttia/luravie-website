@@ -43,8 +43,8 @@ export function ProductClient({ product, relatedProducts }: ProductClientProps) 
                 onToggleFavorite={(e) => toggleFavorite(product.id, e)}
                 onBack={() => router.push('/shop' as any)}
                 onAddToCart={addToCart}
-                onBuyNow={(p, s, c) => {
-                    buyNow(p, s, c);
+                onBuyNow={(p, s, c, v) => {
+                    buyNow(p, s, c, v);
                     router.push('/checkout' as any);
                 }}
             />
@@ -60,8 +60,8 @@ export function ProductClient({ product, relatedProducts }: ProductClientProps) 
                                 isFavorite={favorites.includes(p.id)}
                                 onToggleFavorite={(e) => toggleFavorite(p.id, e)}
                                 onAddToCart={addToCart}
-                                onBuyNow={(p, s, c) => {
-                                    buyNow(p, s, c);
+                                onBuyNow={(p, s, c, v) => {
+                                    buyNow(p, s, c, v);
                                     router.push('/checkout' as any);
                                 }}
                                 onOpenQuickSelect={() => openQuickSelect(p)}
@@ -81,10 +81,11 @@ export function ProductClient({ product, relatedProducts }: ProductClientProps) 
                 onClose={() => setIsQuickSelectOpen(false)}
                 product={selectedProduct}
                 onAddToCart={addToCart}
-                onBuyNow={(p, s, c) => {
-                    buyNow(p, s, c);
+                onBuyNow={(p, s, c, v) => {
+                    buyNow(p, s, c, v);
                     router.push('/checkout' as any);
                 }}
+                onNotifyMe={(p) => { setSelectedProduct(p); setIsNotifyMeOpen(true); }}
             />
         </motion.div>
     );

@@ -136,6 +136,7 @@
         "total": "Total",
         "soldOut": "Sold Out",
         "onlyXLeft": "Only {count} left in stock",
+        "variantSoldOut": "This option is sold out",
         "notifyMe": {
             "button": "Notify Me When Available",
             "hint": "Join the waitlist — we'll reach out when it's back.",

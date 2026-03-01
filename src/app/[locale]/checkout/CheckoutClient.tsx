@@ -89,6 +89,7 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
                 line_items: cartItems.map(item => ({
                     product_id: parseInt(item.id),
                     quantity: item.quantity,
+                    ...(item.variationId ? { variation_id: item.variationId } : {}),
                     meta_data: [
                         ...(item.selectedSize ? [{ key: 'Size', value: item.selectedSize }] : []),
                         ...(item.selectedColor ? [{ key: 'Color', value: item.selectedColor.name }] : []),
