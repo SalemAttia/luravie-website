@@ -12,6 +12,7 @@ export interface Product {
   colors: { name: string; hex: string }[];
   images?: string[];
   outOfStock?: boolean;
+  stockQuantity?: number | null;
   nameAr?: string;
   descriptionAr?: string;
 }

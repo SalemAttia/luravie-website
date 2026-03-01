@@ -162,6 +162,11 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             </div>
             <h1 className="text-lg md:text-3xl font-bold text-teal mb-1 md:mb-3 leading-tight">{productName}</h1>
             <p className="text-base md:text-2xl font-bold text-coral">{product.price} {t_common('currency')}</p>
+            {!product.outOfStock && product.stockQuantity != null && product.stockQuantity > 0 && product.stockQuantity <= 10 && (
+              <p className="text-xs md:text-sm font-bold text-coral mt-1">
+                {t_product('onlyXLeft', { count: product.stockQuantity })}
+              </p>
+            )}
           </div>
 
           {product.colors.length > 0 && (
