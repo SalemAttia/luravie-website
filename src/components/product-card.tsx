@@ -149,6 +149,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             ))}
           </div>
         </div>
+        {!product.outOfStock && product.stockQuantity != null && product.stockQuantity > 0 && product.stockQuantity <= 10 && (
+          <p className={`text-[9px] md:text-xs font-bold text-coral ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
+            {tProduct('onlyXLeft', { count: product.stockQuantity })}
+          </p>
+        )}
       </Link>
     </motion.div>
   );

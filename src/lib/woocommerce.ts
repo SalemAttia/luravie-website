@@ -81,6 +81,7 @@ export async function getWooProducts(): Promise<Product[]> {
                 }))) || [],
                 images: p.images?.map((img: any) => img.src) || [],
                 outOfStock: p.stock_status === 'outofstock',
+                stockQuantity: p.stock_quantity ?? null,
                 nameAr: getMeta(p, 'title_ar'),
                 descriptionAr: getMeta(p, 'description_ar'),
             };
@@ -155,6 +156,7 @@ export async function getWooProductById(id: string): Promise<Product | null> {
             }))) || [],
             images: p.images?.map((img: any) => img.src) || [],
             outOfStock: p.stock_status === 'outofstock',
+            stockQuantity: p.stock_quantity ?? null,
             nameAr: getMeta(p, 'title_ar'),
             descriptionAr: getMeta(p, 'description_ar'),
         };
@@ -226,6 +228,7 @@ export async function getWooProductBySlug(slug: string): Promise<Product | null>
             ).map((t: any) => ({ name: t.name, hex: mapColorToHex(t.name) }))) || [],
             images: p.images?.map((img: any) => img.src) || [],
             outOfStock: p.stock_status === 'outofstock',
+            stockQuantity: p.stock_quantity ?? null,
             nameAr: getMeta(p, 'title_ar'),
             descriptionAr: getMeta(p, 'description_ar'),
         };

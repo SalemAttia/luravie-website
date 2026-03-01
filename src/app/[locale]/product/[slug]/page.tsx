@@ -111,6 +111,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     const localizedDesc = locale === 'ar' && product.descriptionAr ? product.descriptionAr : product.description;
 
     const isInStock = !product.outOfStock;
+    const isLowStock = isInStock && product.stockQuantity != null && product.stockQuantity > 0 && product.stockQuantity <= 10;
     const productJsonLd = {
         '@context': 'https://schema.org',
         '@type': 'Product',
@@ -126,9 +127,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             '@type': 'Offer',
             price: product.price,
             priceCurrency: 'EGP',
-            availability: isInStock
-                ? 'https://schema.org/InStock'
-                : 'https://schema.org/OutOfStock',
+            availability: !isInStock
+                ? 'https://schema.org/OutOfStock'
+                : isLowStock
+                    ? 'https://schema.org/LimitedAvailability'
+                    : 'https://schema.org/InStock',
             url: `${siteUrl}/${locale}/product/${slug}`,
             seller: {
                 '@type': 'Organization',
