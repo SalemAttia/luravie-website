@@ -81,19 +81,21 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   </button>
                 </div>
               ) : (
-                cartItems.map((item, idx) => (
+                cartItems.map((item, idx) => {
+                  const itemName = locale === 'ar' && item.nameAr ? item.nameAr : item.name;
+                  return (
                   <div key={`${item.id}-${item.selectedSize || 'nosize'}-${item.selectedColor?.name || 'nocolor'}`} className={`flex gap-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                     <div className="w-24 h-24 rounded-2xl overflow-hidden bg-blush flex-shrink-0 shadow-sm border border-teal/5">
                       <ImageWithFallback
                         src={item.image}
-                        alt={item.name}
+                        alt={itemName}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className={`flex-1 flex flex-col justify-between py-1 ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
                       <div>
                         <div className={`flex justify-between items-start ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                          <h3 className="font-bold text-teal line-clamp-1">{item.name}</h3>
+                          <h3 className="font-bold text-teal line-clamp-1">{itemName}</h3>
                           <button
                             onClick={() => onRemove(item.id, item.selectedSize, item.selectedColor?.name)}
                             className="text-teal/20 hover:text-coral transition-colors cursor-pointer"
@@ -139,7 +141,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                       </div>
                     </div>
                   </div>
-                ))
+                  );
+                })
               )}
             </div>
 

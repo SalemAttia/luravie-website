@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
 import { toast } from 'sonner';
 import { PRODUCTS, Product } from '@/data';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import * as Sentry from "@sentry/nextjs";
 import { trackAddToCart, trackRemoveFromCart } from '@/lib/analytics';
 
@@ -30,6 +30,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const t = useTranslations('common');
+  const locale = useLocale();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [isMounted, setIsMounted] = useState(false);
@@ -124,10 +125,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return [...prev, { ...product, price: itemPrice, quantity: 1, selectedSize: size, selectedColor: color, variationId }];
     });
 
-    trackAddToCart(product, size, color?.name);
+    trackAddToCart({ ...product, price: itemPrice }, size, color?.name);
 
+    const displayName = locale === 'ar' && product.nameAr ? product.nameAr : product.name;
     toast.success(t('addedToBag'), {
-      description: `${product.name}${color ? ` - ${color.name}` : ''}${size ? `, ${size}` : ''}`,
+      description: `${displayName}${color ? ` - ${color.name}` : ''}${size ? `, ${size}` : ''}`,
       icon: '✨',
       position: 'bottom-right',
     });
