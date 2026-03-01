@@ -389,6 +389,7 @@
         "trackOrder": "Track Order",
         "clearAll": "Clear All",
         "order": "Order",
+        "shipping": "Shipping",
         "total": "Total",
         "statuses": {
             "pending": "Pending",

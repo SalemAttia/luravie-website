@@ -10,6 +10,8 @@ import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 interface SavedOrder {
     id: number;
     date: string;
+    subtotal?: number;
+    shippingCost?: number;
     total: number;
     status: string;
     items: {
@@ -176,9 +178,23 @@ export default function OrdersClient() {
                                             })}
                                         </div>
 
-                                        <div className={`flex items-center justify-between pt-3 border-t border-teal/5 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                                            <span className="text-xs font-bold text-muted-foreground uppercase">{t('total')}</span>
-                                            <span className="font-bold text-teal">{order.total.toFixed(0)} {tCommon('currency')}</span>
+                                        <div className="space-y-2 pt-3 border-t border-teal/5">
+                                            {order.subtotal != null && (
+                                                <div className={`flex items-center justify-between text-xs text-muted-foreground ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                                                    <span>{tCommon('subtotal')}</span>
+                                                    <span>{order.subtotal.toFixed(0)} {tCommon('currency')}</span>
+                                                </div>
+                                            )}
+                                            {order.shippingCost != null && (
+                                                <div className={`flex items-center justify-between text-xs text-muted-foreground ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                                                    <span>{t('shipping')}</span>
+                                                    <span>{order.shippingCost.toFixed(0)} {tCommon('currency')}</span>
+                                                </div>
+                                            )}
+                                            <div className={`flex items-center justify-between ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                                                <span className="text-xs font-bold text-muted-foreground uppercase">{t('total')}</span>
+                                                <span className="font-bold text-teal">{order.total.toFixed(0)} {tCommon('currency')}</span>
+                                            </div>
                                         </div>
                                     </motion.div>
                                 );

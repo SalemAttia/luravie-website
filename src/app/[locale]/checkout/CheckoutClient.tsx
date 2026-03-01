@@ -116,6 +116,8 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
             savedOrders.unshift({
                 id: orderId,
                 date: new Date().toISOString(),
+                subtotal,
+                shippingCost,
                 total: subtotal + shippingCost,
                 status: order.status || 'processing',
                 items: cartItems.map(item => ({

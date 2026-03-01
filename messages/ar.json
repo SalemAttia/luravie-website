@@ -420,6 +420,7 @@
         "trackOrder": "تتبع الطلب",
         "clearAll": "مسح الكل",
         "order": "طلب",
+        "shipping": "الشحن",
         "total": "الإجمالي",
         "statuses": {
             "pending": "قيد الانتظار",
