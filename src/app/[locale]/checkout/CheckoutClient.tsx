@@ -108,8 +108,31 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
                 throw new Error(error.error || 'Failed to create order');
             }
 
+            const order = await response.json();
+            const orderId = order.id || order.number;
+
+            // Save order to localStorage for "Your Orders" feature
+            const savedOrders = JSON.parse(localStorage.getItem('luravie-orders') || '[]');
+            savedOrders.unshift({
+                id: orderId,
+                date: new Date().toISOString(),
+                total: subtotal + shippingCost,
+                status: order.status || 'processing',
+                items: cartItems.map(item => ({
+                    name: item.name,
+                    nameAr: item.nameAr,
+                    quantity: item.quantity,
+                    price: item.price,
+                    image: item.image,
+                    selectedSize: item.selectedSize,
+                    selectedColor: item.selectedColor,
+                })),
+                phone: shippingData.phone,
+            });
+            localStorage.setItem('luravie-orders', JSON.stringify(savedOrders));
+
             trackPurchase(cartItems, subtotal);
-            navigate('/success');
+            navigate(`/success?order=${orderId}` as any);
             clearCart();
         } catch (error: any) {
             Sentry.captureException(error, {

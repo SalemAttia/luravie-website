@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ShoppingBag, Menu, Heart, X, ChevronRight, Instagram, Facebook, Globe } from 'lucide-react';
+import { ShoppingBag, Menu, Heart, X, ChevronRight, Instagram, Facebook, Globe, Package, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import logoImg from "@/assets/9fa13cb21775809b44829beac6f211643ef2d854.png";
@@ -233,6 +233,22 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <div>
                     <h3 className="text-xs font-bold text-rose/50 uppercase tracking-widest mb-4">{t('account')}</h3>
                     <div className="grid gap-2">
+                      <Link
+                        href="/orders"
+                        onClick={() => setIsMenuOpen(false)}
+                        className={`flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all ${locale === 'ar' ? 'text-right' : 'text-left'}`}
+                      >
+                        {t('yourOrders')}
+                        <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
+                      </Link>
+                      <Link
+                        href="/track-order"
+                        onClick={() => setIsMenuOpen(false)}
+                        className={`flex items-center justify-between w-full p-4 bg-white/5 rounded-2xl font-bold text-rose shadow-sm border border-white/10 hover:bg-white/10 transition-all ${locale === 'ar' ? 'text-right' : 'text-left'}`}
+                      >
+                        {t('trackOrder')}
+                        <ChevronRight size={18} className={`text-coral ${locale === 'ar' ? 'rotate-180' : ''}`} />
+                      </Link>
                       <button
                         onClick={() => { setIsMenuOpen(false); onFavoritesClick(); }}
                         className={`flex items-center gap-3 w-full p-4 font-medium text-white/80 hover:text-rose transition-colors ${locale === 'ar' ? 'text-right' : 'text-left'}`}

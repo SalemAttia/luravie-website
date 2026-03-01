@@ -54,7 +54,9 @@
         "allRightsReserved": "All rights reserved.",
         "copyright": "© 2026 Luravie.",
         "discreetShipping": "Discreet Shipping",
-        "brandName": "LURAVIE"
+        "brandName": "LURAVIE",
+        "trackOrder": "Track Order",
+        "yourOrders": "Your Orders"
     },
     "home": {
         "heroTitle": "Confidence Starts Within",
@@ -238,6 +240,7 @@
             "subtitle": "Your order has been received and is currently being processed. You will receive a confirmation call shortly.",
             "orderNumber": "Order Number",
             "backToShop": "Back to Shop",
+            "trackOrder": "Track Your Order",
             "deliveryExpected": "Delivery expected in 2-4 business days"
         },
         "codPayment": "Cash on Delivery (COD)",
@@ -351,6 +354,51 @@
         "outro": {
             "text": "You will receive a tracking number and a confirmation call before delivery.",
             "tagline": "✨ Luravie – Fast. Private. Reliable."
+        }
+    },
+    "trackOrder": {
+        "title": "Track Your Order",
+        "subtitle": "Enter your order number or phone number to check the status of your order.",
+        "byOrderId": "Order ID",
+        "byPhone": "Phone Number",
+        "orderIdPlaceholder": "Enter your order number (e.g. 1234)",
+        "phonePlaceholder": "Enter your phone number (e.g. 01012345678)",
+        "search": "Search",
+        "orderNumber": "Order Number",
+        "noOrders": "No orders found",
+        "noOrdersSub": "Please check your order number or phone number and try again.",
+        "statuses": {
+            "pending": "Pending",
+            "processing": "Processing",
+            "on-hold": "On Hold",
+            "completed": "Completed",
+            "cancelled": "Cancelled",
+            "refunded": "Refunded",
+            "failed": "Failed",
+            "shipped": "Shipped"
+        }
+    },
+    "orders": {
+        "title": "Your Orders",
+        "subtitle": "Orders placed from this device are saved here for your convenience.",
+        "noOrders": "No orders yet",
+        "noOrdersSub": "Your orders will appear here after you place them.",
+        "startShopping": "Start Shopping",
+        "trackExisting": "Track an Order",
+        "orderCount": "{count} orders",
+        "trackOrder": "Track Order",
+        "clearAll": "Clear All",
+        "order": "Order",
+        "total": "Total",
+        "statuses": {
+            "pending": "Pending",
+            "processing": "Processing",
+            "on-hold": "On Hold",
+            "completed": "Completed",
+            "cancelled": "Cancelled",
+            "refunded": "Refunded",
+            "failed": "Failed",
+            "shipped": "Shipped"
         }
     }
 }

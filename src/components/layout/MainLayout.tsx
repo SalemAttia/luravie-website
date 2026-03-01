@@ -53,6 +53,8 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
                         <div>
                             <h4 className="font-bold text-rose mb-6 text-xs uppercase tracking-widest">{tCommon('support')}</h4>
                             <ul className="space-y-4 text-sm">
+                                <li><Link href="/track-order" className="hover:text-coral transition-colors">{tCommon('trackOrder')}</Link></li>
+                                <li><Link href="/orders" className="hover:text-coral transition-colors">{tCommon('yourOrders')}</Link></li>
                                 <li><Link href="/policy" className="hover:text-coral transition-colors">{tCommon('policy')}</Link></li>
                                 <li><Link href="/refund" className="hover:text-coral transition-colors">{tCommon('refundPolicy')}</Link></li>
                                 <li><Link href="/shipping" className="hover:text-coral transition-colors">{tCommon('shippingPolicy')}</Link></li>

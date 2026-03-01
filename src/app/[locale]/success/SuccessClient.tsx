@@ -2,14 +2,16 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ShieldCheck, ShoppingBag, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, ShoppingBag, CheckCircle2, Package } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { useTranslations, useLocale } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
 
 export default function SuccessClient() {
     const t = useTranslations('checkout.success');
     const locale = useLocale();
-    const orderNumber = Math.floor(Math.random() * 900000) + 100000;
+    const searchParams = useSearchParams();
+    const orderNumber = searchParams.get('order') || '—';
 
     return (
         <div className="min-h-[80vh] flex items-center justify-center px-4 py-20" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
@@ -49,6 +51,14 @@ export default function SuccessClient() {
                 </div>
 
                 <div className="space-y-4">
+                    <Link
+                        href="/track-order"
+                        className={`w-full py-4 bg-coral text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-coral/20 cursor-pointer hover:bg-coral/90 transition-all ${locale === 'ar' ? 'flex-row-reverse' : ''}`}
+                    >
+                        {t('trackOrder')}
+                        <Package size={20} />
+                    </Link>
+
                     <Link
                         href="/shop"
                         className={`w-full py-4 bg-teal text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-teal/20 cursor-pointer hover:bg-teal/90 transition-all ${locale === 'ar' ? 'flex-row-reverse' : ''}`}
