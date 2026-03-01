@@ -11,11 +11,14 @@ interface TrackedOrder {
     status: string;
     date_created: string;
     total: string;
+    shipping_total: string;
     currency: string;
     line_items: {
         name: string;
         quantity: number;
         total: string;
+        subtotal: string;
+        price: number;
         image?: string;
     }[];
     shipping: {
@@ -187,12 +190,22 @@ export default function TrackOrderClient() {
 
                                     {order.line_items && order.line_items.length > 0 && (
                                         <div className="space-y-3 pt-4 border-t border-teal/5">
-                                            {order.line_items.map((item, idx) => (
-                                                <div key={idx} className={`flex items-center justify-between text-sm ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                                                    <span className="text-gray-700">{item.name} x{item.quantity}</span>
-                                                    <span className="font-bold text-teal">{item.total} {order.currency === 'EGP' ? (locale === 'ar' ? 'ج.م' : 'EGP') : order.currency}</span>
+                                            {order.line_items.map((item, idx) => {
+                                                const itemTotal = parseFloat(item.total) || parseFloat(item.subtotal) || (item.price * item.quantity) || 0;
+                                                const currencyLabel = order.currency === 'EGP' ? (locale === 'ar' ? 'ج.م' : 'EGP') : order.currency;
+                                                return (
+                                                    <div key={idx} className={`flex items-center justify-between text-sm ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                                                        <span className="text-gray-700">{item.name} x{item.quantity}</span>
+                                                        <span className="font-bold text-teal">{itemTotal.toFixed(0)} {currencyLabel}</span>
+                                                    </div>
+                                                );
+                                            })}
+                                            {parseFloat(order.shipping_total) > 0 && (
+                                                <div className={`flex items-center justify-between text-sm ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
+                                                    <span className="text-gray-700">{t('shipping')}</span>
+                                                    <span className="font-bold text-teal">{parseFloat(order.shipping_total).toFixed(0)} {order.currency === 'EGP' ? (locale === 'ar' ? 'ج.م' : 'EGP') : order.currency}</span>
                                                 </div>
-                                            ))}
+                                            )}
                                         </div>
                                     )}
                                 </motion.div>

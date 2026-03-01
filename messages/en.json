@@ -365,6 +365,7 @@
         "phonePlaceholder": "Enter your phone number (e.g. 01012345678)",
         "search": "Search",
         "orderNumber": "Order Number",
+        "shipping": "Shipping",
         "noOrders": "No orders found",
         "noOrdersSub": "Please check your order number or phone number and try again.",
         "statuses": {

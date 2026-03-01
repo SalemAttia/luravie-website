@@ -40,9 +40,16 @@ export async function GET(req: NextRequest) {
                 throw new Error(`WooCommerce API error: ${response.status}`);
             }
         } else if (phone) {
-            // Look up by phone number - search in billing phone
+            // Normalize phone: strip spaces, dashes, and leading +/country code for comparison
+            const normalizePhone = (p: string) =>
+                p.replace(/[\s\-()]/g, '').replace(/^(\+?2?0?)/, '');
+
+            const normalizedSearch = normalizePhone(phone);
+
+            // Fetch recent orders and filter by billing phone
+            // WooCommerce search param is unreliable for phone, so fetch more and filter client-side
             const response = await fetch(
-                `${WOO_URL}/wp-json/wc/v3/orders?search=${encodeURIComponent(phone)}&per_page=20&orderby=date&order=desc`,
+                `${WOO_URL}/wp-json/wc/v3/orders?per_page=50&orderby=date&order=desc&search=${encodeURIComponent(phone)}`,
                 { headers, cache: 'no-store' }
             );
 
@@ -50,11 +57,31 @@ export async function GET(req: NextRequest) {
                 throw new Error(`WooCommerce API error: ${response.status}`);
             }
 
-            const allOrders = await response.json();
-            // Filter to only orders matching the phone number in billing
-            orders = allOrders.filter((o: any) =>
-                o.billing?.phone?.replace(/\s/g, '') === phone.replace(/\s/g, '')
+            const searchResults = await response.json();
+
+            // Also fetch without search param in case WooCommerce search missed some
+            const fallbackResponse = await fetch(
+                `${WOO_URL}/wp-json/wc/v3/orders?per_page=100&orderby=date&order=desc`,
+                { headers, cache: 'no-store' }
             );
+
+            let allOrders = [...searchResults];
+            if (fallbackResponse.ok) {
+                const fallbackOrders = await fallbackResponse.json();
+                // Merge, avoiding duplicates
+                const existingIds = new Set(allOrders.map((o: any) => o.id));
+                for (const o of fallbackOrders) {
+                    if (!existingIds.has(o.id)) {
+                        allOrders.push(o);
+                    }
+                }
+            }
+
+            // Filter by normalized phone match
+            orders = allOrders.filter((o: any) => {
+                const billingPhone = o.billing?.phone || '';
+                return normalizePhone(billingPhone) === normalizedSearch;
+            });
         }
 
         // Return sanitized order data (don't expose sensitive details)
@@ -64,11 +91,14 @@ export async function GET(req: NextRequest) {
             status: o.status,
             date_created: o.date_created,
             total: o.total,
+            shipping_total: o.shipping_total,
             currency: o.currency,
             line_items: o.line_items?.map((item: any) => ({
                 name: item.name,
                 quantity: item.quantity,
                 total: item.total,
+                subtotal: item.subtotal,
+                price: item.price,
                 image: item.image?.src,
             })),
             shipping: {
