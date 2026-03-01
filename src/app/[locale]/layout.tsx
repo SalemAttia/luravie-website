@@ -212,22 +212,22 @@ export default async function RootLayout({
         {
           '@type': 'OfferCatalog',
           name: locale === 'ar' ? 'سوتيانات' : 'Bras',
-          url: `${siteUrl}/${locale}/shop?category=bra`,
+          url: `${siteUrl}/${locale}/shop?category=Bra`,
         },
         {
           '@type': 'OfferCatalog',
           name: locale === 'ar' ? 'لانجيري' : 'Lingerie',
-          url: `${siteUrl}/${locale}/shop?category=lingerie`,
+          url: `${siteUrl}/${locale}/shop?category=Lingerie`,
         },
         {
           '@type': 'OfferCatalog',
           name: locale === 'ar' ? 'كلوت' : 'Panties',
-          url: `${siteUrl}/${locale}/shop?category=panties`,
+          url: `${siteUrl}/${locale}/shop?category=Panties`,
         },
         {
           '@type': 'OfferCatalog',
           name: locale === 'ar' ? 'شرابات' : 'Socks',
-          url: `${siteUrl}/${locale}/shop?category=socks`,
+          url: `${siteUrl}/${locale}/shop?category=Socks`,
         },
       ],
     },
