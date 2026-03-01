@@ -145,8 +145,8 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
                                         isFavorite={favorites.includes(product.id)}
                                         onToggleFavorite={(e) => toggleFavorite(product.id, e)}
                                         onAddToCart={addToCart}
-                                        onBuyNow={(p, s, c) => {
-                                            buyNow(p, s, c);
+                                        onBuyNow={(p, s, c, v, vp) => {
+                                            buyNow(p, s, c, v, vp);
                                             router.push('/checkout' as any);
                                         }}
                                         onOpenQuickSelect={() => openQuickSelect(product)}
@@ -182,10 +182,11 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
                 onClose={() => setIsQuickSelectOpen(false)}
                 product={selectedProduct}
                 onAddToCart={addToCart}
-                onBuyNow={(p, s, c) => {
-                    buyNow(p, s, c);
+                onBuyNow={(p, s, c, v, vp) => {
+                    buyNow(p, s, c, v, vp);
                     router.push('/checkout' as any);
                 }}
+                onNotifyMe={(p) => { setSelectedProduct(p); setIsNotifyMeOpen(true); }}
             />
 
             <NotifyMeModal

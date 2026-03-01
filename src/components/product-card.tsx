@@ -13,8 +13,8 @@ interface ProductCardProps {
   href: string;
   isFavorite: boolean;
   onToggleFavorite: (e?: React.MouseEvent) => void;
-  onAddToCart: (p: Product, size?: string, color?: { name: string; hex: string }) => void;
-  onBuyNow: (p: Product, size?: string, color?: { name: string; hex: string }) => void;
+  onAddToCart: (p: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => void;
+  onBuyNow: (p: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => void;
   onOpenQuickSelect: (product: Product) => void;
   onNotifyMe?: (product: Product) => void;
 }
