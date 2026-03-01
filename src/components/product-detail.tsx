@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ShoppingBag, Heart, RefreshCw, Package, Check, ChevronRight, Bell, X, ZoomIn } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import { SizeGuide } from '@/components/size-guide';
 import { NotifyMeModal } from '@/components/notify-me-modal';
 import { Product } from '@/data';
+import { isSizeOutOfStock, isColorOutOfStock, isCombinationOutOfStock, findVariation } from '@/lib/variant-stock';
 import { useTranslations, useLocale } from 'next-intl';
 
 interface ProductDetailProps {
@@ -14,8 +15,8 @@ interface ProductDetailProps {
   isFavorite: boolean;
   onToggleFavorite: (e?: React.MouseEvent) => void;
   onBack: () => void;
-  onAddToCart: (p: Product, size?: string, color?: { name: string; hex: string }) => void;
-  onBuyNow: (p: Product, size?: string, color?: { name: string; hex: string }) => void;
+  onAddToCart: (p: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => void;
+  onBuyNow: (p: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => void;
 }
 
 export const ProductDetail: React.FC<ProductDetailProps> = ({
@@ -31,16 +32,42 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   const locale = useLocale();
   const productName = locale === 'ar' && product.nameAr ? product.nameAr : product.name;
   const productDescription = locale === 'ar' && product.descriptionAr ? product.descriptionAr : product.description;
-  const [selectedSize, setSelectedSize] = useState(product.sizes.length > 0 ? product.sizes[0] : undefined);
-  const [selectedColor, setSelectedColor] = useState(product.colors.length > 0 ? product.colors[0] : undefined);
+  const [selectedSize, setSelectedSize] = useState(() => {
+    if (product.sizes.length === 0) return undefined;
+    if (product.variations?.length) {
+      const inStockSize = product.sizes.find(s => !isSizeOutOfStock(product.variations, s));
+      return inStockSize || product.sizes[0];
+    }
+    return product.sizes[0];
+  });
+  const [selectedColor, setSelectedColor] = useState(() => {
+    if (product.colors.length === 0) return undefined;
+    if (product.variations?.length) {
+      const inStockColor = product.colors.find(c => !isColorOutOfStock(product.variations, c.name));
+      return inStockColor || product.colors[0];
+    }
+    return product.colors[0];
+  });
   const [mainImage, setMainImage] = useState(product.image);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [isNotifyMeOpen, setIsNotifyMeOpen] = useState(false);
   const [addedStatus, setAddedStatus] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
+  const selectedVariation = findVariation(product.variations, selectedSize, selectedColor?.name);
+  const isSelectedCombinationOOS = product.outOfStock || isCombinationOutOfStock(
+    product.variations, selectedSize, selectedColor?.name
+  );
+  const displayPrice = selectedVariation?.price ?? product.price;
+
+  useEffect(() => {
+    if (selectedVariation?.image) {
+      setMainImage(selectedVariation.image);
+    }
+  }, [selectedVariation?.image]);
+
   const handleAddAction = () => {
-    onAddToCart(product, selectedSize, selectedColor);
+    onAddToCart(product, selectedSize, selectedColor, selectedVariation?.variationId, selectedVariation?.price);
     setAddedStatus(true);
     setTimeout(() => setAddedStatus(false), 2000);
   };
@@ -161,12 +188,15 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
               )}
             </div>
             <h1 className="text-lg md:text-3xl font-bold text-teal mb-1 md:mb-3 leading-tight">{productName}</h1>
-            <p className="text-base md:text-2xl font-bold text-coral">{product.price} {t_common('currency')}</p>
-            {!product.outOfStock && product.stockQuantity != null && product.stockQuantity > 0 && product.stockQuantity <= 10 && (
-              <p className="text-xs md:text-sm font-bold text-coral mt-1">
-                {t_product('onlyXLeft', { count: product.stockQuantity })}
-              </p>
-            )}
+            <p className="text-base md:text-2xl font-bold text-coral">{displayPrice} {t_common('currency')}</p>
+            {!isSelectedCombinationOOS && (() => {
+              const qty = selectedVariation?.stockQuantity ?? product.stockQuantity;
+              return qty != null && qty > 0 && qty <= 10 ? (
+                <p className="text-xs md:text-sm font-bold text-coral mt-1">
+                  {t_product('onlyXLeft', { count: qty })}
+                </p>
+              ) : null;
+            })()}
           </div>
 
           {product.colors.length > 0 && (
@@ -176,21 +206,35 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                 <span className="text-xs md:text-sm font-bold text-teal/60">{selectedColor?.name}</span>
               </div>
               <div className={`flex flex-wrap gap-3 md:gap-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                {product.colors.map((color) => (
-                  <button
-                    key={color.name}
-                    onClick={() => setSelectedColor(color)}
-                    className={`w-9 h-9 md:w-12 md:h-12 rounded-full border-2 transition-all flex items-center justify-center cursor-pointer ${selectedColor?.name === color.name ? 'border-coral p-0.5 md:p-1' : 'border-white bg-white shadow-sm'
+                {product.colors.map((color) => {
+                  const colorOOS = isColorOutOfStock(product.variations, color.name);
+                  return (
+                    <button
+                      key={color.name}
+                      onClick={() => !colorOOS && setSelectedColor(color)}
+                      disabled={colorOOS || product.outOfStock}
+                      className={`w-9 h-9 md:w-12 md:h-12 rounded-full border-2 transition-all flex items-center justify-center relative ${
+                        colorOOS
+                          ? 'opacity-30 cursor-not-allowed'
+                          : selectedColor?.name === color.name
+                            ? 'border-coral p-0.5 md:p-1 cursor-pointer'
+                            : 'border-white bg-white shadow-sm cursor-pointer'
                       }`}
-                  >
-                    <div
-                      className="w-full h-full rounded-full border border-black/5 flex items-center justify-center text-white"
-                      style={{ backgroundColor: color.hex }}
                     >
-                      {selectedColor?.name === color.name && <Check size={16} />}
-                    </div>
-                  </button>
-                ))}
+                      <div
+                        className="w-full h-full rounded-full border border-black/5 flex items-center justify-center text-white"
+                        style={{ backgroundColor: color.hex }}
+                      >
+                        {selectedColor?.name === color.name && !colorOOS && <Check size={16} />}
+                      </div>
+                      {colorOOS && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-full h-[1.5px] bg-black/40 rotate-[-45deg] rounded-full" />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -207,24 +251,36 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                 </button>
               </div>
               <div className={`flex flex-wrap gap-1.5 md:gap-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                {product.sizes.map((size) => (
-                  <button
-                    key={size}
-                    onClick={() => setSelectedSize(size)}
-                    className={`min-w-8 h-8 md:min-w-12 md:h-12 px-2.5 md:px-3 rounded-lg md:rounded-xl border-2 font-bold text-[10px] md:text-sm transition-all cursor-pointer ${selectedSize === size
-                      ? 'border-coral bg-coral text-white shadow-xl shadow-coral/20'
-                      : 'border-white bg-white text-teal/60 hover:border-coral/20'
+                {product.sizes.map((size) => {
+                  const sizeOOS = isSizeOutOfStock(product.variations, size);
+                  return (
+                    <button
+                      key={size}
+                      onClick={() => !sizeOOS && setSelectedSize(size)}
+                      disabled={sizeOOS || product.outOfStock}
+                      className={`min-w-8 h-8 md:min-w-12 md:h-12 px-2.5 md:px-3 rounded-lg md:rounded-xl border-2 font-bold text-[10px] md:text-sm transition-all relative ${
+                        sizeOOS
+                          ? 'border-white bg-white text-teal/20 cursor-not-allowed'
+                          : selectedSize === size
+                            ? 'border-coral bg-coral text-white shadow-xl shadow-coral/20 cursor-pointer'
+                            : 'border-white bg-white text-teal/60 hover:border-coral/20 cursor-pointer'
                       }`}
-                  >
-                    {size}
-                  </button>
-                ))}
+                    >
+                      {size}
+                      {sizeOOS && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-[calc(100%+4px)] h-[1.5px] bg-teal/30 rotate-[-15deg]" />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
 
           <div className="space-y-2 md:space-y-3 mb-4 md:mb-8">
-            {product.outOfStock ? (
+            {isSelectedCombinationOOS ? (
               <>
                 <button
                   onClick={() => setIsNotifyMeOpen(true)}
@@ -271,7 +327,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                 </div>
 
                 <button
-                  onClick={() => onBuyNow(product, selectedSize || undefined, selectedColor || undefined)}
+                  onClick={() => onBuyNow(product, selectedSize || undefined, selectedColor || undefined, selectedVariation?.variationId, selectedVariation?.price)}
                   className="w-full py-2.5 md:py-4 bg-coral text-white rounded-xl md:rounded-2xl font-bold text-xs md:text-base flex items-center justify-center gap-2 md:gap-3 shadow-2xl shadow-coral/40 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
                 >
                   {t_common('orderNow')}

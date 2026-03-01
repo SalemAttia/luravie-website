@@ -89,6 +89,7 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
                 line_items: cartItems.map(item => ({
                     product_id: parseInt(item.id),
                     quantity: item.quantity,
+                    ...(item.variationId ? { variation_id: item.variationId } : {}),
                     meta_data: [
                         ...(item.selectedSize ? [{ key: 'Size', value: item.selectedSize }] : []),
                         ...(item.selectedColor ? [{ key: 'Color', value: item.selectedColor.name }] : []),
@@ -368,13 +369,15 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
                     <div className={`bg-white rounded-2xl md:rounded-3xl p-5 md:p-8 shadow-sm border border-teal/5 lg:sticky lg:top-24 ${locale === 'ar' ? 'text-right' : ''}`}>
                         <h3 className="text-xl font-bold mb-6">{t('summary')}</h3>
                         <div className="space-y-6 mb-8 max-h-[400px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-teal/10">
-                            {cartItems.map((item, idx) => (
+                            {cartItems.map((item, idx) => {
+                                const itemName = locale === 'ar' && item.nameAr ? item.nameAr : item.name;
+                                return (
                                 <div key={`${item.id}-${item.selectedSize || idx}-${item.selectedColor?.name || ''}`} className={`flex gap-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                     <div className="w-20 h-20 rounded-xl overflow-hidden bg-blush flex-shrink-0">
-                                        <ImageWithFallback src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                        <ImageWithFallback src={item.image} alt={itemName} className="w-full h-full object-cover" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <h4 className="font-bold text-gray-900 line-clamp-1">{item.name}</h4>
+                                        <h4 className="font-bold text-gray-900 line-clamp-1">{itemName}</h4>
                                         <div className={`flex items-center gap-2 mt-1 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                             {item.selectedSize && (
                                                 <span className="text-xs bg-teal/5 text-teal px-2 py-0.5 rounded-full font-bold">
@@ -419,7 +422,8 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
                                         </div>
                                     </div>
                                 </div>
-                            ))}
+                                );
+                            })}
                         </div>
 
                         <div className="space-y-4 pt-6 border-t border-teal/5">

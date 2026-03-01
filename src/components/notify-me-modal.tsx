@@ -147,7 +147,7 @@ export const NotifyMeModal: React.FC<NotifyMeModalProps> = ({
                     <div className="w-16 h-16 rounded-2xl overflow-hidden bg-blush shrink-0">
                       <ImageWithFallback
                         src={product.image}
-                        alt={product.name}
+                        alt={productName}
                         className="w-full h-full object-cover"
                       />
                     </div>

@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
 import { toast } from 'sonner';
 import { PRODUCTS, Product } from '@/data';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import * as Sentry from "@sentry/nextjs";
 import { trackAddToCart, trackRemoveFromCart } from '@/lib/analytics';
 
@@ -11,13 +11,14 @@ interface CartItem extends Product {
   quantity: number;
   selectedSize?: string;
   selectedColor?: { name: string; hex: string };
+  variationId?: number;
 }
 
 interface AppContextType {
   cartItems: CartItem[];
   favorites: string[];
-  addToCart: (product: Product, size?: string, color?: { name: string; hex: string }) => void;
-  buyNow: (product: Product, size?: string, color?: { name: string; hex: string }) => void;
+  addToCart: (product: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => void;
+  buyNow: (product: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => void;
   updateQuantity: (id: string, size?: string, colorName?: string, delta?: number) => void;
   removeFromCart: (id: string, size?: string, colorName?: string) => void;
   toggleFavorite: (productId: string, e?: React.MouseEvent) => void;
@@ -29,6 +30,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const t = useTranslations('common');
+  const locale = useLocale();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [isMounted, setIsMounted] = useState(false);
@@ -105,7 +107,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
-  const addToCart = (product: Product, size?: string, color?: { name: string; hex: string }) => {
+  const addToCart = (product: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => {
+    const itemPrice = variantPrice ?? product.price;
     setCartItems(prev => {
       const existing = prev.find(item =>
         item.id === product.id &&
@@ -119,20 +122,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             : item
         );
       }
-      return [...prev, { ...product, quantity: 1, selectedSize: size, selectedColor: color }];
+      return [...prev, { ...product, price: itemPrice, quantity: 1, selectedSize: size, selectedColor: color, variationId }];
     });
 
-    trackAddToCart(product, size, color?.name);
+    trackAddToCart({ ...product, price: itemPrice }, size, color?.name);
 
+    const displayName = locale === 'ar' && product.nameAr ? product.nameAr : product.name;
     toast.success(t('addedToBag'), {
-      description: `${product.name}${color ? ` - ${color.name}` : ''}${size ? `, ${size}` : ''}`,
+      description: `${displayName}${color ? ` - ${color.name}` : ''}${size ? `, ${size}` : ''}`,
       icon: '✨',
       position: 'bottom-right',
     });
   };
 
-  const buyNow = (product: Product, size?: string, color?: { name: string; hex: string }) => {
-    addToCart(product, size, color);
+  const buyNow = (product: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => {
+    addToCart(product, size, color, variationId, variantPrice);
   };
 
   const updateQuantity = (id: string, size?: string, colorName?: string, delta: number = 1) => {
