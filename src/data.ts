@@ -3,6 +3,8 @@ export interface ProductVariation {
   attributes: { size?: string; color?: string };
   stockStatus: 'instock' | 'outofstock' | 'onbackorder';
   stockQuantity: number | null;
+  price?: number;
+  image?: string;
 }
 
 export interface Product {

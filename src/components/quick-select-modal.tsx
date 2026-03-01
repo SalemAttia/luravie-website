@@ -22,8 +22,8 @@ interface QuickSelectModalProps {
     variations?: ProductVariation[];
     productType?: string;
   } | null;
-  onAddToCart: (product: any, size?: string, color?: any, variationId?: number) => void;
-  onBuyNow?: (product: any, size?: string, color?: any, variationId?: number) => void;
+  onAddToCart: (product: any, size?: string, color?: any, variationId?: number, variantPrice?: number) => void;
+  onBuyNow?: (product: any, size?: string, color?: any, variationId?: number, variantPrice?: number) => void;
   onNotifyMe?: (product: any) => void;
 }
 
@@ -67,13 +67,15 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
   const productName = locale === 'ar' && product.nameAr ? product.nameAr : product.name;
   const selectedVariation = findVariation(variations, selectedSize || undefined, selectedColor?.name);
   const isSelectedOOS = isCombinationOutOfStock(variations, selectedSize || undefined, selectedColor?.name);
+  const displayPrice = selectedVariation?.price ?? product.price;
+  const displayImage = selectedVariation?.image ?? product.image;
 
   const handleAdd = () => {
     const sizeValid = product.sizes.length === 0 || selectedSize;
     const colorValid = product.colors.length === 0 || selectedColor;
 
     if (sizeValid && colorValid && !isSelectedOOS) {
-      onAddToCart(product, selectedSize || undefined, selectedColor || undefined, selectedVariation?.variationId);
+      onAddToCart(product, selectedSize || undefined, selectedColor || undefined, selectedVariation?.variationId, selectedVariation?.price);
       onClose();
     }
   };
@@ -83,7 +85,7 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
     const colorValid = product.colors.length === 0 || selectedColor;
 
     if (sizeValid && colorValid && !isSelectedOOS && onBuyNow) {
-      onBuyNow(product, selectedSize || undefined, selectedColor || undefined, selectedVariation?.variationId);
+      onBuyNow(product, selectedSize || undefined, selectedColor || undefined, selectedVariation?.variationId, selectedVariation?.price);
       onClose();
     }
   };
@@ -118,11 +120,11 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
             <div className="p-4 md:p-8">
               <div className="flex gap-3 md:gap-6 mb-4 md:mb-8">
                 <div className="w-14 h-20 md:w-24 md:h-32 rounded-lg md:rounded-2xl overflow-hidden bg-white flex-shrink-0 shadow-sm border border-teal/5">
-                  <ImageWithFallback src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                  <ImageWithFallback src={displayImage} alt={product.name} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex flex-col justify-center">
                   <h3 className="text-sm md:text-xl font-bold text-teal mb-0.5 md:mb-1">{productName}</h3>
-                  <p className="text-coral font-bold text-sm md:text-lg">{product.price} {tCommon('currency')}</p>
+                  <p className="text-coral font-bold text-sm md:text-lg">{displayPrice} {tCommon('currency')}</p>
                 </div>
               </div>
 

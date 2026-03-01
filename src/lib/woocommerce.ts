@@ -296,6 +296,8 @@ export async function getWooProductVariations(productId: string): Promise<Produc
                 attributes: attrs,
                 stockStatus: v.stock_status || 'instock',
                 stockQuantity: v.stock_quantity ?? null,
+                price: v.price ? parseFloat(v.price) : undefined,
+                image: v.image?.src || undefined,
             };
         });
     } catch (error) {

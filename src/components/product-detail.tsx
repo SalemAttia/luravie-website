@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ShoppingBag, Heart, RefreshCw, Package, Check, ChevronRight, Bell, X, ZoomIn } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
@@ -15,8 +15,8 @@ interface ProductDetailProps {
   isFavorite: boolean;
   onToggleFavorite: (e?: React.MouseEvent) => void;
   onBack: () => void;
-  onAddToCart: (p: Product, size?: string, color?: { name: string; hex: string }, variationId?: number) => void;
-  onBuyNow: (p: Product, size?: string, color?: { name: string; hex: string }, variationId?: number) => void;
+  onAddToCart: (p: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => void;
+  onBuyNow: (p: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => void;
 }
 
 export const ProductDetail: React.FC<ProductDetailProps> = ({
@@ -58,9 +58,16 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   const isSelectedCombinationOOS = product.outOfStock || isCombinationOutOfStock(
     product.variations, selectedSize, selectedColor?.name
   );
+  const displayPrice = selectedVariation?.price ?? product.price;
+
+  useEffect(() => {
+    if (selectedVariation?.image) {
+      setMainImage(selectedVariation.image);
+    }
+  }, [selectedVariation?.image]);
 
   const handleAddAction = () => {
-    onAddToCart(product, selectedSize, selectedColor, selectedVariation?.variationId);
+    onAddToCart(product, selectedSize, selectedColor, selectedVariation?.variationId, selectedVariation?.price);
     setAddedStatus(true);
     setTimeout(() => setAddedStatus(false), 2000);
   };
@@ -181,7 +188,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
               )}
             </div>
             <h1 className="text-lg md:text-3xl font-bold text-teal mb-1 md:mb-3 leading-tight">{productName}</h1>
-            <p className="text-base md:text-2xl font-bold text-coral">{product.price} {t_common('currency')}</p>
+            <p className="text-base md:text-2xl font-bold text-coral">{displayPrice} {t_common('currency')}</p>
             {!isSelectedCombinationOOS && (() => {
               const qty = selectedVariation?.stockQuantity ?? product.stockQuantity;
               return qty != null && qty > 0 && qty <= 10 ? (
@@ -320,7 +327,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                 </div>
 
                 <button
-                  onClick={() => onBuyNow(product, selectedSize || undefined, selectedColor || undefined, selectedVariation?.variationId)}
+                  onClick={() => onBuyNow(product, selectedSize || undefined, selectedColor || undefined, selectedVariation?.variationId, selectedVariation?.price)}
                   className="w-full py-2.5 md:py-4 bg-coral text-white rounded-xl md:rounded-2xl font-bold text-xs md:text-base flex items-center justify-center gap-2 md:gap-3 shadow-2xl shadow-coral/40 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
                 >
                   {t_common('orderNow')}

@@ -17,8 +17,8 @@ interface CartItem extends Product {
 interface AppContextType {
   cartItems: CartItem[];
   favorites: string[];
-  addToCart: (product: Product, size?: string, color?: { name: string; hex: string }, variationId?: number) => void;
-  buyNow: (product: Product, size?: string, color?: { name: string; hex: string }, variationId?: number) => void;
+  addToCart: (product: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => void;
+  buyNow: (product: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => void;
   updateQuantity: (id: string, size?: string, colorName?: string, delta?: number) => void;
   removeFromCart: (id: string, size?: string, colorName?: string) => void;
   toggleFavorite: (productId: string, e?: React.MouseEvent) => void;
@@ -106,7 +106,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
-  const addToCart = (product: Product, size?: string, color?: { name: string; hex: string }, variationId?: number) => {
+  const addToCart = (product: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => {
+    const itemPrice = variantPrice ?? product.price;
     setCartItems(prev => {
       const existing = prev.find(item =>
         item.id === product.id &&
@@ -120,7 +121,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             : item
         );
       }
-      return [...prev, { ...product, quantity: 1, selectedSize: size, selectedColor: color, variationId }];
+      return [...prev, { ...product, price: itemPrice, quantity: 1, selectedSize: size, selectedColor: color, variationId }];
     });
 
     trackAddToCart(product, size, color?.name);
@@ -132,8 +133,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
-  const buyNow = (product: Product, size?: string, color?: { name: string; hex: string }, variationId?: number) => {
-    addToCart(product, size, color, variationId);
+  const buyNow = (product: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => {
+    addToCart(product, size, color, variationId, variantPrice);
   };
 
   const updateQuantity = (id: string, size?: string, colorName?: string, delta: number = 1) => {
