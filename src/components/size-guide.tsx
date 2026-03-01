@@ -226,7 +226,7 @@ export const SizeGuide: React.FC<SizeGuideProps> = ({ isOpen, onClose, category 
   const renderChart = () => {
     switch (category) {
       case 'Bra': return renderBraChart();
-      case 'Pants': return renderPantsChart();
+      case 'Panties': return renderPantsChart();
       case 'Lingerie': return renderLingerieChart();
       case 'Socks': return renderSocksChart();
       default: return renderPantsChart();
@@ -236,7 +236,7 @@ export const SizeGuide: React.FC<SizeGuideProps> = ({ isOpen, onClose, category 
   const getMeasureTipKey = () => {
     switch (category) {
       case 'Bra': return 'measureTipBra';
-      case 'Pants': return 'measureTipPants';
+      case 'Panties': return 'measureTipPants';
       case 'Lingerie': return 'measureTipLingerie';
       case 'Socks': return 'measureTipSocks';
       default: return 'measureTipPants';

@@ -30,7 +30,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const categories = ['Bra', 'Pants', 'Lingerie', 'Socks'];
+  const categories = ['Bra', 'Panties', 'Lingerie', 'Socks'];
 
   const navItems = ['Home', ...categories];
 
