@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Ruler, Info } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -9,33 +9,237 @@ interface SizeGuideProps {
   category: string;
 }
 
-const SIZE_CHART = {
-  'Bra': [
-    { size: 'XS', bust: '78-82 cm', waist: '60-64 cm', description: 'Ideal for very petite frames' },
-    { size: 'S', bust: '83-87 cm', waist: '65-69 cm', description: 'Petite to medium frames' },
-    { size: 'M', bust: '88-92 cm', waist: '70-74 cm', description: 'Average/Standard build' },
-    { size: 'L', bust: '93-97 cm', waist: '75-79 cm', description: 'Curvy or larger frames' },
-    { size: 'XL', bust: '98-102 cm', waist: '80-84 cm', description: 'Extra support and space' },
-  ],
-  'Pants': [
-    { size: 'XS', waist: '60-64 cm', hips: '86-90 cm', description: 'Size 32-34' },
-    { size: 'S', waist: '65-69 cm', hips: '91-95 cm', description: 'Size 36-38' },
-    { size: 'M', waist: '70-74 cm', hips: '96-100 cm', description: 'Size 40-42' },
-    { size: 'L', waist: '75-79 cm', hips: '101-105 cm', description: 'Size 44-46' },
-    { size: 'XL', waist: '80-84 cm', hips: '106-110 cm', description: 'Size 48+' },
-  ],
-  'General': [
-    { size: 'XS', fit: 'Extra Small', chest: '80-84 cm', length: '60 cm' },
-    { size: 'S', fit: 'Small', chest: '88-92 cm', length: '62 cm' },
-    { size: 'M', fit: 'Medium', chest: '96-100 cm', length: '64 cm' },
-    { size: 'L', fit: 'Large', chest: '104-108 cm', length: '66 cm' },
-    { size: 'XL', fit: 'Extra Large', chest: '112-116 cm', length: '68 cm' },
-  ]
-};
+type UnitSystem = 'US' | 'UK' | 'EU';
+
+interface BraSizeRow {
+  us: string;
+  uk: string;
+  eu: string;
+  underbust: string;
+  bust: string;
+}
+
+interface PantsSizeRow {
+  size: string;
+  us: string;
+  uk: string;
+  eu: string;
+  waist: string;
+  hips: string;
+}
+
+interface LingerieSizeRow {
+  size: string;
+  us: string;
+  uk: string;
+  eu: string;
+  bust: string;
+  waist: string;
+  hips: string;
+}
+
+interface SocksSizeRow {
+  size: string;
+  us: string;
+  uk: string;
+  eu: string;
+  footLength: string;
+}
+
+const BRA_SIZE_CHART: BraSizeRow[] = [
+  { us: '32A', uk: '32A', eu: '70A', underbust: '63-67 cm', bust: '77-79 cm' },
+  { us: '32B', uk: '32B', eu: '70B', underbust: '63-67 cm', bust: '79-81 cm' },
+  { us: '32C', uk: '32C', eu: '70C', underbust: '63-67 cm', bust: '81-83 cm' },
+  { us: '32D', uk: '32D', eu: '70D', underbust: '63-67 cm', bust: '83-85 cm' },
+  { us: '34A', uk: '34A', eu: '75A', underbust: '68-72 cm', bust: '82-84 cm' },
+  { us: '34B', uk: '34B', eu: '75B', underbust: '68-72 cm', bust: '84-86 cm' },
+  { us: '34C', uk: '34C', eu: '75C', underbust: '68-72 cm', bust: '86-88 cm' },
+  { us: '34D', uk: '34D', eu: '75D', underbust: '68-72 cm', bust: '88-90 cm' },
+  { us: '34DD', uk: '34DD', eu: '75E', underbust: '68-72 cm', bust: '90-92 cm' },
+  { us: '36A', uk: '36A', eu: '80A', underbust: '73-77 cm', bust: '87-89 cm' },
+  { us: '36B', uk: '36B', eu: '80B', underbust: '73-77 cm', bust: '89-91 cm' },
+  { us: '36C', uk: '36C', eu: '80C', underbust: '73-77 cm', bust: '91-93 cm' },
+  { us: '36D', uk: '36D', eu: '80D', underbust: '73-77 cm', bust: '93-95 cm' },
+  { us: '36DD', uk: '36DD', eu: '80E', underbust: '73-77 cm', bust: '95-97 cm' },
+  { us: '38A', uk: '38A', eu: '85A', underbust: '78-82 cm', bust: '92-94 cm' },
+  { us: '38B', uk: '38B', eu: '85B', underbust: '78-82 cm', bust: '94-96 cm' },
+  { us: '38C', uk: '38C', eu: '85C', underbust: '78-82 cm', bust: '96-98 cm' },
+  { us: '38D', uk: '38D', eu: '85D', underbust: '78-82 cm', bust: '98-100 cm' },
+  { us: '38DD', uk: '38DD', eu: '85E', underbust: '78-82 cm', bust: '100-102 cm' },
+  { us: '40B', uk: '40B', eu: '90B', underbust: '83-87 cm', bust: '99-101 cm' },
+  { us: '40C', uk: '40C', eu: '90C', underbust: '83-87 cm', bust: '101-103 cm' },
+  { us: '40D', uk: '40D', eu: '90D', underbust: '83-87 cm', bust: '103-105 cm' },
+  { us: '40DD', uk: '40DD', eu: '90E', underbust: '83-87 cm', bust: '105-107 cm' },
+  { us: '42B', uk: '42B', eu: '95B', underbust: '88-92 cm', bust: '104-106 cm' },
+  { us: '42C', uk: '42C', eu: '95C', underbust: '88-92 cm', bust: '106-108 cm' },
+  { us: '42D', uk: '42D', eu: '95D', underbust: '88-92 cm', bust: '108-110 cm' },
+  { us: '42DD', uk: '42DD', eu: '95E', underbust: '88-92 cm', bust: '110-112 cm' },
+];
+
+const PANTS_SIZE_CHART: PantsSizeRow[] = [
+  { size: 'XS', us: '0-2',  uk: '4-6',   eu: '32-34', waist: '60-64 cm', hips: '86-90 cm' },
+  { size: 'S',  us: '4-6',  uk: '8-10',  eu: '36-38', waist: '65-69 cm', hips: '91-95 cm' },
+  { size: 'M',  us: '8-10', uk: '12-14', eu: '40-42', waist: '70-74 cm', hips: '96-100 cm' },
+  { size: 'L',  us: '12-14', uk: '16-18', eu: '44-46', waist: '75-79 cm', hips: '101-105 cm' },
+  { size: 'XL', us: '16-18', uk: '20-22', eu: '48-50', waist: '80-84 cm', hips: '106-110 cm' },
+];
+
+const LINGERIE_SIZE_CHART: LingerieSizeRow[] = [
+  { size: 'S',  us: '4-6',  uk: '8-10',  eu: '36-38', bust: '83-87 cm', waist: '65-69 cm', hips: '91-95 cm' },
+  { size: 'M',  us: '8-10', uk: '12-14', eu: '40-42', bust: '88-92 cm', waist: '70-74 cm', hips: '96-100 cm' },
+  { size: 'L',  us: '12-14', uk: '16-18', eu: '44-46', bust: '93-97 cm', waist: '75-79 cm', hips: '101-105 cm' },
+];
+
+const SOCKS_SIZE_CHART: SocksSizeRow[] = [
+  { size: 'S',        us: '5-7',   uk: '3-5',   eu: '35-38', footLength: '22-24 cm' },
+  { size: 'M',        us: '7-9',   uk: '5-7',   eu: '38-41', footLength: '24-26 cm' },
+  { size: 'L',        us: '9-11',  uk: '7-9',   eu: '41-44', footLength: '26-28 cm' },
+  { size: 'One Size', us: '5-11',  uk: '3-9',   eu: '35-44', footLength: '22-28 cm' },
+];
+
+const UNIT_SYSTEMS: UnitSystem[] = ['US', 'UK', 'EU'];
 
 export const SizeGuide: React.FC<SizeGuideProps> = ({ isOpen, onClose, category }) => {
   const t = useTranslations('sizeGuide');
-  const chart = SIZE_CHART[category as keyof typeof SIZE_CHART] || SIZE_CHART['General'];
+  const [activeUnit, setActiveUnit] = useState<UnitSystem>('US');
+
+  const renderBraChart = () => (
+    <table className="w-full">
+      <thead>
+        <tr className="border-b border-teal/10">
+          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('size')}</th>
+          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('underbust')}</th>
+          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('bust')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {BRA_SIZE_CHART.map((row, idx) => {
+          const displaySize = activeUnit === 'EU' ? row.eu : activeUnit === 'UK' ? row.uk : row.us;
+          return (
+            <tr key={idx} className="border-b border-teal/5 hover:bg-teal/5 transition-colors group">
+              <td className="py-2.5 md:py-5">
+                <span className="inline-flex items-center justify-center min-w-8 h-8 md:min-w-10 md:h-10 px-2 bg-blush text-teal rounded-lg md:rounded-xl font-bold text-xs md:text-base group-hover:bg-teal group-hover:text-white transition-colors">
+                  {displaySize}
+                </span>
+              </td>
+              <td className="py-2.5 md:py-5 text-gray-600 font-medium text-xs md:text-base">{row.underbust}</td>
+              <td className="py-2.5 md:py-5 text-gray-600 font-medium text-xs md:text-base">{row.bust}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+
+  const renderPantsChart = () => (
+    <table className="w-full">
+      <thead>
+        <tr className="border-b border-teal/10">
+          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('size')}</th>
+          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('intlSize')}</th>
+          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('waist')}</th>
+          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('hips')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {PANTS_SIZE_CHART.map((row, idx) => {
+          const intlSize = activeUnit === 'EU' ? row.eu : activeUnit === 'UK' ? row.uk : row.us;
+          return (
+            <tr key={idx} className="border-b border-teal/5 hover:bg-teal/5 transition-colors group">
+              <td className="py-2.5 md:py-5">
+                <span className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-blush text-teal rounded-lg md:rounded-xl font-bold text-xs md:text-base group-hover:bg-teal group-hover:text-white transition-colors">
+                  {row.size}
+                </span>
+              </td>
+              <td className="py-2.5 md:py-5 text-gray-600 font-medium text-xs md:text-base">{intlSize}</td>
+              <td className="py-2.5 md:py-5 text-gray-600 font-medium text-xs md:text-base">{row.waist}</td>
+              <td className="py-2.5 md:py-5 text-gray-600 font-medium text-xs md:text-base">{row.hips}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+
+  const renderLingerieChart = () => (
+    <table className="w-full">
+      <thead>
+        <tr className="border-b border-teal/10">
+          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('size')}</th>
+          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('intlSize')}</th>
+          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('bust')}</th>
+          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('waist')}</th>
+          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('hips')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {LINGERIE_SIZE_CHART.map((row, idx) => {
+          const intlSize = activeUnit === 'EU' ? row.eu : activeUnit === 'UK' ? row.uk : row.us;
+          return (
+            <tr key={idx} className="border-b border-teal/5 hover:bg-teal/5 transition-colors group">
+              <td className="py-2.5 md:py-5">
+                <span className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-blush text-teal rounded-lg md:rounded-xl font-bold text-xs md:text-base group-hover:bg-teal group-hover:text-white transition-colors">
+                  {row.size}
+                </span>
+              </td>
+              <td className="py-2.5 md:py-5 text-gray-600 font-medium text-xs md:text-base">{intlSize}</td>
+              <td className="py-2.5 md:py-5 text-gray-600 font-medium text-xs md:text-base">{row.bust}</td>
+              <td className="py-2.5 md:py-5 text-gray-600 font-medium text-xs md:text-base">{row.waist}</td>
+              <td className="py-2.5 md:py-5 text-gray-600 font-medium text-xs md:text-base">{row.hips}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+
+  const renderSocksChart = () => (
+    <table className="w-full">
+      <thead>
+        <tr className="border-b border-teal/10">
+          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('size')}</th>
+          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('shoeSize')}</th>
+          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('footLength')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {SOCKS_SIZE_CHART.map((row, idx) => {
+          const shoeSize = activeUnit === 'EU' ? row.eu : activeUnit === 'UK' ? row.uk : row.us;
+          return (
+            <tr key={idx} className="border-b border-teal/5 hover:bg-teal/5 transition-colors group">
+              <td className="py-2.5 md:py-5">
+                <span className="inline-flex items-center justify-center min-w-8 h-8 md:min-w-10 md:h-10 px-2 bg-blush text-teal rounded-lg md:rounded-xl font-bold text-xs md:text-base group-hover:bg-teal group-hover:text-white transition-colors whitespace-nowrap">
+                  {row.size}
+                </span>
+              </td>
+              <td className="py-2.5 md:py-5 text-gray-600 font-medium text-xs md:text-base">{shoeSize}</td>
+              <td className="py-2.5 md:py-5 text-gray-600 font-medium text-xs md:text-base">{row.footLength}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+
+  const renderChart = () => {
+    switch (category) {
+      case 'Bra': return renderBraChart();
+      case 'Pants': return renderPantsChart();
+      case 'Lingerie': return renderLingerieChart();
+      case 'Socks': return renderSocksChart();
+      default: return renderPantsChart();
+    }
+  };
+
+  const getMeasureTipKey = () => {
+    switch (category) {
+      case 'Bra': return 'measureTipBra';
+      case 'Pants': return 'measureTipPants';
+      case 'Lingerie': return 'measureTipLingerie';
+      case 'Socks': return 'measureTipSocks';
+      default: return 'measureTipPants';
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -73,38 +277,33 @@ export const SizeGuide: React.FC<SizeGuideProps> = ({ isOpen, onClose, category 
 
             {/* Content */}
             <div className="p-4 md:p-8 overflow-y-auto">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-teal/10">
-                      <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('size')}</th>
-                      {Object.keys(chart[0]).filter(k => k !== 'size').map(key => (
-                        <th key={key} className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">
-                          {key.replace('_', ' ')}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {chart.map((row, idx) => (
-                      <tr key={idx} className="border-b border-teal/5 hover:bg-teal/5 transition-colors group">
-                        <td className="py-2.5 md:py-6">
-                          <span className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center bg-blush text-teal rounded-lg md:rounded-xl font-bold text-xs md:text-base group-hover:bg-teal group-hover:text-white transition-colors">
-                            {row.size}
-                          </span>
-                        </td>
-                        {Object.entries(row).filter(([k]) => k !== 'size').map(([key, value]) => (
-                          <td key={key} className="py-2.5 md:py-6 text-gray-600 font-medium text-xs md:text-base">
-                            {value}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              {/* Unit System Toggle */}
+              <div className="flex items-center justify-between mb-4 md:mb-6">
+                <span className="text-[10px] md:text-xs font-bold text-teal/50 uppercase tracking-widest">
+                  {t('sizingSystem')}
+                </span>
+                <div className="flex bg-blush rounded-lg md:rounded-xl p-0.5 md:p-1 border border-teal/10">
+                  {UNIT_SYSTEMS.map((unit) => (
+                    <button
+                      key={unit}
+                      onClick={() => setActiveUnit(unit)}
+                      className={`px-3 py-1 md:px-4 md:py-1.5 rounded-md md:rounded-lg text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all ${
+                        activeUnit === unit
+                          ? 'bg-teal text-white shadow-sm'
+                          : 'text-teal/50 hover:text-teal'
+                      }`}
+                    >
+                      {unit}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              {/* Tips Section */}
+              <div className="overflow-x-auto">
+                {renderChart()}
+              </div>
+
+              {/* Category-specific tips */}
               <div className="mt-4 md:mt-8 p-3 md:p-6 bg-rose/30 rounded-xl md:rounded-3xl flex gap-3 md:gap-4 items-start border border-rose">
                 <div className="p-1.5 md:p-2 bg-white rounded-lg md:rounded-xl text-teal shrink-0">
                   <Info className="w-4 h-4 md:w-5 md:h-5" />
@@ -112,7 +311,7 @@ export const SizeGuide: React.FC<SizeGuideProps> = ({ isOpen, onClose, category 
                 <div className="space-y-1">
                   <p className="font-bold text-gray-900 text-xs md:text-sm">{t('howToMeasure')}</p>
                   <p className="text-[10px] md:text-xs text-gray-600 leading-relaxed">
-                    {t('measureTip')}
+                    {t(getMeasureTipKey())}
                   </p>
                 </div>
               </div>
