@@ -9,7 +9,7 @@ import { Link } from '@/i18n/routing';
 
 const CATEGORIES = [
   { name: 'Bra', image: '/products/ribbed-bras.jpg' },
-  { name: 'Pants', image: '/products/lace-panties.jpg' },
+  { name: 'Panties', image: '/products/lace-panties.jpg' },
   { name: 'Lingerie', image: '/products/lingerie-category.jpg' },
   { name: 'Socks', image: '/products/socks.jpg' },
 ];

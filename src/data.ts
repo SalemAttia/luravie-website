@@ -12,7 +12,7 @@ export interface Product {
   slug: string;
   name: string;
   price: number;
-  category: 'Bra' | 'Pants' | 'Lingerie' | 'Socks';
+  category: 'Bra' | 'Panties' | 'Lingerie' | 'Socks';
   image: string;
   description: string;
   features: string[];
@@ -55,7 +55,7 @@ export const PRODUCTS: Product[] = [
     slug: 'everyday-essential-briefs',
     name: 'Everyday Essential Briefs',
     price: 180,
-    category: 'Pants',
+    category: 'Panties',
     image: 'https://images.unsplash.com/photo-1713881630214-82c44407cf25?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwY290dG9uJTIwYnJpZWZzJTIwZmxhdGxheSUyMGFlc3RoZXRpY3xlbnwxfHx8fDE3Njk5NTQ5NDV8MA&ixlib=rb-4.1.0&q=80&w=1080',
     description: 'Ultra-soft cotton briefs that stay in place all day. Discreet and comfortable.',
     features: ['100% cotton gusset', 'Tag-free comfort', 'Stay-put waistband'],
@@ -95,7 +95,7 @@ export const PRODUCTS: Product[] = [
     slug: 'sculpt-smooth-bants',
     name: 'Sculpt & Smooth Bants',
     price: 240,
-    category: 'Pants',
+    category: 'Panties',
     image: 'https://images.unsplash.com/photo-1666112514123-b3735b66aee3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmb2xkZWQlMjBsZWdnaW5nJTIwZmFicmljJTIwdGV4dHVyZSUyMG1pbmltYWxpc3R8ZW58MXx8fHwxNzY5OTU0OTQ1fDA&ixlib=rb-4.1.0&q=80&w=1080',
     description: 'High-waisted support that feels like a second skin. Confidence in every layer.',
     features: ['Light compression', 'Seamless finish', 'Mid-waist design'],

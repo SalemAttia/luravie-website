@@ -222,7 +222,7 @@ export default async function RootLayout({
         {
           '@type': 'OfferCatalog',
           name: locale === 'ar' ? 'كلوت' : 'Panties',
-          url: `${siteUrl}/${locale}/shop?category=pants`,
+          url: `${siteUrl}/${locale}/shop?category=panties`,
         },
         {
           '@type': 'OfferCatalog',

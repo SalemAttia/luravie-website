@@ -1,4 +1,4 @@
-export const CATEGORIES = ['All', 'Bra', 'Pants', 'Lingerie', 'Socks'] as const;
+export const CATEGORIES = ['All', 'Bra', 'Panties', 'Lingerie', 'Socks'] as const;
 
 export const SORT_OPTIONS = [
   { labelKey: 'newest', value: 'Newest' },

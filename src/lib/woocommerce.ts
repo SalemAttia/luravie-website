@@ -404,7 +404,7 @@ export async function getShippingCost(): Promise<ShippingInfo> {
 function mapCategory(name: string): Product['category'] {
     const n = name?.toLowerCase();
     if (n?.includes('bra')) return 'Bra';
-    if (n?.includes('pants') || n?.includes('briefs')) return 'Pants';
+    if (n?.includes('pants') || n?.includes('panties') || n?.includes('briefs')) return 'Panties';
     if (n?.includes('lingerie')) return 'Lingerie';
     if (n?.includes('socks')) return 'Socks';
     return 'Bra'; // Default

@@ -12,7 +12,7 @@ const categoryKeywords: Record<string, { en: string[]; ar: string[] }> = {
         en: ["women's bra Egypt", 'seamless bra', 'everyday bra', 'comfortable bra', 'buy bra online Egypt'],
         ar: ['سوتيان نسائي', 'سوتيان سيملس', 'سوتيان يومي', 'سوتيان مريح', 'شراء سوتيان اون لاين مصر'],
     },
-    pants: {
+    panties: {
         en: ["women's panties Egypt", 'cotton briefs', 'everyday panties', 'comfortable underwear women'],
         ar: ['كلوت نسائي', 'كلوت قطن', 'ملابس داخلية نسائية مريحة', 'كلوت يومي'],
     },
