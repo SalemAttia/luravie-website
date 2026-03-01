@@ -62,9 +62,12 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
         setOrderError(null);
 
         try {
+            const firstName = shippingData.fullName.split(' ')[0];
+            const lastName = shippingData.fullName.split(' ').slice(1).join(' ') || '.';
+
             const billing: Record<string, string> = {
-                first_name: shippingData.fullName.split(' ')[0],
-                last_name: shippingData.fullName.split(' ').slice(1).join(' ') || '.',
+                first_name: firstName,
+                last_name: lastName,
                 address_1: shippingData.address,
                 city: shippingData.city,
                 country: 'EG',
@@ -80,8 +83,8 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
                 set_paid: false,
                 billing,
                 shipping: {
-                    first_name: shippingData.fullName.split(' ')[0],
-                    last_name: shippingData.fullName.split(' ').slice(1).join(' ') || '.',
+                    first_name: firstName,
+                    last_name: lastName,
                     address_1: shippingData.address,
                     city: shippingData.city,
                     country: 'EG',

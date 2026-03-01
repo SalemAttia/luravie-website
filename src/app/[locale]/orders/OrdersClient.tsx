@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Package, ShoppingBag, Search, Trash2, Clock, CheckCircle2, Truck, AlertCircle } from 'lucide-react';
+import { Package, ShoppingBag, Search, Trash2 } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { useTranslations, useLocale } from 'next-intl';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
+import { getStatusConfig } from '@/lib/order-status';
 
 interface SavedOrder {
     id: number;
@@ -25,15 +26,6 @@ interface SavedOrder {
     }[];
     phone: string;
 }
-
-const STATUS_CONFIG: Record<string, { icon: React.ReactNode; colorClass: string }> = {
-    pending: { icon: <Clock size={16} />, colorClass: 'text-yellow-600 bg-yellow-50 border-yellow-200' },
-    processing: { icon: <Package size={16} />, colorClass: 'text-blue-600 bg-blue-50 border-blue-200' },
-    'on-hold': { icon: <Clock size={16} />, colorClass: 'text-orange-600 bg-orange-50 border-orange-200' },
-    completed: { icon: <CheckCircle2 size={16} />, colorClass: 'text-green-600 bg-green-50 border-green-200' },
-    cancelled: { icon: <AlertCircle size={16} />, colorClass: 'text-red-600 bg-red-50 border-red-200' },
-    shipped: { icon: <Truck size={16} />, colorClass: 'text-teal bg-teal/5 border-teal/20' },
-};
 
 export default function OrdersClient() {
     const t = useTranslations('orders');
@@ -57,10 +49,6 @@ export default function OrdersClient() {
     const clearOrders = () => {
         setOrders([]);
         localStorage.removeItem('luravie-orders');
-    };
-
-    const getStatusConfig = (status: string) => {
-        return STATUS_CONFIG[status] || STATUS_CONFIG.processing;
     };
 
     const getStatusLabel = (status: string) => {

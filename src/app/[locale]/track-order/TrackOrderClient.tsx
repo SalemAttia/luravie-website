@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Package, Truck, CheckCircle2, Clock, AlertCircle, Phone, Hash } from 'lucide-react';
+import { Search, Package, AlertCircle, Phone, Hash } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
+import { getStatusConfig } from '@/lib/order-status';
 
 interface TrackedOrder {
     id: number;
@@ -25,17 +26,6 @@ interface TrackedOrder {
         city: string;
     };
 }
-
-const STATUS_CONFIG: Record<string, { icon: React.ReactNode; colorClass: string }> = {
-    pending: { icon: <Clock size={20} />, colorClass: 'text-yellow-600 bg-yellow-50 border-yellow-200' },
-    processing: { icon: <Package size={20} />, colorClass: 'text-blue-600 bg-blue-50 border-blue-200' },
-    'on-hold': { icon: <Clock size={20} />, colorClass: 'text-orange-600 bg-orange-50 border-orange-200' },
-    completed: { icon: <CheckCircle2 size={20} />, colorClass: 'text-green-600 bg-green-50 border-green-200' },
-    cancelled: { icon: <AlertCircle size={20} />, colorClass: 'text-red-600 bg-red-50 border-red-200' },
-    refunded: { icon: <AlertCircle size={20} />, colorClass: 'text-gray-600 bg-gray-50 border-gray-200' },
-    failed: { icon: <AlertCircle size={20} />, colorClass: 'text-red-600 bg-red-50 border-red-200' },
-    shipped: { icon: <Truck size={20} />, colorClass: 'text-teal bg-teal/5 border-teal/20' },
-};
 
 export default function TrackOrderClient() {
     const t = useTranslations('trackOrder');
@@ -79,10 +69,6 @@ export default function TrackOrderClient() {
 
     const getStatusLabel = (status: string) => {
         return t(`statuses.${status}`, { defaultValue: status });
-    };
-
-    const getStatusConfig = (status: string) => {
-        return STATUS_CONFIG[status] || STATUS_CONFIG.processing;
     };
 
     return (
@@ -164,6 +150,7 @@ export default function TrackOrderClient() {
                     <div className="space-y-6">
                         {orders.map((order) => {
                             const statusConfig = getStatusConfig(order.status);
+                            const currencyLabel = order.currency === 'EGP' ? (locale === 'ar' ? 'ج.م' : 'EGP') : order.currency;
                             return (
                                 <motion.div
                                     key={order.id}
@@ -185,14 +172,13 @@ export default function TrackOrderClient() {
                                     <div className={`flex items-center gap-4 text-sm text-muted-foreground mb-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                         <span>{new Date(order.date_created).toLocaleDateString(locale === 'ar' ? 'ar-EG' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                                         <span className="w-1 h-1 bg-teal/20 rounded-full" />
-                                        <span className="font-bold text-teal">{order.total} {order.currency === 'EGP' ? (locale === 'ar' ? 'ج.م' : 'EGP') : order.currency}</span>
+                                        <span className="font-bold text-teal">{order.total} {currencyLabel}</span>
                                     </div>
 
                                     {order.line_items && order.line_items.length > 0 && (
                                         <div className="space-y-3 pt-4 border-t border-teal/5">
                                             {order.line_items.map((item, idx) => {
                                                 const itemTotal = parseFloat(item.total) || parseFloat(item.subtotal) || (item.price * item.quantity) || 0;
-                                                const currencyLabel = order.currency === 'EGP' ? (locale === 'ar' ? 'ج.م' : 'EGP') : order.currency;
                                                 return (
                                                     <div key={idx} className={`flex items-center justify-between text-sm ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                                         <span className="text-gray-700">{item.name} x{item.quantity}</span>
@@ -203,7 +189,7 @@ export default function TrackOrderClient() {
                                             {parseFloat(order.shipping_total) > 0 && (
                                                 <div className={`flex items-center justify-between text-sm ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                                     <span className="text-gray-700">{t('shipping')}</span>
-                                                    <span className="font-bold text-teal">{parseFloat(order.shipping_total).toFixed(0)} {order.currency === 'EGP' ? (locale === 'ar' ? 'ج.م' : 'EGP') : order.currency}</span>
+                                                    <span className="font-bold text-teal">{parseFloat(order.shipping_total).toFixed(0)} {currencyLabel}</span>
                                                 </div>
                                             )}
                                         </div>
