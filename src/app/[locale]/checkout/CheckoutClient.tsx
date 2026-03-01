@@ -96,7 +96,14 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
                         ...(item.selectedSize ? [{ key: 'Size', value: item.selectedSize }] : []),
                         ...(item.selectedColor ? [{ key: 'Color', value: item.selectedColor.name }] : []),
                     ]
-                }))
+                })),
+                shipping_lines: [
+                    {
+                        method_id: 'flat_rate',
+                        method_title: 'Shipping',
+                        total: shippingCost.toFixed(2),
+                    }
+                ],
             };
 
             const response = await fetch('/api/orders', {
