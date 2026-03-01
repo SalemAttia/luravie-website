@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Ruler, Info } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface SizeGuideProps {
   isOpen: boolean;
@@ -101,15 +101,17 @@ const UNIT_SYSTEMS: UnitSystem[] = ['US', 'UK', 'EU'];
 
 export const SizeGuide: React.FC<SizeGuideProps> = ({ isOpen, onClose, category }) => {
   const t = useTranslations('sizeGuide');
+  const locale = useLocale();
+  const isRtl = locale === 'ar';
   const [activeUnit, setActiveUnit] = useState<UnitSystem>('US');
 
   const renderBraChart = () => (
     <table className="w-full">
       <thead>
         <tr className="border-b border-teal/10">
-          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('size')}</th>
-          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('underbust')}</th>
-          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('bust')}</th>
+          <th className="py-2 md:py-4 text-start text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('size')}</th>
+          <th className="py-2 md:py-4 text-start text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('underbust')}</th>
+          <th className="py-2 md:py-4 text-start text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('bust')}</th>
         </tr>
       </thead>
       <tbody>
@@ -135,10 +137,10 @@ export const SizeGuide: React.FC<SizeGuideProps> = ({ isOpen, onClose, category 
     <table className="w-full">
       <thead>
         <tr className="border-b border-teal/10">
-          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('size')}</th>
-          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('intlSize')}</th>
-          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('waist')}</th>
-          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('hips')}</th>
+          <th className="py-2 md:py-4 text-start text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('size')}</th>
+          <th className="py-2 md:py-4 text-start text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('intlSize')}</th>
+          <th className="py-2 md:py-4 text-start text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('waist')}</th>
+          <th className="py-2 md:py-4 text-start text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('hips')}</th>
         </tr>
       </thead>
       <tbody>
@@ -165,11 +167,11 @@ export const SizeGuide: React.FC<SizeGuideProps> = ({ isOpen, onClose, category 
     <table className="w-full">
       <thead>
         <tr className="border-b border-teal/10">
-          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('size')}</th>
-          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('intlSize')}</th>
-          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('bust')}</th>
-          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('waist')}</th>
-          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('hips')}</th>
+          <th className="py-2 md:py-4 text-start text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('size')}</th>
+          <th className="py-2 md:py-4 text-start text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('intlSize')}</th>
+          <th className="py-2 md:py-4 text-start text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('bust')}</th>
+          <th className="py-2 md:py-4 text-start text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('waist')}</th>
+          <th className="py-2 md:py-4 text-start text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('hips')}</th>
         </tr>
       </thead>
       <tbody>
@@ -197,9 +199,9 @@ export const SizeGuide: React.FC<SizeGuideProps> = ({ isOpen, onClose, category 
     <table className="w-full">
       <thead>
         <tr className="border-b border-teal/10">
-          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('size')}</th>
-          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('shoeSize')}</th>
-          <th className="py-2 md:py-4 text-left text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('footLength')}</th>
+          <th className="py-2 md:py-4 text-start text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('size')}</th>
+          <th className="py-2 md:py-4 text-start text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('shoeSize')}</th>
+          <th className="py-2 md:py-4 text-start text-teal font-bold text-[10px] md:text-sm tracking-widest uppercase">{t('footLength')}</th>
         </tr>
       </thead>
       <tbody>
@@ -256,13 +258,14 @@ export const SizeGuide: React.FC<SizeGuideProps> = ({ isOpen, onClose, category 
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            dir={isRtl ? 'rtl' : 'ltr'}
             className="relative w-full max-w-lg md:max-w-2xl max-h-[85vh] bg-white rounded-2xl md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col"
           >
             {/* Header */}
             <div className="bg-teal p-4 md:p-8 text-white relative shrink-0">
               <button
                 onClick={onClose}
-                className="absolute top-3 right-3 md:top-6 md:right-6 p-1.5 md:p-2 hover:bg-white/10 rounded-full transition-colors"
+                className="absolute top-3 end-3 md:top-6 md:end-6 p-1.5 md:p-2 hover:bg-white/10 rounded-full transition-colors"
               >
                 <X className="w-5 h-5 md:w-6 md:h-6" />
               </button>
