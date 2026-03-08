@@ -150,8 +150,7 @@ export const Hero: React.FC = () => {
                 src="https://images.unsplash.com/photo-1645654731316-a350fdcf3bae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwc2lsayUyMGZhYnJpYyUyMHRleHR1cmV8ZW58MXx8fHwxNzY5OTU1MjA0fDA&ixlib=rb-4.1.0&q=80&w=1080"
                 alt={tCommon('brandName')}
                 fill
-                priority
-                sizes="(max-width: 1024px) 80vw, 40vw"
+                sizes="(max-width: 1024px) 0vw, 40vw"
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-tr from-teal/40 to-transparent mix-blend-multiply" />
