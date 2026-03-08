@@ -22,7 +22,7 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [didError, setDidError] = useState(false)
   const retryCount = useRef(0)
-  const retryTimer = useRef<ReturnType<typeof setTimeout>>(null)
+  const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Reset state when src changes
   useEffect(() => {
