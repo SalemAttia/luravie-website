@@ -16,26 +16,40 @@ export async function getWooProducts(): Promise<Product[]> {
 
     try {
         const auth = Buffer.from(`${WOO_KEY}:${WOO_SECRET}`).toString('base64');
-        const response = await fetch(`${WOO_URL}/wp-json/wc/v3/products?per_page=100`, {
-            headers: {
-                'Authorization': `Basic ${auth}`,
-            },
-            next: { revalidate: 300 }
-        });
+        const allProducts: any[] = [];
+        let page = 1;
 
-        if (!response.ok) {
-            Sentry.captureMessage(`WooCommerce API error: ${response.status} ${response.statusText}`, {
-                level: "warning",
-                tags: { service: "woocommerce", operation: "getProducts" },
-                extra: { status: response.status, statusText: response.statusText },
+        while (true) {
+            const response = await fetch(`${WOO_URL}/wp-json/wc/v3/products?per_page=100&page=${page}`, {
+                headers: {
+                    'Authorization': `Basic ${auth}`,
+                },
+                next: { revalidate: 300 }
             });
-            console.error(`WooCommerce API error: ${response.status} ${response.statusText}`);
-            return [];
+
+            if (!response.ok) {
+                if (page === 1) {
+                    Sentry.captureMessage(`WooCommerce API error: ${response.status} ${response.statusText}`, {
+                        level: "warning",
+                        tags: { service: "woocommerce", operation: "getProducts" },
+                        extra: { status: response.status, statusText: response.statusText },
+                    });
+                    console.error(`WooCommerce API error: ${response.status} ${response.statusText}`);
+                    return [];
+                }
+                break;
+            }
+
+            const products = await response.json();
+            if (!products.length) break;
+            allProducts.push(...products);
+
+            const totalPages = parseInt(response.headers.get('x-wp-totalpages') || '1', 10);
+            if (page >= totalPages) break;
+            page++;
         }
 
-        const wooProducts = await response.json();
-
-        return wooProducts.map((p: any) => {
+        return allProducts.map((p: any) => {
             const findAttr = (name: string) => p.attributes?.find((a: any) => {
                 const n = (a.name || '').toLowerCase();
                 const s = (a.slug || '').toLowerCase();
@@ -56,7 +70,7 @@ export async function getWooProducts(): Promise<Product[]> {
                 slug: p.slug,
                 name: p.name,
                 price: parseFloat(p.price || p.regular_price || '0'),
-                category: mapCategory(p.categories[0]?.name),
+                category: mapCategory(p.categories),
                 image: p.images[0]?.src || '/placeholder-product.svg',
                 description: p.short_description || p.description,
                 features: findAttr('feature')?.options || [],
@@ -74,7 +88,7 @@ export async function getWooProducts(): Promise<Product[]> {
                         hex: mapColorToHex(c)
                     };
                 }) || p.tags?.filter((t: any) =>
-                    ['Black', 'Nude', 'Teal', 'Coral', 'Rose', 'White', 'Grey', 'أسود', 'بيج', 'تيل', 'وردي', 'أبيض'].some(cn => t.name.includes(cn))
+                    ['Black', 'Nude', 'Teal', 'Coral', 'Rose', 'White', 'Grey', 'Red', 'Blue', 'Green', 'Pink', 'Purple', 'Navy', 'Burgundy', 'Wine', 'Charcoal', 'Ivory', 'Cream', 'Beige', 'Champagne', 'Blush', 'Hot Pink', 'Lavender', 'Lilac', 'Plum', 'Emerald', 'Olive', 'Sage', 'Matcha', 'Royal Blue', 'Sky Blue', 'Light Blue', 'Light Green', 'Light Grey', 'Dark Red', 'Multicolor', 'Floral', 'Leopard Print', 'Lace', 'Skin (Nude)', 'أسود', 'بيج', 'تيل', 'وردي', 'أبيض', 'كورال', 'رمادي'].some(cn => t.name.includes(cn))
                 ).map((t: any) => ({
                     name: t.name,
                     hex: mapColorToHex(t.name)
@@ -132,7 +146,7 @@ export async function getWooProductById(id: string): Promise<Product | null> {
             slug: p.slug,
             name: p.name,
             price: parseFloat(p.price || p.regular_price || '0'),
-            category: mapCategory(p.categories[0]?.name),
+            category: mapCategory(p.categories),
             image: p.images[0]?.src || '/placeholder-product.svg',
             description: p.short_description || p.description,
             features: findAttr('feature')?.options || [],
@@ -150,7 +164,7 @@ export async function getWooProductById(id: string): Promise<Product | null> {
                     hex: mapColorToHex(c)
                 };
             }) || p.tags?.filter((t: any) =>
-                ['Black', 'Nude', 'Teal', 'Coral', 'Rose', 'White', 'Grey', 'أسود', 'بيج', 'تيل', 'وردي', 'أبيض'].some(cn => t.name.includes(cn))
+                ['Black', 'Nude', 'Teal', 'Coral', 'Rose', 'White', 'Grey', 'Red', 'Blue', 'Green', 'Pink', 'Purple', 'Navy', 'Burgundy', 'Wine', 'Charcoal', 'Ivory', 'Cream', 'Beige', 'Champagne', 'Blush', 'Hot Pink', 'Lavender', 'Lilac', 'Plum', 'Emerald', 'Olive', 'Sage', 'Matcha', 'Royal Blue', 'Sky Blue', 'Light Blue', 'Light Green', 'Light Grey', 'Dark Red', 'Multicolor', 'Floral', 'Leopard Print', 'Lace', 'Skin (Nude)', 'أسود', 'بيج', 'تيل', 'وردي', 'أبيض', 'كورال', 'رمادي'].some(cn => t.name.includes(cn))
             ).map((t: any) => ({
                 name: t.name,
                 hex: mapColorToHex(t.name)
@@ -217,7 +231,7 @@ export async function getWooProductBySlug(slug: string): Promise<Product | null>
             slug: p.slug,
             name: p.name,
             price: parseFloat(p.price || p.regular_price || '0'),
-            category: mapCategory(p.categories[0]?.name),
+            category: mapCategory(p.categories),
             image: p.images[0]?.src || '/placeholder-product.svg',
             description: p.short_description || p.description,
             features: findAttr('feature')?.options || [],
@@ -232,7 +246,7 @@ export async function getWooProductBySlug(slug: string): Promise<Product | null>
                 }
                 return { name: c, hex: mapColorToHex(c) };
             }) || p.tags?.filter((t: any) =>
-                ['Black', 'Nude', 'Teal', 'Coral', 'Rose', 'White', 'Grey', 'أسود', 'بيج', 'تيل', 'وردي', 'أبيض'].some(cn => t.name.includes(cn))
+                ['Black', 'Nude', 'Teal', 'Coral', 'Rose', 'White', 'Grey', 'Red', 'Blue', 'Green', 'Pink', 'Purple', 'Navy', 'Burgundy', 'Wine', 'Charcoal', 'Ivory', 'Cream', 'Beige', 'Champagne', 'Blush', 'Hot Pink', 'Lavender', 'Lilac', 'Plum', 'Emerald', 'Olive', 'Sage', 'Matcha', 'Royal Blue', 'Sky Blue', 'Light Blue', 'Light Green', 'Light Grey', 'Dark Red', 'Multicolor', 'Floral', 'Leopard Print', 'Lace', 'Skin (Nude)', 'أسود', 'بيج', 'تيل', 'وردي', 'أبيض', 'كورال', 'رمادي'].some(cn => t.name.includes(cn))
             ).map((t: any) => ({ name: t.name, hex: mapColorToHex(t.name) }))) || [],
             images: p.images?.map((img: any) => img.src) || [],
             outOfStock: p.stock_status === 'outofstock',
@@ -401,41 +415,96 @@ export async function getShippingCost(): Promise<ShippingInfo> {
     }
 }
 
-function mapCategory(name: string): Product['category'] {
-    const n = name?.toLowerCase();
-    if (n?.includes('bra')) return 'Bra';
-    if (n?.includes('pants') || n?.includes('panties') || n?.includes('briefs')) return 'Panties';
-    if (n?.includes('lingerie')) return 'Lingerie';
-    if (n?.includes('socks')) return 'Socks';
+function mapCategory(categories: any[]): Product['category'] {
+    for (const cat of categories || []) {
+        const n = (cat.name || '').toLowerCase();
+        const s = (cat.slug || '').toLowerCase();
+        // Check panties/pants/briefs before bra (since "bra" can appear in other words)
+        if (n.includes('panties') || n.includes('pants') || n.includes('briefs') ||
+            s.includes('panties') || s.includes('pants') || s.includes('briefs') ||
+            n.includes('كلوت') || n.includes('سروال')) return 'Panties';
+        if (n.includes('lingerie') || s.includes('lingerie') ||
+            n.includes('لانجيري')) return 'Lingerie';
+        if (n.includes('sock') || s.includes('sock') ||
+            n.includes('شراب') || n.includes('جوارب')) return 'Socks';
+        if (n.includes('bra') || s.includes('bra') ||
+            n.includes('سوتيان') || n.includes('حمالة')) return 'Bra';
+    }
     return 'Bra'; // Default
 }
 
 function mapColorToHex(color: string): string {
     const colors: Record<string, string> = {
-        'Black': '#1A1A1A',
-        'Midnight Black': '#1A1A1A',
+        // Blacks & Greys
+        'black': '#1A1A1A',
+        'midnight black': '#1A1A1A',
         'aswad': '#1A1A1A',
         'أسود': '#1A1A1A',
-        'Nude': '#E3C5AF',
-        'Soft Nude': '#E3C5AF',
-        'nude': '#E3C5AF',
-        'بيج': '#E3C5AF',
-        'Teal': '#5B7B7C',
-        'Luravie Teal': '#5B7B7C',
-        'teal': '#5B7B7C',
-        'تيل': '#5B7B7C',
-        'Coral': '#E59595',
-        'Soft Coral': '#E59595',
-        'coral': '#E59595',
-        'كورال': '#E59595',
-        'Rose': '#FCE4E4',
-        'Pearl Rose': '#FCE4E4',
-        'rose': '#FCE4E4',
-        'وردي': '#FCE4E4',
-        'White': '#FFFFFF',
-        'أبيض': '#FFFFFF',
-        'Grey': '#808080',
+        'charcoal': '#36454F',
+        'gray': '#808080',
+        'grey': '#808080',
         'رمادي': '#808080',
+        'light-grey': '#D3D3D3',
+        'light grey': '#D3D3D3',
+        // Whites & Neutrals
+        'white': '#FFFFFF',
+        'أبيض': '#FFFFFF',
+        'ivory': '#FFFFF0',
+        'cream': '#FFFDD0',
+        'champagne': '#F7E7CE',
+        'beige': '#F5F5DC',
+        'nude': '#E3C5AF',
+        'soft nude': '#E3C5AF',
+        'بيج': '#E3C5AF',
+        'skin-nude': '#E3C5AF',
+        'skin (nude)': '#E3C5AF',
+        'lace': '#FDF5E6',
+        // Pinks & Reds
+        'pink': '#FFC0CB',
+        'hot-pink': '#FF69B4',
+        'hot pink': '#FF69B4',
+        'blush': '#DE5D83',
+        'rose': '#FCE4E4',
+        'pearl rose': '#FCE4E4',
+        'وردي': '#FCE4E4',
+        'coral': '#E59595',
+        'soft coral': '#E59595',
+        'كورال': '#E59595',
+        'red': '#DC143C',
+        'dark-red': '#8B0000',
+        'dark red': '#8B0000',
+        'wine': '#722F37',
+        'burgundy': '#800020',
+        // Purples
+        'purple': '#800080',
+        'plum': '#8E4585',
+        'lavender': '#E6E6FA',
+        'lilac': '#C8A2C8',
+        // Blues
+        'blue': '#4169E1',
+        'royal-blue': '#4169E1',
+        'royal blue': '#4169E1',
+        'sky-blue': '#87CEEB',
+        'sky blue': '#87CEEB',
+        'light-blue': '#ADD8E6',
+        'light blue': '#ADD8E6',
+        'navy': '#000080',
+        'teal': '#5B7B7C',
+        'luravie teal': '#5B7B7C',
+        'تيل': '#5B7B7C',
+        // Greens
+        'green': '#228B22',
+        'light-green': '#90EE90',
+        'light green': '#90EE90',
+        'emerald': '#50C878',
+        'sage': '#BCB88A',
+        'olive': '#808000',
+        'matcha': '#B5C98E',
+        // Patterns & Multi
+        'multicolor': '#FF6B6B',
+        'floral': '#FFB7C5',
+        'leopard-print': '#C8A951',
+        'leopard print': '#C8A951',
     };
-    return colors[color] || colors[color.toLowerCase()] || color;
+    return colors[color.toLowerCase()] || color;
 }
