@@ -105,6 +105,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
               src={mainImage}
               alt={product.name}
               className="w-full h-full object-cover"
+              eager
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all flex items-center justify-center">
               <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 rounded-full p-2">
