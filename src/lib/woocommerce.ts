@@ -16,26 +16,40 @@ export async function getWooProducts(): Promise<Product[]> {
 
     try {
         const auth = Buffer.from(`${WOO_KEY}:${WOO_SECRET}`).toString('base64');
-        const response = await fetch(`${WOO_URL}/wp-json/wc/v3/products?per_page=100`, {
-            headers: {
-                'Authorization': `Basic ${auth}`,
-            },
-            next: { revalidate: 300 }
-        });
+        const allProducts: any[] = [];
+        let page = 1;
 
-        if (!response.ok) {
-            Sentry.captureMessage(`WooCommerce API error: ${response.status} ${response.statusText}`, {
-                level: "warning",
-                tags: { service: "woocommerce", operation: "getProducts" },
-                extra: { status: response.status, statusText: response.statusText },
+        while (true) {
+            const response = await fetch(`${WOO_URL}/wp-json/wc/v3/products?per_page=100&page=${page}`, {
+                headers: {
+                    'Authorization': `Basic ${auth}`,
+                },
+                next: { revalidate: 300 }
             });
-            console.error(`WooCommerce API error: ${response.status} ${response.statusText}`);
-            return [];
+
+            if (!response.ok) {
+                if (page === 1) {
+                    Sentry.captureMessage(`WooCommerce API error: ${response.status} ${response.statusText}`, {
+                        level: "warning",
+                        tags: { service: "woocommerce", operation: "getProducts" },
+                        extra: { status: response.status, statusText: response.statusText },
+                    });
+                    console.error(`WooCommerce API error: ${response.status} ${response.statusText}`);
+                    return [];
+                }
+                break;
+            }
+
+            const products = await response.json();
+            if (!products.length) break;
+            allProducts.push(...products);
+
+            const totalPages = parseInt(response.headers.get('x-wp-totalpages') || '1', 10);
+            if (page >= totalPages) break;
+            page++;
         }
 
-        const wooProducts = await response.json();
-
-        return wooProducts.map((p: any) => {
+        return allProducts.map((p: any) => {
             const findAttr = (name: string) => p.attributes?.find((a: any) => {
                 const n = (a.name || '').toLowerCase();
                 const s = (a.slug || '').toLowerCase();
@@ -56,7 +70,7 @@ export async function getWooProducts(): Promise<Product[]> {
                 slug: p.slug,
                 name: p.name,
                 price: parseFloat(p.price || p.regular_price || '0'),
-                category: mapCategory(p.categories[0]?.name),
+                category: mapCategory(p.categories),
                 image: p.images[0]?.src || '/placeholder-product.svg',
                 description: p.short_description || p.description,
                 features: findAttr('feature')?.options || [],
@@ -132,7 +146,7 @@ export async function getWooProductById(id: string): Promise<Product | null> {
             slug: p.slug,
             name: p.name,
             price: parseFloat(p.price || p.regular_price || '0'),
-            category: mapCategory(p.categories[0]?.name),
+            category: mapCategory(p.categories),
             image: p.images[0]?.src || '/placeholder-product.svg',
             description: p.short_description || p.description,
             features: findAttr('feature')?.options || [],
@@ -217,7 +231,7 @@ export async function getWooProductBySlug(slug: string): Promise<Product | null>
             slug: p.slug,
             name: p.name,
             price: parseFloat(p.price || p.regular_price || '0'),
-            category: mapCategory(p.categories[0]?.name),
+            category: mapCategory(p.categories),
             image: p.images[0]?.src || '/placeholder-product.svg',
             description: p.short_description || p.description,
             features: findAttr('feature')?.options || [],
@@ -401,12 +415,21 @@ export async function getShippingCost(): Promise<ShippingInfo> {
     }
 }
 
-function mapCategory(name: string): Product['category'] {
-    const n = name?.toLowerCase();
-    if (n?.includes('bra')) return 'Bra';
-    if (n?.includes('pants') || n?.includes('panties') || n?.includes('briefs')) return 'Panties';
-    if (n?.includes('lingerie')) return 'Lingerie';
-    if (n?.includes('socks')) return 'Socks';
+function mapCategory(categories: any[]): Product['category'] {
+    for (const cat of categories || []) {
+        const n = (cat.name || '').toLowerCase();
+        const s = (cat.slug || '').toLowerCase();
+        // Check panties/pants/briefs before bra (since "bra" can appear in other words)
+        if (n.includes('panties') || n.includes('pants') || n.includes('briefs') ||
+            s.includes('panties') || s.includes('pants') || s.includes('briefs') ||
+            n.includes('كلوت') || n.includes('سروال')) return 'Panties';
+        if (n.includes('lingerie') || s.includes('lingerie') ||
+            n.includes('لانجيري')) return 'Lingerie';
+        if (n.includes('sock') || s.includes('sock') ||
+            n.includes('شراب') || n.includes('جوارب')) return 'Socks';
+        if (n.includes('bra') || s.includes('bra') ||
+            n.includes('سوتيان') || n.includes('حمالة')) return 'Bra';
+    }
     return 'Bra'; // Default
 }
 
