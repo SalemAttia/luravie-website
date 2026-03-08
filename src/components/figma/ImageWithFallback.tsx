@@ -14,12 +14,11 @@ interface ImageWithFallbackProps extends Omit<React.ImgHTMLAttributes<HTMLImageE
 export function ImageWithFallback(props: ImageWithFallbackProps) {
   const { src, alt, style, className, eager, ...rest } = props
 
-  // Static imports (StaticImageData) are bundled locally and don't need loading/retry logic
+  // Handle Next.js StaticImageData
   const isStatic = typeof src === 'object' && src !== null && 'src' in src
-
   const srcUrl = isStatic ? (src as any).src : (src as string);
 
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(!isStatic)
   const [didError, setDidError] = useState(false)
   const retryCount = useRef(0)
   const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -29,7 +28,7 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
   useEffect(() => {
     if (prevSrcRef.current !== srcUrl) {
       prevSrcRef.current = srcUrl
-      setIsLoading(true)
+      setIsLoading(!isStatic)
       setDidError(false)
       retryCount.current = 0
       if (retryTimer.current) {
@@ -37,7 +36,7 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
         retryTimer.current = null
       }
     }
-  }, [srcUrl])
+  }, [srcUrl, isStatic])
 
   useEffect(() => {
     return () => {
@@ -63,7 +62,20 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
     }
   }, [])
 
-  // Static images (logo, local assets) — render plain img, no loading skeleton
+  if (didError) {
+    return (
+      <img
+        src={ERROR_IMG_SRC}
+        alt="Error loading image"
+        className={className}
+        style={style}
+        data-original-url={srcUrl}
+        {...rest}
+      />
+    )
+  }
+
+  // Static images don't need loading state or retry — render directly
   if (isStatic) {
     return (
       <img
@@ -76,41 +88,19 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
     )
   }
 
-  // Remote images — show loading skeleton + retry logic
-  if (didError) {
-    return (
-      <div
-        className={`inline-block bg-gray-100 text-center align-middle ${className ?? ''}`}
-        style={style}
-      >
-        <div className="flex items-center justify-center w-full h-full">
-          <img src={ERROR_IMG_SRC} alt="Error loading image" {...rest} data-original-url={srcUrl} />
-        </div>
-      </div>
-    )
-  }
-
+  // Remote images — fade in on load, retry on error
   return (
-    <div className={`relative ${className ?? ''}`} style={style}>
-      {isLoading && (
-        <div className="absolute inset-0 bg-gray-100 animate-pulse flex items-center justify-center">
-          <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
-          </svg>
-        </div>
-      )}
-      <img
-        key={`${srcUrl}-${retryCount.current}`}
-        src={srcUrl}
-        alt={alt}
-        className={`w-full h-full ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
-        style={{ objectFit: 'inherit' }}
-        loading={eager ? 'eager' : 'lazy'}
-        decoding={eager ? 'sync' : 'async'}
-        onLoad={handleLoad}
-        onError={handleError}
-        {...rest}
-      />
-    </div>
+    <img
+      key={`${srcUrl}-${retryCount.current}`}
+      src={srcUrl}
+      alt={alt}
+      className={`${className ?? ''} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+      style={style}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding={eager ? 'sync' : 'async'}
+      onLoad={handleLoad}
+      onError={handleError}
+      {...rest}
+    />
   )
 }
