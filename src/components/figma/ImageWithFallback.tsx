@@ -23,15 +23,19 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
   const [didError, setDidError] = useState(false)
   const retryCount = useRef(0)
   const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const prevSrcRef = useRef(srcUrl)
 
-  // Reset state when src changes
+  // Reset state only when src actually changes (not on initial mount)
   useEffect(() => {
-    setIsLoading(true)
-    setDidError(false)
-    retryCount.current = 0
-    if (retryTimer.current) {
-      clearTimeout(retryTimer.current)
-      retryTimer.current = null
+    if (prevSrcRef.current !== srcUrl) {
+      prevSrcRef.current = srcUrl
+      setIsLoading(true)
+      setDidError(false)
+      retryCount.current = 0
+      if (retryTimer.current) {
+        clearTimeout(retryTimer.current)
+        retryTimer.current = null
+      }
     }
   }, [srcUrl])
 
