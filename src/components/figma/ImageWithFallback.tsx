@@ -14,29 +14,58 @@ interface ImageWithFallbackProps extends Omit<React.ImgHTMLAttributes<HTMLImageE
 export function ImageWithFallback(props: ImageWithFallbackProps) {
   const { src, alt, style, className, eager, ...rest } = props
 
-  // Handle Next.js StaticImageData
   const isStatic = typeof src === 'object' && src !== null && 'src' in src
   const srcUrl = isStatic ? (src as any).src : (src as string);
 
-  const [isLoading, setIsLoading] = useState(!isStatic)
+  // Static images — just render, no fancy loading logic
+  if (isStatic) {
+    return (
+      <img
+        src={srcUrl}
+        alt={alt}
+        className={className}
+        style={style}
+        {...rest}
+      />
+    )
+  }
+
+  return <RemoteImage srcUrl={srcUrl} alt={alt} style={style} className={className} eager={eager} {...rest} />
+}
+
+function RemoteImage({ srcUrl, alt, style, className, eager, ...rest }: {
+  srcUrl: string;
+  alt?: string;
+  style?: React.CSSProperties;
+  className?: string;
+  eager?: boolean;
+} & Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'src'>) {
+  const [isLoading, setIsLoading] = useState(true)
   const [didError, setDidError] = useState(false)
+  const [retrySrc, setRetrySrc] = useState(srcUrl)
   const retryCount = useRef(0)
   const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const prevSrcRef = useRef(srcUrl)
+  const imgRef = useRef<HTMLImageElement>(null)
 
-  // Reset state only when src actually changes (not on initial mount)
+  // Reset when src changes
   useEffect(() => {
-    if (prevSrcRef.current !== srcUrl) {
-      prevSrcRef.current = srcUrl
-      setIsLoading(!isStatic)
-      setDidError(false)
-      retryCount.current = 0
-      if (retryTimer.current) {
-        clearTimeout(retryTimer.current)
-        retryTimer.current = null
-      }
+    setIsLoading(true)
+    setDidError(false)
+    setRetrySrc(srcUrl)
+    retryCount.current = 0
+    if (retryTimer.current) {
+      clearTimeout(retryTimer.current)
+      retryTimer.current = null
     }
-  }, [srcUrl, isStatic])
+  }, [srcUrl])
+
+  // After mount/update, check if the image already loaded (cached)
+  useEffect(() => {
+    if (imgRef.current?.complete && imgRef.current.naturalWidth > 0) {
+      setIsLoading(false)
+      setDidError(false)
+    }
+  })
 
   useEffect(() => {
     return () => {
@@ -55,6 +84,11 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
       retryTimer.current = setTimeout(() => {
         setDidError(false)
         setIsLoading(true)
+        // Append cache-bust to force a fresh request
+        setRetrySrc(prev => {
+          const base = prev.split('#retry')[0]
+          return `${base}#retry${retryCount.current}`
+        })
       }, RETRY_DELAY)
     } else {
       setIsLoading(false)
@@ -75,24 +109,10 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
     )
   }
 
-  // Static images don't need loading state or retry — render directly
-  if (isStatic) {
-    return (
-      <img
-        src={srcUrl}
-        alt={alt}
-        className={className}
-        style={style}
-        {...rest}
-      />
-    )
-  }
-
-  // Remote images — fade in on load, retry on error
   return (
     <img
-      key={`${srcUrl}-${retryCount.current}`}
-      src={srcUrl}
+      ref={imgRef}
+      src={retrySrc}
       alt={alt}
       className={`${className ?? ''} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
       style={style}
