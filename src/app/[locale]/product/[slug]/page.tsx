@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const category = product.category?.toLowerCase() || '';
     const catKeywords = categoryKeywords[category];
     const keywords = [
-        'Luravie', 'لورافي', productName,
+        'Luravie', 'لورافي', 'لُوراڤيه', productName,
         ...(catKeywords ? (isAr ? catKeywords.ar : catKeywords.en) : []),
         ...(isAr
             ? ['ملابس داخلية نسائية مصر', 'الدفع عند الاستلام', 'شحن مجاني']
