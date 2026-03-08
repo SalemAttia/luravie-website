@@ -31,16 +31,20 @@ export async function generateMetadata({
   const isAr = locale === 'ar';
 
   const title = isAr
-    ? 'لورافي | مستلزمات نسائية يومية – سوتيانات ولانجيري في مصر'
+    ? 'لورافي (لُوراڤيه) | مستلزمات نسائية يومية – سوتيانات ولانجيري في مصر'
     : "Luravie | Women's Everyday Essentials – Bras, Lingerie & More in Egypt";
 
   const description = isAr
-    ? 'تسوقي أفضل السوتيانات واللانجيري والمستلزمات النسائية اليومية من لورافي. جودة عالية بأسعار مناسبة مع الدفع عند الاستلام وشحن سري ومجاني في جميع أنحاء مصر.'
+    ? 'تسوقي أفضل السوتيانات واللانجيري والمستلزمات النسائية اليومية من لورافي (لُوراڤيه). جودة عالية بأسعار مناسبة مع الدفع عند الاستلام وشحن سري ومجاني في جميع أنحاء مصر.'
     : "Shop premium women's bras, lingerie, and everyday essentials at Luravie. Affordable luxury with cash on delivery, discreet packaging, and free shipping across Egypt.";
 
   const keywords = isAr
     ? [
         'لورافي',
+        'لُوراڤيه',
+        'لوراڤيه',
+        'لوراڤي',
+        'Luravie',
         'ملابس داخلية نسائية',
         'ملابس داخلية نسائية مصر',
         'سوتيان',
@@ -64,9 +68,13 @@ export async function generateMetadata({
         'شحن مجاني ملابس داخلية',
         'ملابس نسائية مصر',
         'تسوق نسائي اون لاين مصر',
+        'متجر لورافي',
+        'موقع لورافي',
       ]
     : [
         'Luravie',
+        'luravie.com',
+        'luravie egypt',
         "women's underwear Egypt",
         'buy bras online Egypt',
         'lingerie Egypt',
@@ -180,11 +188,28 @@ export default async function RootLayout({
 
   const siteUrl = getSiteUrl();
 
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: locale === 'ar' ? 'لورافي' : 'Luravie',
+    alternateName: ['Luravie', 'لورافي', 'لُوراڤيه', 'لوراڤيه', 'لوراڤي'],
+    url: siteUrl,
+    inLanguage: locale === 'ar' ? 'ar' : 'en',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${siteUrl}/${locale}/shop?search={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  };
+
   const organizationJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'OnlineStore',
     name: 'Luravie',
-    alternateName: 'لورافي',
+    alternateName: ['لورافي', 'لُوراڤيه', 'لوراڤيه', 'لوراڤي'],
     url: siteUrl,
     logo: `${siteUrl}/opengraph-image`,
     description: locale === 'ar'
@@ -236,6 +261,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
       <body className={`${inter.className} antialiased`} suppressHydrationWarning>
+        <JsonLd data={websiteJsonLd} />
         <JsonLd data={organizationJsonLd} />
         <NextIntlClientProvider messages={messages}>
           <AppProvider>

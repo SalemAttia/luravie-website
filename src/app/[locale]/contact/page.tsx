@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import ContactClient from './ContactClient';
-import { localePath, localizedAlternates } from '@/lib/seo';
+import { localePath, localizedAlternates, getSiteUrl } from '@/lib/seo';
 import { routing } from '@/i18n/routing';
+import { JsonLd } from '@/components/JsonLd';
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -18,11 +19,14 @@ export async function generateMetadata({
 
   return {
     title: isAr
-      ? 'تواصلي مع لورافي – خدمة العملاء والاستفسارات'
+      ? 'تواصلي مع لورافي (لُوراڤيه) – خدمة العملاء والاستفسارات'
       : 'Contact Luravie – Customer Support & Inquiries',
     description: isAr
       ? 'تواصلي مع لورافي عبر البريد الإلكتروني أو الواتساب أو نموذج الاتصال. خدمة العملاء متاحة من السبت إلى الخميس، ١٠ صباحاً – ٨ مساءً. نحن هنا لمساعدتك في الطلبات والمقاسات والمزيد.'
       : "Get in touch with Luravie via email, WhatsApp, or our contact form. Customer support available Saturday–Thursday, 10 AM–8 PM EET. We're here to help with orders, sizing, and more.",
+    keywords: isAr
+      ? ['تواصل لورافي', 'لورافي', 'لُوراڤيه', 'خدمة عملاء لورافي', 'واتساب لورافي', 'دعم لورافي']
+      : ['contact Luravie', 'Luravie support', 'Luravie WhatsApp', 'Luravie customer service', 'Luravie Egypt contact'],
     alternates: {
       canonical,
       ...localizedAlternates('/contact'),
@@ -33,6 +37,67 @@ export async function generateMetadata({
   };
 }
 
-export default function ContactPage() {
-  return <ContactClient />;
+export default async function ContactPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const siteUrl = getSiteUrl();
+  const isAr = locale === 'ar';
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: isAr ? 'الرئيسية' : 'Home',
+        item: `${siteUrl}/${locale}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: isAr ? 'تواصلي معنا' : 'Contact',
+        item: `${siteUrl}/${locale}/contact`,
+      },
+    ],
+  };
+
+  const contactPageJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name: isAr ? 'تواصلي مع لورافي' : 'Contact Luravie',
+    description: isAr
+      ? 'تواصلي مع لورافي عبر البريد الإلكتروني أو الواتساب أو نموذج الاتصال.'
+      : 'Get in touch with Luravie via email, WhatsApp, or our contact form.',
+    url: `${siteUrl}/${locale}/contact`,
+    inLanguage: isAr ? 'ar' : 'en',
+    mainEntity: {
+      '@type': 'Organization',
+      name: 'Luravie',
+      alternateName: ['لورافي', 'لُوراڤيه'],
+      email: 'support@luravie.com',
+      telephone: '+201505555388',
+      contactPoint: {
+        '@type': 'ContactPoint',
+        telephone: '+201505555388',
+        email: 'support@luravie.com',
+        contactType: 'customer service',
+        areaServed: 'EG',
+        availableLanguage: ['English', 'Arabic'],
+        hoursAvailable: {
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'],
+          opens: '10:00',
+          closes: '20:00',
+        },
+      },
+    },
+  };
+
+  return (
+    <>
+      <JsonLd data={breadcrumbJsonLd} />
+      <JsonLd data={contactPageJsonLd} />
+      <ContactClient />
+    </>
+  );
 }
