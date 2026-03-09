@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter, Link } from '@/i18n/routing';
+import { Link } from '@/i18n/routing';
 import { ProductCard } from '@/components/product-card';
 import { QuickSelectModal } from '@/components/quick-select-modal';
 import { NotifyMeModal } from '@/components/notify-me-modal';
@@ -22,7 +22,6 @@ interface ShopClientProps {
 }
 
 export function ShopClient({ initialProducts }: ShopClientProps) {
-    const router = useRouter();
     const t = useTranslations('shop');
     const tCommon = useTranslations('common');
     const { favorites, toggleFavorite, addToCart, buyNow } = useApp();
@@ -145,10 +144,7 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
                                         isFavorite={favorites.includes(product.id)}
                                         onToggleFavorite={(e) => toggleFavorite(product.id, e)}
                                         onAddToCart={addToCart}
-                                        onBuyNow={(p, s, c, v, vp) => {
-                                            buyNow(p, s, c, v, vp);
-                                            router.push('/checkout' as any);
-                                        }}
+                                        onBuyNow={buyNow}
                                         onOpenQuickSelect={() => openQuickSelect(product)}
                                         onNotifyMe={(p) => { setSelectedProduct(p); setIsNotifyMeOpen(true); }}
                                     />
@@ -182,10 +178,7 @@ export function ShopClient({ initialProducts }: ShopClientProps) {
                 onClose={() => setIsQuickSelectOpen(false)}
                 product={selectedProduct}
                 onAddToCart={addToCart}
-                onBuyNow={(p, s, c, v, vp) => {
-                    buyNow(p, s, c, v, vp);
-                    router.push('/checkout' as any);
-                }}
+                onBuyNow={buyNow}
                 onNotifyMe={(p) => { setSelectedProduct(p); setIsNotifyMeOpen(true); }}
             />
 

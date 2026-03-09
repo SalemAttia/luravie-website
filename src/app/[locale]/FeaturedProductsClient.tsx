@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useRouter } from '@/i18n/routing';
 import { ProductCard } from '@/components/product-card';
 import { QuickSelectModal } from '@/components/quick-select-modal';
 import { NotifyMeModal } from '@/components/notify-me-modal';
@@ -15,7 +14,6 @@ interface FeaturedProductsClientProps {
 
 export function FeaturedProductsClient({ initialProducts }: FeaturedProductsClientProps) {
     const t = useTranslations('home');
-    const router = useRouter();
     const { favorites, toggleFavorite, addToCart, buyNow } = useApp();
     const [isQuickSelectOpen, setIsQuickSelectOpen] = useState(false);
     const [isNotifyMeOpen, setIsNotifyMeOpen] = useState(false);
@@ -44,10 +42,7 @@ export function FeaturedProductsClient({ initialProducts }: FeaturedProductsClie
                             isFavorite={favorites.includes(product.id)}
                             onToggleFavorite={(e) => toggleFavorite(product.id, e)}
                             onAddToCart={addToCart}
-                            onBuyNow={(p, s, c, v, vp) => {
-                                buyNow(p, s, c, v, vp);
-                                router.push('/checkout' as any);
-                            }}
+                            onBuyNow={buyNow}
                             onOpenQuickSelect={() => openQuickSelect(product)}
                             onNotifyMe={(p) => { setSelectedProduct(p); setIsNotifyMeOpen(true); }}
                         />
@@ -60,10 +55,7 @@ export function FeaturedProductsClient({ initialProducts }: FeaturedProductsClie
                 onClose={() => setIsQuickSelectOpen(false)}
                 product={selectedProduct}
                 onAddToCart={addToCart}
-                onBuyNow={(p, s, c, v, vp) => {
-                    buyNow(p, s, c, v, vp);
-                    router.push('/checkout' as any);
-                }}
+                onBuyNow={buyNow}
                 onNotifyMe={(p) => { setSelectedProduct(p); setIsNotifyMeOpen(true); }}
             />
 
