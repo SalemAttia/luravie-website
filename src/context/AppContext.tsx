@@ -147,23 +147,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const buyNow = (product: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => {
-    const itemPrice = variantPrice ?? product.price;
-    setCartItems(prev => {
-      const existing = prev.find(item =>
-        item.id === product.id &&
-        item.selectedSize === size &&
-        item.selectedColor?.name === color?.name
-      );
-      if (existing) {
-        return prev.map(item =>
-          (item.id === product.id && item.selectedSize === size && item.selectedColor?.name === color?.name)
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prev, { ...product, price: itemPrice, quantity: 1, selectedSize: size, selectedColor: color, variationId }];
-    });
-    trackAddToCart({ ...product, price: itemPrice }, size, color?.name);
+    addToCart(product, size, color, variationId, variantPrice);
     router.push('/checkout' as any);
   };
 
