@@ -135,6 +135,7 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
                 items: cartItems.map(item => ({
                     name: item.name,
                     nameAr: item.nameAr,
+                    slug: item.slug,
                     quantity: item.quantity,
                     price: item.price,
                     image: item.image,
@@ -410,11 +411,13 @@ export default function CheckoutClient({ shippingCost }: { shippingCost: number 
                                 const itemName = locale === 'ar' && item.nameAr ? item.nameAr : item.name;
                                 return (
                                 <div key={`${item.id}-${item.selectedSize || idx}-${item.selectedColor?.name || ''}`} className={`flex gap-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                                    <div className="w-20 h-20 rounded-xl overflow-hidden bg-blush flex-shrink-0">
+                                    <Link href={`/product/${item.slug}`} className="w-20 h-20 rounded-xl overflow-hidden bg-blush flex-shrink-0 block">
                                         <ImageWithFallback src={item.image} alt={itemName} className="w-full h-full object-cover" />
-                                    </div>
+                                    </Link>
                                     <div className="flex-1 min-w-0">
-                                        <h4 className="font-bold text-gray-900 line-clamp-1">{itemName}</h4>
+                                        <Link href={`/product/${item.slug}`}>
+                                            <h4 className="font-bold text-gray-900 line-clamp-1 hover:text-teal transition-colors">{itemName}</h4>
+                                        </Link>
                                         <div className={`flex items-center gap-2 mt-1 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                             {item.selectedSize && (
                                                 <span className="text-xs bg-teal/5 text-teal px-2 py-0.5 rounded-full font-bold">
