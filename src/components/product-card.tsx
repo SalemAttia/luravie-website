@@ -35,7 +35,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const [isAdded, setIsAdded] = React.useState(false);
   const productName = locale === 'ar' && product.nameAr ? product.nameAr : product.name;
 
-  const needsSelection = product.sizes.length > 0 || product.colors.length > 1;
+  const validSizes = product.sizes.filter((s) => s.trim() !== '');
+  const needsSelection = validSizes.length > 0 || product.colors.length > 1;
   const defaultColor = product.colors.length === 1 ? product.colors[0] : undefined;
 
   const handleQuickAdd = (e: React.MouseEvent) => {
