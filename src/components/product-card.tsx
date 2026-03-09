@@ -35,10 +35,30 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const [isAdded, setIsAdded] = React.useState(false);
   const productName = locale === 'ar' && product.nameAr ? product.nameAr : product.name;
 
+  const validSizes = product.sizes.filter((s) => s.trim() !== '');
+  const needsSelection = validSizes.length > 0 || product.colors.length > 1;
+  const defaultColor = product.colors.length === 1 ? product.colors[0] : undefined;
+
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    onOpenQuickSelect(product);
+    if (needsSelection) {
+      onOpenQuickSelect(product);
+    } else {
+      onAddToCart(product, undefined, defaultColor);
+      setIsAdded(true);
+      setTimeout(() => setIsAdded(false), 2000);
+    }
+  };
+
+  const handleOrderNow = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (needsSelection) {
+      onOpenQuickSelect(product);
+    } else {
+      onBuyNow(product, undefined, defaultColor);
+    }
   };
 
   return (
@@ -100,10 +120,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         ) : (
           <div className="absolute bottom-2 left-2 right-2 md:bottom-6 md:left-6 md:right-6 translate-y-0 opacity-100 lg:translate-y-4 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 transition-all duration-500 space-y-1.5 md:space-y-3">
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onOpenQuickSelect(product);
-              }}
+              onClick={handleOrderNow}
               className="w-full py-2 md:py-4 bg-coral text-white rounded-lg md:rounded-[1.5rem] font-bold text-[11px] md:text-sm flex items-center justify-center gap-1.5 md:gap-3 shadow-2xl shadow-coral/30 cursor-pointer hover:scale-[1.05] active:scale-[0.95] transition-all"
             >
               {t('orderNow')}

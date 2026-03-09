@@ -45,7 +45,8 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
   React.useEffect(() => {
     if (product && isOpen) {
       // Reset selection state
-      setSelectedSize(product.sizes.length > 0 ? null : undefined);
+      const filteredSizes = product.sizes.filter((s) => s.trim() !== '');
+      setSelectedSize(filteredSizes.length > 0 ? null : undefined);
       setSelectedColor(product.colors.length > 0 ? product.colors[0] : undefined);
 
       // Use existing variations if available, otherwise fetch
@@ -64,6 +65,7 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
 
   if (!product) return null;
 
+  const validSizes = product.sizes.filter((s) => s.trim() !== '');
   const productName = locale === 'ar' && product.nameAr ? product.nameAr : product.name;
   const selectedVariation = findVariation(variations, selectedSize || undefined, selectedColor?.name);
   const isSelectedOOS = isCombinationOutOfStock(variations, selectedSize || undefined, selectedColor?.name);
@@ -71,7 +73,7 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
   const displayImage = selectedVariation?.image ?? product.image;
 
   const handleAdd = () => {
-    const sizeValid = product.sizes.length === 0 || selectedSize;
+    const sizeValid = validSizes.length === 0 || selectedSize;
     const colorValid = product.colors.length === 0 || selectedColor;
 
     if (sizeValid && colorValid && !isSelectedOOS) {
@@ -81,7 +83,7 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
   };
 
   const handleBuyNow = () => {
-    const sizeValid = product.sizes.length === 0 || selectedSize;
+    const sizeValid = validSizes.length === 0 || selectedSize;
     const colorValid = product.colors.length === 0 || selectedColor;
 
     if (sizeValid && colorValid && !isSelectedOOS && onBuyNow) {
@@ -90,7 +92,7 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
     }
   };
 
-  const canProceed = (product.sizes.length === 0 || selectedSize) && !isSelectedOOS;
+  const canProceed = (validSizes.length === 0 || selectedSize) && !isSelectedOOS;
 
   return (
     <AnimatePresence>
@@ -171,7 +173,7 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
                 )}
 
                 {/* Size Selection */}
-                {product.sizes.length > 0 && (
+                {validSizes.length > 0 && (
                   <div>
                     <div className="flex justify-between items-center mb-2 md:mb-4">
                       <label className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-teal/40 block">
@@ -182,7 +184,7 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
                       </button>
                     </div>
                     <div className="grid grid-cols-4 gap-1.5 md:gap-2">
-                      {product.sizes.map((size) => {
+                      {validSizes.map((size) => {
                         const sizeOOS = isSizeOutOfStock(variations, size);
                         return (
                           <button
@@ -229,21 +231,21 @@ export const QuickSelectModal: React.FC<QuickSelectModalProps> = ({
                   <>
                     <button
                       onClick={handleAdd}
-                      disabled={product.sizes.length > 0 && !selectedSize}
+                      disabled={validSizes.length > 0 && !selectedSize}
                       className={`w-full py-3 md:py-5 rounded-xl md:rounded-2xl font-bold text-sm md:text-lg flex items-center justify-center gap-2 md:gap-3 shadow-xl transition-all cursor-pointer ${canProceed
                         ? 'bg-coral text-white shadow-coral/20 hover:scale-[1.02] active:scale-[0.98]'
                         : 'bg-teal/5 text-teal/20 cursor-not-allowed shadow-none'
                         }`}
                     >
                       <ShoppingBag size={16} className="md:w-5 md:h-5" />
-                      {product.sizes.length === 0 || selectedSize
+                      {validSizes.length === 0 || selectedSize
                         ? tCommon('addToBag')
                         : t('selectASize')}
                     </button>
                     {onBuyNow && (
                       <button
                         onClick={handleBuyNow}
-                        disabled={product.sizes.length > 0 && !selectedSize}
+                        disabled={validSizes.length > 0 && !selectedSize}
                         className={`w-full mt-2 md:mt-4 py-3 md:py-5 rounded-xl md:rounded-2xl font-bold text-sm md:text-lg flex items-center justify-center gap-2 md:gap-3 shadow-xl transition-all cursor-pointer ${canProceed
                           ? 'bg-teal text-white shadow-teal/20 hover:scale-[1.02] active:scale-[0.98]'
                           : 'bg-teal/5 text-teal/20 cursor-not-allowed shadow-none'

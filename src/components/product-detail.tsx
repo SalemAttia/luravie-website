@@ -32,13 +32,14 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
   const locale = useLocale();
   const productName = locale === 'ar' && product.nameAr ? product.nameAr : product.name;
   const productDescription = locale === 'ar' && product.descriptionAr ? product.descriptionAr : product.description;
+  const validSizes = product.sizes.filter((s) => s.trim() !== '');
   const [selectedSize, setSelectedSize] = useState(() => {
-    if (product.sizes.length === 0) return undefined;
+    if (validSizes.length === 0) return undefined;
     if (product.variations?.length) {
-      const inStockSize = product.sizes.find(s => !isSizeOutOfStock(product.variations, s));
-      return inStockSize || product.sizes[0];
+      const inStockSize = validSizes.find(s => !isSizeOutOfStock(product.variations, s));
+      return inStockSize || validSizes[0];
     }
-    return product.sizes[0];
+    return validSizes[0];
   });
   const [selectedColor, setSelectedColor] = useState(() => {
     if (product.colors.length === 0) return undefined;
@@ -240,7 +241,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             </div>
           )}
 
-          {product.sizes.length > 0 && (
+          {validSizes.length > 0 && (
             <div className={`mb-3 md:mb-6 ${product.outOfStock ? 'opacity-40' : ''}`}>
               <div className={`flex justify-between items-center mb-2 md:mb-3 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                 <span className="font-bold text-teal uppercase tracking-widest text-[10px] md:text-xs">{t_product('selectSize')}</span>
@@ -252,7 +253,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                 </button>
               </div>
               <div className={`flex flex-wrap gap-1.5 md:gap-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                {product.sizes.map((size) => {
+                {validSizes.map((size) => {
                   const sizeOOS = isSizeOutOfStock(product.variations, size);
                   return (
                     <button

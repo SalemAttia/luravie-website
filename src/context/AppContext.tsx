@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useMemo, useEffect } from '
 import { toast } from 'sonner';
 import { PRODUCTS, Product } from '@/data';
 import { useTranslations, useLocale } from 'next-intl';
+import { useRouter } from '@/i18n/routing';
 import * as Sentry from "@sentry/nextjs";
 import { trackAddToCart, trackRemoveFromCart } from '@/lib/analytics';
 
@@ -31,6 +32,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const t = useTranslations('common');
   const locale = useLocale();
+  const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [isMounted, setIsMounted] = useState(false);
@@ -74,6 +76,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     setIsMounted(true);
   }, []);
+
+  // Prefetch checkout page for faster navigation
+  useEffect(() => {
+    router.prefetch('/checkout' as any);
+  }, [router]);
 
   // Save to localStorage when state changes
   useEffect(() => {
@@ -132,11 +139,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       description: `${displayName}${color ? ` - ${color.name}` : ''}${size ? `, ${size}` : ''}`,
       icon: '✨',
       position: 'bottom-right',
+      action: {
+        label: t('goToCheckout'),
+        onClick: () => router.push('/checkout' as any),
+      },
     });
   };
 
   const buyNow = (product: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => {
     addToCart(product, size, color, variationId, variantPrice);
+    router.push('/checkout' as any);
   };
 
   const updateQuantity = (id: string, size?: string, colorName?: string, delta: number = 1) => {
