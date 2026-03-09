@@ -102,14 +102,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onOpenQuickSelect(product);
+                e.preventDefault();
+                if (product.sizes.length === 0 && product.colors.length <= 1) {
+                  const color = product.colors.length === 1 ? product.colors[0] : undefined;
+                  onBuyNow(product, undefined, color);
+                } else {
+                  onOpenQuickSelect(product);
+                }
               }}
               className="w-full py-2 md:py-4 bg-coral text-white rounded-lg md:rounded-[1.5rem] font-bold text-[11px] md:text-sm flex items-center justify-center gap-1.5 md:gap-3 shadow-2xl shadow-coral/30 cursor-pointer hover:scale-[1.05] active:scale-[0.95] transition-all"
             >
               {t('orderNow')}
             </button>
             <button
-              onClick={handleQuickAdd}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (product.sizes.length === 0 && product.colors.length <= 1) {
+                  const color = product.colors.length === 1 ? product.colors[0] : undefined;
+                  onAddToCart(product, undefined, color);
+                  setIsAdded(true);
+                  setTimeout(() => setIsAdded(false), 2000);
+                } else {
+                  onOpenQuickSelect(product);
+                }
+              }}
               className={`w-full py-2 md:py-4 rounded-lg md:rounded-[1.5rem] font-bold text-[11px] md:text-sm flex items-center justify-center gap-1.5 md:gap-3 border backdrop-blur-md transition-all cursor-pointer ${isAdded
                 ? 'bg-teal text-white border-teal shadow-xl shadow-teal/20'
                 : 'bg-white/90 text-teal border-white shadow-xl hover:bg-teal hover:text-white hover:border-teal'
