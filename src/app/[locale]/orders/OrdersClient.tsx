@@ -18,6 +18,7 @@ interface SavedOrder {
     items: {
         name: string;
         nameAr?: string;
+        slug?: string;
         quantity: number;
         price: number;
         image: string;
@@ -145,11 +146,23 @@ export default function OrdersClient() {
                                                 const itemName = locale === 'ar' && item.nameAr ? item.nameAr : item.name;
                                                 return (
                                                     <div key={idx} className={`flex items-center gap-3 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                                                        <div className="w-10 h-10 rounded-lg overflow-hidden bg-blush flex-shrink-0">
-                                                            <ImageWithFallback src={item.image} alt={itemName} className="w-full h-full object-cover" />
-                                                        </div>
+                                                        {item.slug ? (
+                                                            <Link href={`/product/${item.slug}`} className="w-10 h-10 rounded-lg overflow-hidden bg-blush flex-shrink-0 block">
+                                                                <ImageWithFallback src={item.image} alt={itemName} className="w-full h-full object-cover" />
+                                                            </Link>
+                                                        ) : (
+                                                            <div className="w-10 h-10 rounded-lg overflow-hidden bg-blush flex-shrink-0">
+                                                                <ImageWithFallback src={item.image} alt={itemName} className="w-full h-full object-cover" />
+                                                            </div>
+                                                        )}
                                                         <div className={`flex-1 min-w-0 ${locale === 'ar' ? 'text-right' : ''}`}>
-                                                            <p className="text-sm font-medium text-gray-700 truncate">{itemName}</p>
+                                                            {item.slug ? (
+                                                                <Link href={`/product/${item.slug}`}>
+                                                                    <p className="text-sm font-medium text-gray-700 truncate hover:text-teal transition-colors">{itemName}</p>
+                                                                </Link>
+                                                            ) : (
+                                                                <p className="text-sm font-medium text-gray-700 truncate">{itemName}</p>
+                                                            )}
                                                             <div className={`flex items-center gap-2 text-xs text-muted-foreground ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
                                                                 <span>x{item.quantity}</span>
                                                                 {item.selectedSize && <span className="bg-teal/5 text-teal px-1.5 py-0.5 rounded-full">{item.selectedSize}</span>}

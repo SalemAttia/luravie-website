@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import { Product } from '@/data';
 import { useTranslations, useLocale } from 'next-intl';
-import { useRouter } from '@/i18n/routing';
+import { useRouter, Link } from '@/i18n/routing';
 
 interface CartItem extends Product {
   quantity: number;
@@ -87,17 +87,19 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   const itemName = locale === 'ar' && item.nameAr ? item.nameAr : item.name;
                   return (
                   <div key={`${item.id}-${item.selectedSize || 'nosize'}-${item.selectedColor?.name || 'nocolor'}`} className={`flex gap-4 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                    <div className="w-24 h-24 rounded-2xl overflow-hidden bg-blush flex-shrink-0 shadow-sm border border-teal/5">
+                    <Link href={`/product/${item.slug}`} onClick={onClose} className="w-24 h-24 rounded-2xl overflow-hidden bg-blush flex-shrink-0 shadow-sm border border-teal/5 block">
                       <ImageWithFallback
                         src={item.image}
                         alt={itemName}
                         className="w-full h-full object-cover"
                       />
-                    </div>
+                    </Link>
                     <div className={`flex-1 flex flex-col justify-between py-1 ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
                       <div>
                         <div className={`flex justify-between items-start ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
-                          <h3 className="font-bold text-teal line-clamp-1">{itemName}</h3>
+                          <Link href={`/product/${item.slug}`} onClick={onClose}>
+                            <h3 className="font-bold text-teal line-clamp-1 hover:text-coral transition-colors">{itemName}</h3>
+                          </Link>
                           <button
                             onClick={() => onRemove(item.id, item.selectedSize, item.selectedColor?.name)}
                             className="text-teal/20 hover:text-coral transition-colors cursor-pointer"
