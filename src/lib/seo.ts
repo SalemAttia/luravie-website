@@ -55,7 +55,23 @@ export function localizedAlternates(path: string): { languages: Record<string, s
     languages: {
       en: `/en${cleanPath}`,
       ar: `/ar${cleanPath}`,
+      'x-default': `/en${cleanPath}`,
     },
   };
 }
+
+/**
+ * Common Arabic spelling variants of the brand name "Luravie".
+ * Covers diacritics, ف vs ڤ, with/without tashkeel, and common misspellings.
+ */
+export const ARABIC_BRAND_VARIANTS = [
+  'لُوراڤيه',   // full diacritics with ڤ
+  'لوراڤيه',    // no diacritics with ڤ
+  'لوراڤي',     // no final ه with ڤ
+  'لورافيه',    // with ف instead of ڤ
+  'لورافي',     // simplified with ف
+  'لورافية',    // with تاء مربوطة
+  'لوراڤية',    // ڤ with تاء مربوطة
+  'لُورَاڤِيه',  // full tashkeel
+] as const;
 

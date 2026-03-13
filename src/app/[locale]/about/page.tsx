@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import AboutClient from './AboutClient';
-import { localePath, localizedAlternates, getSiteUrl } from '@/lib/seo';
+import { localePath, localizedAlternates, getSiteUrl, ARABIC_BRAND_VARIANTS } from '@/lib/seo';
 import { routing } from '@/i18n/routing';
 import { JsonLd } from '@/components/JsonLd';
 
@@ -19,13 +19,13 @@ export async function generateMetadata({
 
   return {
     title: isAr
-      ? 'عن لورافي (لُوراڤيه) – مستلزمات نسائية يومية فاخرة في مصر'
+      ? 'عن لوراڤيه (Luravie) – مستلزمات نسائية يومية فاخرة في مصر'
       : "About Luravie – Premium Women's Everyday Essentials in Egypt",
     description: isAr
-      ? 'لورافي (لُوراڤيه) تقدم مستلزمات نسائية يومية بجودة عالية مصممة للراحة والثقة. اكتشفي التزامنا بالأقمشة الفاخرة والأسعار المناسبة والخدمة السرية في مصر.'
+      ? 'لوراڤيه (لورافي - Luravie) تقدم مستلزمات نسائية يومية بجودة عالية مصممة للراحة والثقة. اكتشفي التزامنا بالأقمشة الفاخرة والأسعار المناسبة والخدمة السرية في مصر.'
       : "Luravie offers premium quality women's everyday essentials designed for comfort and confidence. Discover our commitment to quality fabrics, affordable luxury, and discreet service in Egypt.",
     keywords: isAr
-      ? ['لورافي', 'لُوراڤيه', 'عن لورافي', 'من نحن لورافي', 'مستلزمات نسائية مصر']
+      ? [...ARABIC_BRAND_VARIANTS, 'Luravie', 'عن لوراڤيه', 'عن لورافي', 'من نحن لوراڤيه', 'من نحن لورافي', 'مستلزمات نسائية مصر']
       : ['Luravie', 'about Luravie', 'Luravie Egypt', "women's essentials Egypt", 'Luravie story'],
     alternates: {
       canonical,

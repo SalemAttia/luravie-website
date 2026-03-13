@@ -4,7 +4,7 @@ import { PRODUCTS } from '@/data';
 import { getWooProductBySlug, getWooProducts } from '@/lib/woocommerce';
 import { getTranslations } from 'next-intl/server';
 import { Metadata } from 'next';
-import { localePath, localizedAlternates, stripHtml, truncate, getSiteUrl } from '@/lib/seo';
+import { localePath, localizedAlternates, stripHtml, truncate, getSiteUrl, ARABIC_BRAND_VARIANTS } from '@/lib/seo';
 import { JsonLd } from '@/components/JsonLd';
 
 const categoryKeywords: Record<string, { en: string[]; ar: string[] }> = {
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const category = product.category?.toLowerCase() || '';
     const catKeywords = categoryKeywords[category];
     const keywords = [
-        'Luravie', 'لورافي', 'لُوراڤيه', productName,
+        'Luravie', ...ARABIC_BRAND_VARIANTS, productName,
         ...(catKeywords ? (isAr ? catKeywords.ar : catKeywords.en) : []),
         ...(isAr
             ? ['ملابس داخلية نسائية مصر', 'الدفع عند الاستلام', 'شحن مجاني']

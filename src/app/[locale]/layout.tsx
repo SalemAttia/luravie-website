@@ -13,7 +13,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
-import { getMetadataBase, getSiteUrl, ogLocaleFromLocale } from '@/lib/seo';
+import { getMetadataBase, getSiteUrl, ogLocaleFromLocale, localizedAlternates, ARABIC_BRAND_VARIANTS } from '@/lib/seo';
 import { JsonLd } from '@/components/JsonLd';
 import { GoogleAnalytics } from '@next/third-parties/google';
 
@@ -31,20 +31,24 @@ export async function generateMetadata({
   const isAr = locale === 'ar';
 
   const title = isAr
-    ? 'لورافي (لُوراڤيه) | مستلزمات نسائية يومية – سوتيانات ولانجيري في مصر'
+    ? 'لوراڤيه (Luravie) | مستلزمات نسائية يومية – سوتيانات ولانجيري في مصر'
     : "Luravie | Women's Everyday Essentials – Bras, Lingerie & More in Egypt";
 
   const description = isAr
-    ? 'تسوقي أفضل السوتيانات واللانجيري والمستلزمات النسائية اليومية من لورافي (لُوراڤيه). جودة عالية بأسعار مناسبة مع الدفع عند الاستلام وشحن سري ومجاني في جميع أنحاء مصر.'
+    ? 'تسوقي أفضل السوتيانات واللانجيري والمستلزمات النسائية اليومية من لوراڤيه (لورافي - Luravie). جودة عالية بأسعار مناسبة مع الدفع عند الاستلام وشحن سري ومجاني في جميع أنحاء مصر.'
     : "Shop premium women's bras, lingerie, and everyday essentials at Luravie. Affordable luxury with cash on delivery, discreet packaging, and free shipping across Egypt.";
 
   const keywords = isAr
     ? [
-        'لورافي',
-        'لُوراڤيه',
-        'لوراڤيه',
-        'لوراڤي',
+        ...ARABIC_BRAND_VARIANTS,
         'Luravie',
+        'luravie',
+        'موقع لوراڤيه',
+        'متجر لوراڤيه',
+        'موقع لورافي',
+        'متجر لورافي',
+        'لوراڤيه مصر',
+        'لورافي مصر',
         'ملابس داخلية نسائية',
         'ملابس داخلية نسائية مصر',
         'سوتيان',
@@ -68,8 +72,6 @@ export async function generateMetadata({
         'شحن مجاني ملابس داخلية',
         'ملابس نسائية مصر',
         'تسوق نسائي اون لاين مصر',
-        'متجر لورافي',
-        'موقع لورافي',
       ]
     : [
         'Luravie',
@@ -104,9 +106,9 @@ export async function generateMetadata({
 
   return {
     metadataBase: getMetadataBase(),
-    applicationName: isAr ? 'لورافي' : 'Luravie',
+    applicationName: isAr ? 'لوراڤيه' : 'Luravie',
     title: {
-      template: isAr ? '%s | لورافي' : '%s | Luravie',
+      template: isAr ? '%s | لوراڤيه' : '%s | Luravie',
       default: title,
     },
     description,
@@ -115,12 +117,16 @@ export async function generateMetadata({
     creator: 'Luravie',
     publisher: 'Luravie',
     category: isAr ? 'ملابس داخلية نسائية' : "Women's Underwear & Lingerie",
+    alternates: {
+      canonical: `/${locale}`,
+      ...localizedAlternates(''),
+    },
     openGraph: {
       type: 'website',
       locale: ogLocaleFromLocale(locale),
       alternateLocale: isAr ? 'en_US' : 'ar_AR',
       url: `${siteUrl}/${locale}`,
-      siteName: isAr ? 'لورافي' : 'Luravie',
+      siteName: isAr ? 'لوراڤيه' : 'Luravie',
       title,
       description,
       images: [
@@ -129,16 +135,16 @@ export async function generateMetadata({
           width: 1200,
           height: 630,
           alt: isAr
-            ? 'لورافي – مستلزمات نسائية يومية فاخرة في مصر'
+            ? 'لوراڤيه – مستلزمات نسائية يومية فاخرة في مصر'
             : "Luravie – Premium Women's Everyday Essentials in Egypt",
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      title: isAr ? 'لورافي | مستلزمات نسائية يومية' : "Luravie | Women's Everyday Essentials",
+      title: isAr ? 'لوراڤيه | مستلزمات نسائية يومية' : "Luravie | Women's Everyday Essentials",
       description: isAr
-        ? 'سوتيانات ولانجيري ومستلزمات نسائية بجودة عالية. الدفع عند الاستلام وشحن سري في مصر.'
+        ? 'لوراڤيه - سوتيانات ولانجيري ومستلزمات نسائية بجودة عالية. الدفع عند الاستلام وشحن سري في مصر.'
         : "Premium women's bras, lingerie & essentials. Cash on delivery & discreet packaging across Egypt.",
       images: ['/twitter-image'],
     },
@@ -191,8 +197,8 @@ export default async function RootLayout({
   const websiteJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: locale === 'ar' ? 'لورافي' : 'Luravie',
-    alternateName: ['Luravie', 'لورافي', 'لُوراڤيه', 'لوراڤيه', 'لوراڤي'],
+    name: locale === 'ar' ? 'لوراڤيه' : 'Luravie',
+    alternateName: ['Luravie', 'luravie', ...ARABIC_BRAND_VARIANTS],
     url: siteUrl,
     inLanguage: locale === 'ar' ? 'ar' : 'en',
     potentialAction: {
@@ -209,7 +215,7 @@ export default async function RootLayout({
     '@context': 'https://schema.org',
     '@type': 'OnlineStore',
     name: 'Luravie',
-    alternateName: ['لورافي', 'لُوراڤيه', 'لوراڤيه', 'لوراڤي'],
+    alternateName: [...ARABIC_BRAND_VARIANTS, 'luravie'],
     url: siteUrl,
     logo: `${siteUrl}/opengraph-image`,
     description: locale === 'ar'

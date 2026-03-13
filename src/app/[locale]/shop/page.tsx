@@ -3,7 +3,7 @@ import { ShopClient } from './ShopClient';
 import { PRODUCTS } from '@/data';
 import { getWooProducts } from '@/lib/woocommerce';
 import { Metadata } from 'next';
-import { localePath, localizedAlternates, getSiteUrl } from '@/lib/seo';
+import { localePath, localizedAlternates, getSiteUrl, ARABIC_BRAND_VARIANTS } from '@/lib/seo';
 import { JsonLd } from '@/components/JsonLd';
 
 export async function generateMetadata({
@@ -17,13 +17,13 @@ export async function generateMetadata({
 
   return {
     title: isAr
-      ? 'تسوقي من لورافي (لُوراڤيه) – سوتيانات ولانجيري ومستلزمات نسائية أونلاين'
+      ? 'تسوقي من لوراڤيه (Luravie) – سوتيانات ولانجيري ومستلزمات نسائية أونلاين'
       : "Shop Luravie – Women's Bras, Lingerie & Everyday Essentials Online",
     description: isAr
-      ? 'تصفحي مجموعة لورافي (لُوراڤيه) من السوتيانات الفاخرة وأطقم اللانجيري والكلوت والشرابات النسائية. راحة يومية بجودة عالية. الدفع عند الاستلام وشحن سري في مصر.'
+      ? 'تصفحي مجموعة لوراڤيه (لورافي - Luravie) من السوتيانات الفاخرة وأطقم اللانجيري والكلوت والشرابات النسائية. راحة يومية بجودة عالية. الدفع عند الاستلام وشحن سري في مصر.'
       : "Browse Luravie's collection of premium women's bras, lingerie sets, panties, and socks. Everyday comfort meets affordable luxury. Cash on delivery & discreet packaging across Egypt.",
     keywords: isAr
-      ? ['لورافي', 'لُوراڤيه', 'متجر لورافي', 'سوتيانات', 'لانجيري', 'كلوت نسائي', 'شرابات نسائية', 'ملابس داخلية نسائية اونلاين', 'تسوق نسائي مصر']
+      ? [...ARABIC_BRAND_VARIANTS, 'Luravie', 'متجر لوراڤيه', 'متجر لورافي', 'سوتيانات', 'لانجيري', 'كلوت نسائي', 'شرابات نسائية', 'ملابس داخلية نسائية اونلاين', 'تسوق نسائي مصر']
       : ['Luravie shop', 'Luravie store', "women's bras", 'lingerie', 'panties', "women's socks", "women's underwear online", 'shop lingerie Egypt'],
     alternates: {
       canonical,
