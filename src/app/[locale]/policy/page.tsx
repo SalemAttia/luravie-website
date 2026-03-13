@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import PolicyClient from './PolicyClient';
-import { localePath, localizedAlternates } from '@/lib/seo';
+import { localePath, localizedAlternates, ARABIC_BRAND_VARIANTS } from '@/lib/seo';
 import { routing } from '@/i18n/routing';
 
 export function generateStaticParams() {
@@ -18,11 +18,14 @@ export async function generateMetadata({
 
   return {
     title: isAr
-      ? 'سياسات الخصوصية والشحن والدفع – لورافي'
+      ? 'سياسات الخصوصية والشحن والدفع – لوراڤيه'
       : 'Privacy, Shipping & Payment Policies – Luravie',
     description: isAr
-      ? 'اقرأي سياسات الشحن والدفع والخصوصية من لورافي. تغليف سري، دفع عند الاستلام، وحماية بياناتك الشخصية في جميع أنحاء مصر.'
+      ? 'اقرأي سياسات الشحن والدفع والخصوصية من لوراڤيه (لورافي - Luravie). تغليف سري، دفع عند الاستلام، وحماية بياناتك الشخصية في جميع أنحاء مصر.'
       : "Read Luravie's shipping, payment, and privacy policies. Discreet packaging, cash on delivery, and secure handling of your personal information across Egypt.",
+    keywords: isAr
+      ? [...ARABIC_BRAND_VARIANTS, 'Luravie', 'سياسة لوراڤيه', 'خصوصية لوراڤيه']
+      : ['Luravie policy', 'Luravie privacy', 'Luravie shipping policy'],
     alternates: {
       canonical,
       ...localizedAlternates('/policy'),

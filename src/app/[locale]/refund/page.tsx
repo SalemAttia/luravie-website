@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import RefundClient from './RefundClient';
-import { localePath, localizedAlternates } from '@/lib/seo';
+import { localePath, localizedAlternates, ARABIC_BRAND_VARIANTS } from '@/lib/seo';
 import { routing } from '@/i18n/routing';
 
 export function generateStaticParams() {
@@ -18,11 +18,14 @@ export async function generateMetadata({
 
   return {
     title: isAr
-      ? 'سياسة الإرجاع والاستبدال – جربي قبل ما تشتري'
-      : 'Return & Refund Policy – Try Before You Buy',
+      ? 'سياسة الإرجاع والاستبدال – لوراڤيه | جربي قبل ما تشتري'
+      : 'Return & Refund Policy – Try Before You Buy | Luravie',
     description: isAr
-      ? 'سياسة الإرجاع والاستبدال من لورافي. استمتعي بخدمة التجربة قبل الشراء. استبدال خلال ٢٤ ساعة للعيوب الصناعية. تسوقي بثقة.'
+      ? 'سياسة الإرجاع والاستبدال من لوراڤيه (لورافي - Luravie). استمتعي بخدمة التجربة قبل الشراء. استبدال خلال ٢٤ ساعة للعيوب الصناعية. تسوقي بثقة.'
       : "Luravie's return and refund policy. Enjoy our Try Before You Buy service. Replacement within 24 hours for manufacturing defects. Shop with confidence.",
+    keywords: isAr
+      ? [...ARABIC_BRAND_VARIANTS, 'Luravie', 'إرجاع لوراڤيه', 'استبدال لوراڤيه', 'جربي قبل ما تشتري']
+      : ['Luravie refund', 'Luravie return policy', 'try before you buy Egypt'],
     alternates: {
       canonical,
       ...localizedAlternates('/refund'),

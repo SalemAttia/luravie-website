@@ -5,7 +5,7 @@ import { ProductsSkeleton } from "@/components/products-skeleton";
 import { FeaturedProductsServer } from "./FeaturedProductsServer";
 import { routing } from "@/i18n/routing";
 import type { Metadata } from "next";
-import { localePath, localizedAlternates } from "@/lib/seo";
+import { localePath, localizedAlternates, ARABIC_BRAND_VARIANTS } from "@/lib/seo";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -22,11 +22,14 @@ export async function generateMetadata({
 
   return {
     title: isAr
-      ? "لورافي (لُوراڤيه) | مستلزمات نسائية يومية – سوتيانات ولانجيري في مصر"
+      ? "لوراڤيه (Luravie) | مستلزمات نسائية يومية – سوتيانات ولانجيري في مصر"
       : "Luravie | Women's Everyday Essentials – Bras, Lingerie & More in Egypt",
     description: isAr
-      ? "تسوقي أفضل السوتيانات واللانجيري والمستلزمات النسائية اليومية من لورافي (لُوراڤيه). جودة عالية بأسعار مناسبة مع الدفع عند الاستلام وشحن سري ومجاني في جميع أنحاء مصر."
+      ? "تسوقي أفضل السوتيانات واللانجيري والمستلزمات النسائية اليومية من لوراڤيه (لورافي - Luravie). جودة عالية بأسعار مناسبة مع الدفع عند الاستلام وشحن سري ومجاني في جميع أنحاء مصر."
       : "Shop premium women's bras, lingerie, and everyday essentials at Luravie. Affordable luxury with cash on delivery, discreet packaging, and free shipping across Egypt.",
+    keywords: isAr
+      ? [...ARABIC_BRAND_VARIANTS, 'Luravie', 'مستلزمات نسائية', 'سوتيانات', 'لانجيري مصر', 'ملابس داخلية نسائية مصر']
+      : ['Luravie', "women's essentials Egypt", 'bras Egypt', 'lingerie Egypt', "women's underwear Egypt"],
     alternates: {
       canonical,
       ...localizedAlternates(""),

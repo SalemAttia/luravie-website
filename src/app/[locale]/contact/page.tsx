@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import ContactClient from './ContactClient';
-import { localePath, localizedAlternates, getSiteUrl } from '@/lib/seo';
+import { localePath, localizedAlternates, getSiteUrl, ARABIC_BRAND_VARIANTS } from '@/lib/seo';
 import { routing } from '@/i18n/routing';
 import { JsonLd } from '@/components/JsonLd';
 
@@ -19,13 +19,13 @@ export async function generateMetadata({
 
   return {
     title: isAr
-      ? 'تواصلي مع لورافي (لُوراڤيه) – خدمة العملاء والاستفسارات'
+      ? 'تواصلي مع لوراڤيه (Luravie) – خدمة العملاء والاستفسارات'
       : 'Contact Luravie – Customer Support & Inquiries',
     description: isAr
-      ? 'تواصلي مع لورافي عبر البريد الإلكتروني أو الواتساب أو نموذج الاتصال. خدمة العملاء متاحة من السبت إلى الخميس، ١٠ صباحاً – ٨ مساءً. نحن هنا لمساعدتك في الطلبات والمقاسات والمزيد.'
+      ? 'تواصلي مع لوراڤيه (لورافي - Luravie) عبر البريد الإلكتروني أو الواتساب أو نموذج الاتصال. خدمة العملاء متاحة من السبت إلى الخميس، ١٠ صباحاً – ٨ مساءً. نحن هنا لمساعدتك في الطلبات والمقاسات والمزيد.'
       : "Get in touch with Luravie via email, WhatsApp, or our contact form. Customer support available Saturday–Thursday, 10 AM–8 PM EET. We're here to help with orders, sizing, and more.",
     keywords: isAr
-      ? ['تواصل لورافي', 'لورافي', 'لُوراڤيه', 'خدمة عملاء لورافي', 'واتساب لورافي', 'دعم لورافي']
+      ? [...ARABIC_BRAND_VARIANTS, 'Luravie', 'تواصل لوراڤيه', 'تواصل لورافي', 'خدمة عملاء لوراڤيه', 'واتساب لوراڤيه', 'دعم لوراڤيه']
       : ['contact Luravie', 'Luravie support', 'Luravie WhatsApp', 'Luravie customer service', 'Luravie Egypt contact'],
     alternates: {
       canonical,
