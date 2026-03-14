@@ -5,6 +5,7 @@ import { Heart, ShoppingBag, Check, Bell } from 'lucide-react';
 import { motion } from 'motion/react';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import { Product } from '@/data';
+import { isAllVariantsOutOfStock } from '@/lib/variant-stock';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/routing';
 
@@ -38,6 +39,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const validSizes = product.sizes.filter((s) => s.trim() !== '');
   const needsSelection = validSizes.length > 0 || product.colors.length > 1;
   const defaultColor = product.colors.length === 1 ? product.colors[0] : undefined;
+  const effectiveOutOfStock = product.outOfStock || isAllVariantsOutOfStock(product.variations);
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -77,12 +79,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <ImageWithFallback
             src={product.image}
             alt={product.name}
-            className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ${product.outOfStock ? 'brightness-75' : ''}`}
+            className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ${effectiveOutOfStock ? 'brightness-75' : ''}`}
           />
         </Link>
 
         {/* Sold Out overlay */}
-        {product.outOfStock && (
+        {effectiveOutOfStock && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <span className="bg-black/60 text-white text-[10px] md:text-xs font-bold uppercase tracking-[0.25em] px-3 py-1.5 rounded-full backdrop-blur-sm">
               {tProduct('soldOut')}
@@ -90,7 +92,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
         )}
 
-        {!product.outOfStock && (
+        {!effectiveOutOfStock && (
           <button
             onClick={(e) => {
               onToggleFavorite(e);
@@ -104,7 +106,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </button>
         )}
 
-        {product.outOfStock ? (
+        {effectiveOutOfStock ? (
           <div className="absolute bottom-2 left-2 right-2 md:bottom-6 md:left-6 md:right-6 translate-y-0 opacity-100 lg:translate-y-4 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 transition-all duration-500">
             <button
               onClick={(e) => {
@@ -166,7 +168,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             ))}
           </div>
         </div>
-        {!product.outOfStock && product.stockQuantity != null && product.stockQuantity > 0 && product.stockQuantity <= 10 && (
+        {!effectiveOutOfStock && product.stockQuantity != null && product.stockQuantity > 0 && product.stockQuantity <= 10 && (
           <p className={`text-[9px] md:text-xs font-bold text-coral ${locale === 'ar' ? 'text-right' : 'text-left'}`}>
             {tProduct('onlyXLeft', { count: product.stockQuantity })}
           </p>
