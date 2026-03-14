@@ -49,7 +49,7 @@ export async function getWooProducts(): Promise<Product[]> {
             page++;
         }
 
-        return allProducts.map((p: any) => {
+        const products = allProducts.map((p: any) => {
             const findAttr = (name: string) => p.attributes?.find((a: any) => {
                 const n = (a.name || '').toLowerCase();
                 const s = (a.slug || '').toLowerCase();
@@ -99,8 +99,21 @@ export async function getWooProducts(): Promise<Product[]> {
                 nameAr: getMeta(p, 'title_ar'),
                 descriptionAr: getMeta(p, 'description_ar'),
                 productType: p.type || 'simple',
-            };
+            } as Product;
         });
+
+        // Fetch variations for variable products in parallel
+        const variableProducts = products.filter(p => p.productType === 'variable');
+        if (variableProducts.length > 0) {
+            const variationsResults = await Promise.all(
+                variableProducts.map(p => getWooProductVariations(p.id))
+            );
+            variableProducts.forEach((p, i) => {
+                p.variations = variationsResults[i];
+            });
+        }
+
+        return products;
     } catch (error) {
         Sentry.captureException(error, {
             tags: { service: "woocommerce", operation: "getProducts" },
