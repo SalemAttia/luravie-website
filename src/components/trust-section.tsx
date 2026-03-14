@@ -36,7 +36,7 @@ export const TrustSection: React.FC = () => {
   return (
     <section className="py-12 md:py-24 bg-rose relative overflow-hidden">
       {/* Decorative text bg */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none opacity-[0.03]">
+      <div aria-hidden="true" className="absolute inset-0 flex items-center justify-center pointer-events-none select-none opacity-[0.06]">
         <span className="text-[10rem] md:text-[20rem] font-bold text-teal whitespace-nowrap">
           {tCommon('brandName')}
         </span>
