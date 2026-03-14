@@ -41,6 +41,22 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const defaultColor = product.colors.length === 1 ? product.colors[0] : undefined;
   const effectiveOutOfStock = product.outOfStock || isAllVariantsOutOfStock(product.variations);
 
+  // For variable products where base price is 0, show min variation price
+  const displayPrice = React.useMemo(() => {
+    if (product.price > 0) return product.price;
+    if (product.variations && product.variations.length > 0) {
+      const prices = product.variations
+        .map((v) => v.price)
+        .filter((p): p is number => p != null && p > 0);
+      if (prices.length > 0) return Math.min(...prices);
+    }
+    return product.price;
+  }, [product.price, product.variations]);
+
+  const MAX_VISIBLE_COLORS = 5;
+  const visibleColors = product.colors.slice(0, MAX_VISIBLE_COLORS);
+  const extraColorCount = product.colors.length - MAX_VISIBLE_COLORS;
+
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
@@ -153,12 +169,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <Link href={href} className="block space-y-1 md:space-y-2 px-1 md:px-2 cursor-pointer">
         <div className={`flex justify-between items-start gap-1 md:gap-2 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
           <h3 className={`font-bold text-teal text-xs md:text-lg tracking-tight leading-tight ${locale === 'ar' ? 'text-right' : 'text-left'}`}>{productName}</h3>
-          <span className="font-black text-coral whitespace-nowrap text-xs md:text-base">{product.price} <span className="text-[8px] md:text-[10px] font-bold">{t('currency')}</span></span>
+          <span className="font-black text-coral whitespace-nowrap text-xs md:text-base">{displayPrice} <span className="text-[8px] md:text-[10px] font-bold">{t('currency')}</span></span>
         </div>
         <div className={`flex items-center gap-1.5 md:gap-3 ${locale === 'ar' ? 'flex-row-reverse' : ''}`}>
           <p className="text-[9px] md:text-xs font-bold text-teal/40 uppercase tracking-widest">{t(`categories.${product.category.toLowerCase()}`)}</p>
-          <div className="flex gap-1">
-            {product.colors.map((color, idx) => (
+          <div className="flex gap-1 items-center">
+            {visibleColors.map((color, idx) => (
               <div
                 key={idx}
                 className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full border border-teal/5"
@@ -166,6 +182,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 title={color.name}
               />
             ))}
+            {extraColorCount > 0 && (
+              <span className="text-[8px] md:text-[10px] font-bold text-teal/40">+{extraColorCount}</span>
+            )}
           </div>
         </div>
         {!effectiveOutOfStock && product.stockQuantity != null && product.stockQuantity > 0 && product.stockQuantity <= 10 && (
