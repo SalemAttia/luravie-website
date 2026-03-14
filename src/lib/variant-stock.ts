@@ -43,6 +43,18 @@ export function isCombinationOutOfStock(
 }
 
 /**
+ * Check if ALL variants of a variable product are out of stock.
+ * Returns true only if there are variations and every one is out of stock.
+ * Returns false if no variation data is available (simple products).
+ */
+export function isAllVariantsOutOfStock(
+  variations: ProductVariation[] | undefined
+): boolean {
+  if (!variations || variations.length === 0) return false;
+  return variations.every(v => v.stockStatus === 'outofstock');
+}
+
+/**
  * Find the specific variation matching a size+color combo.
  */
 export function findVariation(
