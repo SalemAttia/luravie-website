@@ -20,7 +20,7 @@ export async function getWooProducts(): Promise<Product[]> {
         let page = 1;
 
         while (true) {
-            const response = await fetch(`${WOO_URL}/wp-json/wc/v3/products?per_page=100&page=${page}`, {
+            const response = await fetch(`${WOO_URL}/wp-json/wc/v3/products?per_page=100&status=publish&page=${page}`, {
                 headers: {
                     'Authorization': `Basic ${auth}`,
                 },
@@ -139,6 +139,9 @@ export async function getWooProductById(id: string): Promise<Product | null> {
 
         const p = await response.json();
 
+        // Only return published products
+        if (p.status && p.status !== 'publish') return null;
+
         const findAttr = (name: string) => p.attributes?.find((a: any) => {
             const n = (a.name || '').toLowerCase();
             const s = (a.slug || '').toLowerCase();
@@ -210,7 +213,7 @@ export async function getWooProductBySlug(slug: string): Promise<Product | null>
 
     try {
         const auth = Buffer.from(`${WOO_KEY}:${WOO_SECRET}`).toString('base64');
-        const response = await fetch(`${WOO_URL}/wp-json/wc/v3/products?slug=${encodeURIComponent(slug)}`, {
+        const response = await fetch(`${WOO_URL}/wp-json/wc/v3/products?slug=${encodeURIComponent(slug)}&status=publish`, {
             headers: {
                 'Authorization': `Basic ${auth}`,
             },
