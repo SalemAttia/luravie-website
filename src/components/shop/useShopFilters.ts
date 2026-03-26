@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Product } from '@/data';
+import { isAllVariantsOutOfStock } from '@/lib/variant-stock';
 
 export function useShopFilters(initialProducts: Product[], favorites: string[]) {
   const searchParams = useSearchParams();
@@ -55,6 +56,14 @@ export function useShopFilters(initialProducts: Product[], favorites: string[]) 
 
     if (sortBy === 'Price: Low to High') result.sort((a, b) => a.price - b.price);
     else if (sortBy === 'Price: High to Low') result.sort((a, b) => b.price - a.price);
+
+    // Push out-of-stock products to the end while preserving relative order
+    result.sort((a, b) => {
+      const aOutOfStock = a.outOfStock || isAllVariantsOutOfStock(a.variations);
+      const bOutOfStock = b.outOfStock || isAllVariantsOutOfStock(b.variations);
+      if (aOutOfStock === bOutOfStock) return 0;
+      return aOutOfStock ? 1 : -1;
+    });
 
     return result;
   }, [activeCategory, favorites, sortBy, selectedSizes, selectedColors, initialProducts]);
