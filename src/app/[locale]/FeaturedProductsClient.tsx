@@ -6,6 +6,7 @@ import { QuickSelectModal } from '@/components/quick-select-modal';
 import { NotifyMeModal } from '@/components/notify-me-modal';
 import { useApp } from '@/context/AppContext';
 import { Product } from '@/data';
+import { isAllVariantsOutOfStock } from '@/lib/variant-stock';
 import { useTranslations } from 'next-intl';
 
 interface FeaturedProductsClientProps {
@@ -34,7 +35,12 @@ export function FeaturedProductsClient({ initialProducts }: FeaturedProductsClie
                     </p>
                 </div>
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-10">
-                    {initialProducts.slice(0, 3).map(product => (
+                    {[...initialProducts].sort((a, b) => {
+                        const aOut = a.outOfStock || isAllVariantsOutOfStock(a.variations);
+                        const bOut = b.outOfStock || isAllVariantsOutOfStock(b.variations);
+                        if (aOut === bOut) return 0;
+                        return aOut ? 1 : -1;
+                    }).slice(0, 3).map(product => (
                         <ProductCard
                             key={product.id}
                             product={product}
