@@ -340,6 +340,53 @@ export async function getWooProductVariations(productId: string): Promise<Produc
     }
 }
 
+export interface StockInfo {
+    productId: number;
+    variationId?: number;
+    stockStatus: string;
+    stockQuantity: number | null;
+    name: string;
+}
+
+/**
+ * Fetch real-time stock info for a product or variation from WooCommerce.
+ */
+export async function getWooStockInfo(
+    productId: number,
+    variationId?: number
+): Promise<StockInfo | null> {
+    if (!WOO_URL || !WOO_KEY || !WOO_SECRET) return null;
+
+    try {
+        const auth = Buffer.from(`${WOO_KEY}:${WOO_SECRET}`).toString('base64');
+        const url = variationId
+            ? `${WOO_URL}/wp-json/wc/v3/products/${productId}/variations/${variationId}`
+            : `${WOO_URL}/wp-json/wc/v3/products/${productId}`;
+
+        const response = await fetch(url, {
+            headers: { 'Authorization': `Basic ${auth}` },
+            cache: 'no-store',
+        });
+
+        if (!response.ok) return null;
+
+        const data = await response.json();
+        return {
+            productId,
+            variationId,
+            stockStatus: data.stock_status || 'instock',
+            stockQuantity: data.stock_quantity ?? null,
+            name: data.name || `Product #${productId}`,
+        };
+    } catch (error) {
+        Sentry.captureException(error, {
+            tags: { service: "woocommerce", operation: "getStockInfo" },
+            extra: { productId, variationId },
+        });
+        return null;
+    }
+}
+
 export async function createWooOrder(orderData: any): Promise<any> {
     if (!WOO_URL || !WOO_KEY || !WOO_SECRET) {
         const error = new Error('WooCommerce credentials not found');
