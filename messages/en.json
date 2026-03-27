@@ -57,7 +57,9 @@
         "discreetShipping": "Discreet Shipping",
         "brandName": "LURAVIE",
         "trackOrder": "Track Order",
-        "yourOrders": "Your Orders"
+        "yourOrders": "Your Orders",
+        "stockLimit": "Stock limit reached",
+        "onlyXLeft": "Only {count} left in stock"
     },
     "home": {
         "heroTitle": "Confidence Starts Within",

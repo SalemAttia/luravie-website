@@ -57,7 +57,9 @@
         "discreetShipping": "شحن سري",
         "brandName": "لُوراڤيه",
         "trackOrder": "تتبع الطلب",
-        "yourOrders": "طلباتك"
+        "yourOrders": "طلباتك",
+        "stockLimit": "تم الوصول للحد الأقصى",
+        "onlyXLeft": "متبقي {count} فقط في المخزون"
     },
     "home": {
         "heroTitle": "ثقتك تبدأ من الداخل",

@@ -7,6 +7,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
 import * as Sentry from "@sentry/nextjs";
 import { trackAddToCart, trackRemoveFromCart } from '@/lib/analytics';
+import { findVariation } from '@/lib/variant-stock';
 
 interface CartItem extends Product {
   quantity: number;
@@ -114,15 +115,41 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
+  const getStockLimit = (product: Product, size?: string, colorName?: string): number | null => {
+    if (product.variations && product.variations.length > 0) {
+      const variation = findVariation(product.variations, size, colorName);
+      if (variation && variation.stockQuantity !== null) return variation.stockQuantity;
+    }
+    if (product.stockQuantity !== null && product.stockQuantity !== undefined) return product.stockQuantity;
+    return null;
+  };
+
   const addToCart = (product: Product, size?: string, color?: { name: string; hex: string }, variationId?: number, variantPrice?: number) => {
     const itemPrice = variantPrice ?? product.price;
+    const stockLimit = getStockLimit(product, size, color?.name);
+
+    const existing = cartItems.find(item =>
+      item.id === product.id &&
+      item.selectedSize === size &&
+      item.selectedColor?.name === color?.name
+    );
+    const currentQty = existing?.quantity || 0;
+
+    if (stockLimit !== null && currentQty >= stockLimit) {
+      const displayName = locale === 'ar' && product.nameAr ? product.nameAr : product.name;
+      toast.error(t('stockLimit'), {
+        description: `${displayName} — ${t('onlyXLeft', { count: stockLimit })}`,
+      });
+      return;
+    }
+
     setCartItems(prev => {
-      const existing = prev.find(item =>
+      const existingItem = prev.find(item =>
         item.id === product.id &&
         item.selectedSize === size &&
         item.selectedColor?.name === color?.name
       );
-      if (existing) {
+      if (existingItem) {
         return prev.map(item =>
           (item.id === product.id && item.selectedSize === size && item.selectedColor?.name === color?.name)
             ? { ...item, quantity: item.quantity + 1 }
@@ -152,6 +179,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const updateQuantity = (id: string, size?: string, colorName?: string, delta: number = 1) => {
+    if (delta > 0) {
+      const item = cartItems.find(i => i.id === id && i.selectedSize === size && i.selectedColor?.name === colorName);
+      if (item) {
+        const stockLimit = getStockLimit(item, size, colorName);
+        if (stockLimit !== null && item.quantity >= stockLimit) {
+          const displayName = locale === 'ar' && item.nameAr ? item.nameAr : item.name;
+          toast.error(t('stockLimit'), {
+            description: `${displayName} — ${t('onlyXLeft', { count: stockLimit })}`,
+          });
+          return;
+        }
+      }
+    }
     setCartItems(prev => prev.map(item =>
       (item.id === id && item.selectedSize === size && item.selectedColor?.name === colorName)
         ? { ...item, quantity: Math.max(0, item.quantity + delta) }
